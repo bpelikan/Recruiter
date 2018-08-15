@@ -22,7 +22,5 @@ namespace Recruiter.ViewModels
         public string LastName { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        //public List<string> UserClaims { get; set; }
     }
 }

@@ -83,7 +83,6 @@ namespace Recruiter.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                //UserClaims = claims.Select(c => c.Value).ToList()
             };
 
             return View(vm);

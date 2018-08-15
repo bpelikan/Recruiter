@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruiter", "Recruiter\Recruiter.csproj", "{975C800B-99D2-4ECB-9149-5358859F61D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruiter", "Recruiter\Recruiter.csproj", "{975C800B-99D2-4ECB-9149-5358859F61D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruiter.Tests", "Recruiter.Tests\Recruiter.Tests.csproj", "{7F96C1B5-67F9-4379-907F-8CDC0CF7D50A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{975C800B-99D2-4ECB-9149-5358859F61D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{975C800B-99D2-4ECB-9149-5358859F61D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{975C800B-99D2-4ECB-9149-5358859F61D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F96C1B5-67F9-4379-907F-8CDC0CF7D50A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F96C1B5-67F9-4379-907F-8CDC0CF7D50A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F96C1B5-67F9-4379-907F-8CDC0CF7D50A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F96C1B5-67F9-4379-907F-8CDC0CF7D50A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
