@@ -159,5 +159,40 @@ namespace Recruiter.Tests.Controllers
             result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(users);
             result.As<ViewResult>().ViewData.Model.As<EnumerableQuery<ApplicationUser>>().Count().Should().Be(users.Count);
         }
+
+        [Fact]
+        public void AddUser_None_ShouldReturnTypeViewResult()
+        {
+            // Arrange
+
+            // Act
+            var result = controller.AddUser();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void AddUser_None_ShouldInvokeViewWithEmptyViewNameParam()
+        {
+
+            // Act
+            var result = controller.AddUser();
+
+            // Assert
+            result.As<ViewResult>().ViewName.Should().BeNull();
+        }
+
+        [Fact]
+        public void AddUser_None_ShouldNotReturnAnyData()
+        {
+            // Arrange
+
+            // Act
+            var result = controller.AddUser();
+
+            // Assert
+            result.As<ViewResult>().ViewData.Model.Should().BeNull();
+        }
     }   
 }
