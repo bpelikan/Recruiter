@@ -58,13 +58,14 @@ namespace Recruiter.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User added successfully.");
-                return RedirectToAction("UserManagement", _userManager.Users);
+                return RedirectToAction("UserManagement");
             }
 
             foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
+
             return View(addUserViewModel);
         }
 

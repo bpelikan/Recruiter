@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Recruiter.ViewModels;
+using System.Threading.Tasks;
 
 namespace Recruiter.Tests.Controllers
 {
@@ -52,6 +54,14 @@ namespace Recruiter.Tests.Controllers
                                                 PhoneNumber = "821639587",
                                                  }
                                         };
+        private readonly AddUserViewModel viewModel = new AddUserViewModel()
+        {
+            Email = "test@test.com",
+            FirstName = "FirstName",
+            LastName = "LastName",
+            Password = "Pass!23",
+            PhoneNumber = "756845765"
+        };
 
         public AdminControllerTests()
         {
@@ -154,6 +164,7 @@ namespace Recruiter.Tests.Controllers
             // Act
             var result = controller.UserManagement();
             var test = result.As<ViewResult>().ViewData.Model;
+            
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeOfType<EnumerableQuery<ApplicationUser>>();
             result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(users);
@@ -193,6 +204,41 @@ namespace Recruiter.Tests.Controllers
 
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeNull();
+        }
+
+        [Fact]
+        public void AddUser_ViewModelWithModelError_ShouldReturnViewModel()
+        {
+            // Arrange
+            controller.ModelState.AddModelError("TestModelError","Model error from tests.");
+            
+            // Act
+            var result = controller.AddUser(viewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeOfType<AddUserViewModel>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(viewModel);
+        }
+
+        [Fact]
+        public void AddUser_ValidViewModel_ShouldRedirectToUserManagementWithUsers()
+        {
+            // Arrange
+            userManagerMock
+                .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(IdentityResult.Success));
+            userManagerMock
+               .Setup(m => m.Users)
+               .Returns(users.AsQueryable<ApplicationUser>());
+
+            // Act
+            var result = controller.AddUser(viewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
         }
     }   
 }
