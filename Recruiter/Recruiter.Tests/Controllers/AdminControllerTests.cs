@@ -11,6 +11,7 @@ using System.Linq;
 using Xunit;
 using Recruiter.ViewModels;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Recruiter.Tests.Controllers
 {
@@ -54,7 +55,7 @@ namespace Recruiter.Tests.Controllers
                                                 PhoneNumber = "821639587",
                                                  }
                                         };
-        private readonly AddUserViewModel viewModel = new AddUserViewModel()
+        private readonly AddUserViewModel viewModel = new AddUserViewModel
         {
             Email = "test@test.com",
             FirstName = "FirstName",
@@ -70,6 +71,7 @@ namespace Recruiter.Tests.Controllers
             iLoggerMock = MockHelpers.MockILogger<AdminController>();
 
             controller = new AdminController(userManagerMock.Object, roleManagerMock.Object, iLoggerMock.Object);
+            //controller.ViewData.ModelState.Clear();
         }
 
         [Fact]
@@ -211,7 +213,7 @@ namespace Recruiter.Tests.Controllers
         {
             // Arrange
             controller.ModelState.AddModelError("TestModelError","Model error from tests.");
-            
+
             // Act
             var result = controller.AddUser(viewModel);
 
@@ -240,5 +242,34 @@ namespace Recruiter.Tests.Controllers
             userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
         }
+
+        [Fact]
+        public void AddUser_ViewModel_CreateAsyncWithIdentityErrorShouldReturnViewModelWithModelError()
+        {
+            IdentityError identityError = new IdentityError
+            {
+                Code = "",
+                Description = "ErrorDescription"
+            };
+
+            // Arrange
+            userManagerMock
+                .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
+            userManagerMock
+               .Setup(m => m.Users)
+               .Returns(users.AsQueryable<ApplicationUser>());
+
+            // Act
+            var result = controller.AddUser(viewModel);
+            
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(viewModel);
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
+        }
+
     }   
 }
