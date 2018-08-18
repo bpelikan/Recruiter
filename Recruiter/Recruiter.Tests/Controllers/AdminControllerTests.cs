@@ -55,7 +55,7 @@ namespace Recruiter.Tests.Controllers
                                                 PhoneNumber = "821639587",
                                                  }
                                         };
-        private readonly AddUserViewModel viewModel = new AddUserViewModel
+        private readonly AddUserViewModel addUserViewModel = new AddUserViewModel
         {
             Email = "test@test.com",
             FirstName = "FirstName",
@@ -74,6 +74,7 @@ namespace Recruiter.Tests.Controllers
             //controller.ViewData.ModelState.Clear();
         }
 
+        #region Index() Tests  
         [Fact]
         public void Index_None_ShouldReturnTypeViewResult()
         {
@@ -109,7 +110,9 @@ namespace Recruiter.Tests.Controllers
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeNull();
         }
+        #endregion  
 
+        #region UserManagement() Tests  
         [Fact]
         public void UserManagement_None_ShouldReturnTypeViewResult()
         {
@@ -172,7 +175,9 @@ namespace Recruiter.Tests.Controllers
             result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(users);
             result.As<ViewResult>().ViewData.Model.As<EnumerableQuery<ApplicationUser>>().Count().Should().Be(users.Count);
         }
+        #endregion
 
+        #region AddUser() Tests 
         [Fact]
         public void AddUser_None_ShouldReturnTypeViewResult()
         {
@@ -215,16 +220,16 @@ namespace Recruiter.Tests.Controllers
             controller.ModelState.AddModelError("TestModelError","Model error from tests.");
 
             // Act
-            var result = controller.AddUser(viewModel);
+            var result = controller.AddUser(addUserViewModel);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeOfType<AddUserViewModel>();
-            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(viewModel);
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addUserViewModel);
         }
 
         [Fact]
-        public void AddUser_ValidViewModel_ShouldRedirectToUserManagementWithUsers()
+        public void AddUser_ValidViewModel_ShouldRedirectToUserManagement()
         {
             // Arrange
             userManagerMock
@@ -235,7 +240,7 @@ namespace Recruiter.Tests.Controllers
                .Returns(users.AsQueryable<ApplicationUser>());
 
             // Act
-            var result = controller.AddUser(viewModel);
+            var result = controller.AddUser(addUserViewModel);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
@@ -261,15 +266,15 @@ namespace Recruiter.Tests.Controllers
                .Returns(users.AsQueryable<ApplicationUser>());
 
             // Act
-            var result = controller.AddUser(viewModel);
+            var result = controller.AddUser(addUserViewModel);
             
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
             userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
-            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(viewModel);
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addUserViewModel);
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
         }
-
-    }   
+        #endregion
+    }
 }
