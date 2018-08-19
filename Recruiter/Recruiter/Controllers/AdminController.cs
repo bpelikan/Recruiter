@@ -74,9 +74,8 @@ namespace Recruiter.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
-                return RedirectToAction("UserManagement", _userManager.Users);
+                return RedirectToAction("UserManagement");
 
-            var claims = await _userManager.GetClaimsAsync(user);
             var vm = new EditUserViewModel()
             {
                 Id = user.Id,

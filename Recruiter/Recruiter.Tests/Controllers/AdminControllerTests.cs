@@ -22,7 +22,14 @@ namespace Recruiter.Tests.Controllers
         private readonly Mock<RoleManager<IdentityRole>> roleManagerMock;
         private readonly Mock<ILogger<AdminController>> iLoggerMock;
 
-        private readonly List<ApplicationUser> users = new List<ApplicationUser>
+        private static readonly ApplicationUser applicationUser = new ApplicationUser
+        {
+            Id = Guid.NewGuid().ToString(),
+            FirstName = "Kamil",
+            LastName = "Dumny",
+            PhoneNumber = "321654987",
+        };
+        private static readonly List<ApplicationUser> applicationUsers = new List<ApplicationUser>
                                         {
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
@@ -55,13 +62,21 @@ namespace Recruiter.Tests.Controllers
                                                 PhoneNumber = "821639587",
                                                  }
                                         };
-        private readonly AddUserViewModel addUserViewModel = new AddUserViewModel
+        private static readonly AddUserViewModel addUserViewModel = new AddUserViewModel
         {
             Email = "test@test.com",
             FirstName = "FirstName",
             LastName = "LastName",
             Password = "Pass!23",
             PhoneNumber = "756845765"
+        };
+        private static readonly EditUserViewModel editUserViewModel = new EditUserViewModel()
+        {
+            Id = applicationUser.Id,
+            Email = applicationUser.Email,
+            FirstName = applicationUser.FirstName,
+            LastName = applicationUser.LastName,
+            PhoneNumber = applicationUser.PhoneNumber,
         };
 
         public AdminControllerTests()
@@ -119,7 +134,7 @@ namespace Recruiter.Tests.Controllers
             // Arrange
             userManagerMock
                 .Setup(m => m.Users)
-                .Returns(users.AsQueryable<ApplicationUser>());
+                .Returns(applicationUsers.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.UserManagement();
@@ -134,7 +149,7 @@ namespace Recruiter.Tests.Controllers
             // Arrange
             userManagerMock
                 .Setup(m => m.Users)
-                .Returns(users.AsQueryable<ApplicationUser>());
+                .Returns(applicationUsers.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.UserManagement();
@@ -149,7 +164,7 @@ namespace Recruiter.Tests.Controllers
             // Arrange
             userManagerMock
                 .Setup(m => m.Users)
-                .Returns(users.AsQueryable<ApplicationUser>());
+                .Returns(applicationUsers.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.UserManagement();
@@ -164,7 +179,7 @@ namespace Recruiter.Tests.Controllers
             // Arrange
             userManagerMock
                 .Setup(m => m.Users)
-                .Returns(users.AsQueryable<ApplicationUser>());
+                .Returns(applicationUsers.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.UserManagement();
@@ -172,8 +187,8 @@ namespace Recruiter.Tests.Controllers
             
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeOfType<EnumerableQuery<ApplicationUser>>();
-            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(users);
-            result.As<ViewResult>().ViewData.Model.As<EnumerableQuery<ApplicationUser>>().Count().Should().Be(users.Count);
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(applicationUsers);
+            result.As<ViewResult>().ViewData.Model.As<EnumerableQuery<ApplicationUser>>().Count().Should().Be(applicationUsers.Count);
         }
         #endregion
 
@@ -235,9 +250,6 @@ namespace Recruiter.Tests.Controllers
             userManagerMock
                 .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(IdentityResult.Success));
-            userManagerMock
-               .Setup(m => m.Users)
-               .Returns(users.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.AddUser(addUserViewModel);
@@ -261,9 +273,6 @@ namespace Recruiter.Tests.Controllers
             userManagerMock
                 .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
-            userManagerMock
-               .Setup(m => m.Users)
-               .Returns(users.AsQueryable<ApplicationUser>());
 
             // Act
             var result = controller.AddUser(addUserViewModel);
@@ -274,6 +283,43 @@ namespace Recruiter.Tests.Controllers
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addUserViewModel);
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
+        }
+        #endregion
+
+        #region EditUser() Tests 
+        [Fact]
+        public void EditUser_InvalidId_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(null));
+
+            // Act
+            var result = controller.EditUser(Guid.NewGuid().ToString());
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(It.IsAny<string>()), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+        }
+
+        [Fact]
+        public void EditUser_ValidId_ShouldReturnViewModel()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(applicationUser));
+
+            // Act
+            var result = controller.EditUser(Guid.NewGuid().ToString());
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(It.IsAny<string>()), Times.Once);
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editUserViewModel);
         }
         #endregion
     }
