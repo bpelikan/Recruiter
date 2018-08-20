@@ -25,9 +25,10 @@ namespace Recruiter.Tests.Controllers
         private static readonly ApplicationUser applicationUser = new ApplicationUser
         {
             Id = Guid.NewGuid().ToString(),
+            Email = "test@test.com",
             FirstName = "Kamil",
             LastName = "Dumny",
-            PhoneNumber = "321654987",
+            PhoneNumber = "821654987"
         };
         private static readonly List<ApplicationUser> applicationUsers = new List<ApplicationUser>
                                         {
@@ -70,7 +71,7 @@ namespace Recruiter.Tests.Controllers
             Password = "Pass!23",
             PhoneNumber = "756845765"
         };
-        private static readonly EditUserViewModel editUserViewModel = new EditUserViewModel()
+        private static readonly EditUserViewModel editUserViewModelOld = new EditUserViewModel()
         {
             Id = applicationUser.Id,
             Email = applicationUser.Email,
@@ -78,6 +79,20 @@ namespace Recruiter.Tests.Controllers
             LastName = applicationUser.LastName,
             PhoneNumber = applicationUser.PhoneNumber,
         };
+        private static readonly EditUserViewModel editUserViewModelNew = new EditUserViewModel()
+        {
+            Id = applicationUser.Id,
+            Email = "test2@test.com",
+            FirstName = "Adam",
+            LastName = "Nowak",
+            PhoneNumber = "485738456",
+        };
+        private static readonly IdentityError identityError = new IdentityError
+        {
+            Code = "",
+            Description = "ErrorDescription"
+        };
+
 
         public AdminControllerTests()
         {
@@ -227,7 +242,9 @@ namespace Recruiter.Tests.Controllers
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeNull();
         }
+        #endregion
 
+        #region AddUser(AddUserViewModel addUserViewModel) Tests 
         [Fact]
         public void AddUser_ViewModelWithModelError_ShouldReturnViewModel()
         {
@@ -251,42 +268,62 @@ namespace Recruiter.Tests.Controllers
                 .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(IdentityResult.Success));
 
+            var user = new ApplicationUser()
+            {
+                UserName = addUserViewModel.Email.Normalize().ToUpper(),
+                Email = addUserViewModel.Email,
+                FirstName = addUserViewModel.FirstName,
+                LastName = addUserViewModel.LastName,
+                PhoneNumber = addUserViewModel.PhoneNumber
+            };
+
             // Act
             var result = controller.AddUser(addUserViewModel);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
-            userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
+            userManagerMock.Verify(m => m.CreateAsync(It.Is<ApplicationUser>(x => x.UserName == user.UserName &&
+                                                                                x.Email == user.Email &&
+                                                                                x.FirstName == user.FirstName &&
+                                                                                x.LastName == user.LastName &&
+                                                                                x.PhoneNumber == user.PhoneNumber), addUserViewModel.Password), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
         }
 
         [Fact]
         public void AddUser_ViewModel_CreateAsyncWithIdentityErrorShouldReturnViewModelWithModelError()
         {
-            IdentityError identityError = new IdentityError
-            {
-                Code = "",
-                Description = "ErrorDescription"
-            };
-
             // Arrange
             userManagerMock
                 .Setup(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
+
+            var user = new ApplicationUser()
+            {
+                UserName = addUserViewModel.Email.Normalize().ToUpper(),
+                Email = addUserViewModel.Email,
+                FirstName = addUserViewModel.FirstName,
+                LastName = addUserViewModel.LastName,
+                PhoneNumber = addUserViewModel.PhoneNumber
+            };
 
             // Act
             var result = controller.AddUser(addUserViewModel);
             
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
-            userManagerMock.Verify(m => m.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Once);
+            userManagerMock.Verify(m => m.CreateAsync(It.Is<ApplicationUser>(x => x.UserName == user.UserName &&
+                                                                                x.Email == user.Email &&
+                                                                                x.FirstName == user.FirstName &&
+                                                                                x.LastName == user.LastName &&
+                                                                                x.PhoneNumber == user.PhoneNumber), addUserViewModel.Password), Times.Once);
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addUserViewModel);
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
         }
         #endregion
 
-        #region EditUser() Tests 
+        #region EditUser(string id) Tests 
         [Fact]
         public void EditUser_InvalidId_ShouldRedirectToUserManagement()
         {
@@ -295,12 +332,14 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
                .Returns(Task.FromResult<ApplicationUser>(null));
 
+            var id = Guid.NewGuid().ToString();
+
             // Act
-            var result = controller.EditUser(Guid.NewGuid().ToString());
+            var result = controller.EditUser(id);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
-            userManagerMock.Verify(m => m.FindByIdAsync(It.IsAny<string>()), Times.Once);
+            userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
         }
 
@@ -312,14 +351,103 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
                .Returns(Task.FromResult<ApplicationUser>(applicationUser));
 
+            var id = Guid.NewGuid().ToString();
+
             // Act
-            var result = controller.EditUser(Guid.NewGuid().ToString());
+            var result = controller.EditUser(id);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
-            userManagerMock.Verify(m => m.FindByIdAsync(It.IsAny<string>()), Times.Once);
+            userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
-            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editUserViewModel);
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editUserViewModelOld);
+        }
+        #endregion
+
+        #region EditUser(EditUserViewModel editUserViewModel) Tests 
+        [Fact]
+        public void EditUser_EditUserViewModelUserNotExist_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(null));
+
+            // Act
+            var result = controller.EditUser(editUserViewModelNew);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(editUserViewModelNew.Id), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+        }
+
+        [Fact]
+        public void EditUser_ValidEditUserViewModel_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(applicationUser));
+            userManagerMock
+               .Setup(m => m.UpdateAsync(It.IsAny<ApplicationUser>()))
+               .Returns(Task.FromResult(IdentityResult.Success));
+
+            ApplicationUser user = applicationUser;
+            user.UserName = editUserViewModelNew.Email.Normalize().ToUpper();
+            user.Email = editUserViewModelNew.Email;
+            user.FirstName = editUserViewModelNew.FirstName;
+            user.LastName = editUserViewModelNew.LastName;
+            user.PhoneNumber = editUserViewModelNew.PhoneNumber;
+            
+            // Act
+            var result = controller.EditUser(editUserViewModelNew);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(editUserViewModelNew.Id), Times.Once);
+            userManagerMock.Verify(m => m.UpdateAsync(It.Is<ApplicationUser>(x => x.Id == user.Id &&
+                                                                                x.UserName == user.UserName &&
+                                                                                x.Email == user.Email &&
+                                                                                x.FirstName == user.FirstName &&
+                                                                                x.LastName == user.LastName &&
+                                                                                x.PhoneNumber == user.PhoneNumber)), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+        }
+
+        [Fact]
+        public void EditUser_ValidEditUserViewModel_UpdateAsyncWithIdentityErrorShouldReturnViewModelWithModelError()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(applicationUser));
+            userManagerMock
+               .Setup(m => m.UpdateAsync(It.IsAny<ApplicationUser>()))
+               .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
+
+            ApplicationUser user = applicationUser;
+            user.UserName = editUserViewModelNew.Email.Normalize().ToUpper();
+            user.Email = editUserViewModelNew.Email;
+            user.FirstName = editUserViewModelNew.FirstName;
+            user.LastName = editUserViewModelNew.LastName;
+            user.PhoneNumber = editUserViewModelNew.PhoneNumber;
+
+            // Act
+            var result = controller.EditUser(editUserViewModelOld);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(editUserViewModelNew.Id), Times.Once);
+            userManagerMock.Verify(m => m.UpdateAsync(It.Is<ApplicationUser>(x => x.Id == user.Id &&
+                                                                                x.UserName == user.UserName &&
+                                                                                x.Email == user.Email &&
+                                                                                x.FirstName == user.FirstName &&
+                                                                                x.LastName == user.LastName &&
+                                                                                x.PhoneNumber == user.PhoneNumber)), Times.Once);
+            
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(user);
         }
         #endregion
     }

@@ -106,7 +106,7 @@ namespace Recruiter.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User changed successfully.");
-                    return RedirectToAction("UserManagement", _userManager.Users);
+                    return RedirectToAction("UserManagement");
                 }
 
                 ModelState.AddModelError("", "User not updated, something went wrong.");
@@ -114,7 +114,7 @@ namespace Recruiter.Controllers
                 return View(user);
             }
 
-            return RedirectToAction("UserManagement", _userManager.Users);
+            return RedirectToAction("UserManagement");
         }
 
         [HttpPost]
