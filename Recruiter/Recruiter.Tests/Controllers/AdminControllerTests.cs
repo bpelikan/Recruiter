@@ -424,7 +424,7 @@ namespace Recruiter.Tests.Controllers
                .Returns(Task.FromResult<ApplicationUser>(applicationUser));
             userManagerMock
                .Setup(m => m.UpdateAsync(It.IsAny<ApplicationUser>()))
-               .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
+               .Returns(Task.FromResult(IdentityResult.Failed()));
 
             ApplicationUser user = applicationUser;
             user.UserName = editUserViewModelNew.Email.Normalize().ToUpper();
@@ -448,6 +448,7 @@ namespace Recruiter.Tests.Controllers
             
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(user);
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("User not updated, something went wrong.");
         }
         #endregion
     }
