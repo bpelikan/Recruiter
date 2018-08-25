@@ -451,5 +451,75 @@ namespace Recruiter.Tests.Controllers
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("User not updated, something went wrong.");
         }
         #endregion
+
+
+        #region Delete
+        [Fact]
+        public void DeleteUser_InvalidId_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(null));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteUser(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("This user can't be found.");
+        }
+
+        [Fact]
+        public void DeleteUser_ValidId_DeleteSucceededShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(applicationUser));
+            userManagerMock
+              .Setup(m => m.DeleteAsync(It.IsAny<ApplicationUser>()))
+              .Returns(Task.FromResult(IdentityResult.Success));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteUser(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            userManagerMock.Verify(m => m.DeleteAsync(applicationUser), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+        }
+
+        [Fact]
+        public void DeleteUser_ValidId_DeleteFailedShouldRedirectToUserManagement()
+        {
+            // Arrange
+            userManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<ApplicationUser>(applicationUser));
+            userManagerMock
+              .Setup(m => m.DeleteAsync(It.IsAny<ApplicationUser>()))
+              .Returns(Task.FromResult(IdentityResult.Failed()));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteUser(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            userManagerMock.Verify(m => m.DeleteAsync(applicationUser), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Something went wrong while deleting this user.");
+        }
+        #endregion
     }
 }

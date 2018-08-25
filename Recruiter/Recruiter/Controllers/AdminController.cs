@@ -137,9 +137,9 @@ namespace Recruiter.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "This user can't be found");
+                ModelState.AddModelError("", "This user can't be found.");
             }
-            return View("UserManagement", _userManager.Users);
+            return RedirectToAction("UserManagement");
         }
     }
 }
