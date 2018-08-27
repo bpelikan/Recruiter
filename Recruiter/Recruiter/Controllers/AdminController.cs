@@ -42,7 +42,8 @@ namespace Recruiter.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserViewModel addUserViewModel)
         {
-            if (!ModelState.IsValid) return View(addUserViewModel);
+            if (!ModelState.IsValid)
+                return View(addUserViewModel);
 
             var user = new ApplicationUser()
             {
