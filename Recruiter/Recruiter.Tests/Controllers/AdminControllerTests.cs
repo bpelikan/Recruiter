@@ -92,6 +92,34 @@ namespace Recruiter.Tests.Controllers
             Code = "",
             Description = "ErrorDescription"
         };
+        private static readonly List<IdentityRole> identityRoles = new List<IdentityRole>
+                                        {
+                                            new IdentityRole {
+                                                Id = Guid.NewGuid().ToString(),
+                                                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                                                Name = "Role1",
+                                                NormalizedName = "Role1".Normalize()
+                                                 },
+                                            new IdentityRole {
+                                                Id = Guid.NewGuid().ToString(),
+                                                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                                                Name = "Role2",
+                                                NormalizedName = "Role2".Normalize()
+                                                 },
+                                            new IdentityRole {
+                                                Id = Guid.NewGuid().ToString(),
+                                                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                                                Name = "Role3",
+                                                NormalizedName = "Role3".Normalize()
+                                                 },
+                                            new IdentityRole {
+                                                Id = Guid.NewGuid().ToString(),
+                                                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                                                Name = "Role4",
+                                                NormalizedName = "Role4".Normalize()
+                                                 },
+                                        };
+
 
 
         public AdminControllerTests()
@@ -198,7 +226,6 @@ namespace Recruiter.Tests.Controllers
 
             // Act
             var result = controller.UserManagement();
-            var test = result.As<ViewResult>().ViewData.Model;
             
             // Assert
             result.As<ViewResult>().ViewData.Model.Should().BeOfType<EnumerableQuery<ApplicationUser>>();
@@ -452,8 +479,7 @@ namespace Recruiter.Tests.Controllers
         }
         #endregion
 
-
-        #region Delete
+        #region Delete()
         [Fact]
         public void DeleteUser_InvalidId_ShouldRedirectToUserManagement()
         {
@@ -521,5 +547,70 @@ namespace Recruiter.Tests.Controllers
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Something went wrong while deleting this user.");
         }
         #endregion
+
+        #region RoleManagement() Tests
+        [Fact]
+        public void RoleManagement_None_ShouldReturnTypeViewResult()
+        {
+            // Arrange
+            roleManagerMock
+                .Setup(m => m.Roles)
+                .Returns(identityRoles.AsQueryable<IdentityRole>());
+
+            // Act
+            var result = controller.RoleManagement();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void RoleManagement_None_ShouldInvokeViewWithEmptyViewNameParam()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.Roles)
+               .Returns(identityRoles.AsQueryable<IdentityRole>());
+
+            // Act
+            var result = controller.RoleManagement();
+
+            // Assert
+            result.As<ViewResult>().ViewName.Should().BeNull();
+        }
+
+        [Fact]
+        public void RoleManagement_None_ShouldInvokeRoleManagementOnce()
+        {
+            // Arrange
+            roleManagerMock
+                .Setup(m => m.Roles)
+                .Returns(identityRoles.AsQueryable<IdentityRole>());
+
+            // Act
+            var result = controller.RoleManagement();
+
+            // Assert
+            userManagerMock.Verify(m => m.Users, Times.Once());
+        }
+
+        [Fact]
+        public void RoleManagement_None_ShouldReturnUsers()
+        {
+            // Arrange
+            roleManagerMock
+                .Setup(m => m.Roles)
+                .Returns(identityRoles.AsQueryable<IdentityRole>());
+
+            // Act
+            var result = controller.RoleManagement();
+
+            // Assert
+            result.As<ViewResult>().ViewData.Model.Should().BeOfType<EnumerableQuery<IdentityRole>>();
+            result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(identityRoles);
+            result.As<ViewResult>().ViewData.Model.As<EnumerableQuery<IdentityRole>>().Count().Should().Be(identityRoles.Count);
+        }
+        #endregion
+
     }
 }

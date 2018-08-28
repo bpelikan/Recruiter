@@ -30,6 +30,7 @@ namespace Recruiter.Controllers
             return View();
         }
 
+        #region UserManagement
         public IActionResult UserManagement()
         {
             var users = _userManager.Users;
@@ -144,7 +145,9 @@ namespace Recruiter.Controllers
             }
             return RedirectToAction("UserManagement");
         }
+        #endregion
 
+        #region RoleManagement
         public IActionResult RoleManagement()
         {
             var roles = _roleManager.Roles;
@@ -244,9 +247,9 @@ namespace Recruiter.Controllers
             }
             return View("RoleManagement", _roleManager.Roles);
         }
+        #endregion
 
-
-        //Users in roles
+        #region Users in roles
 
         public async Task<IActionResult> AddUserToRole(string roleId)
         {
@@ -314,7 +317,6 @@ namespace Recruiter.Controllers
             return View(addUserToRoleViewModel);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> DeleteUserFromRole(UserRoleViewModel userRoleViewModel)
         {
@@ -340,7 +342,7 @@ namespace Recruiter.Controllers
 
             return View(userRoleViewModel);
         }
-
+        #endregion
 
     }
 }
