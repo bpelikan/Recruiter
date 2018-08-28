@@ -591,7 +591,7 @@ namespace Recruiter.Tests.Controllers
             var result = controller.RoleManagement();
 
             // Assert
-            userManagerMock.Verify(m => m.Users, Times.Once());
+            roleManagerMock.Verify(m => m.Roles, Times.Once());
         }
 
         [Fact]
