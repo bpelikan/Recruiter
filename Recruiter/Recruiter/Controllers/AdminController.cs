@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ using Recruiter.ViewModels;
 
 namespace Recruiter.Controllers
 {
-    //[Authorize(Roles = "Administrators")]
+    [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
