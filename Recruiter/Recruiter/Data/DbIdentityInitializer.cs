@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Recruiter.Models;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,13 @@ namespace Recruiter.Data
 {
     public static class DbIdentityInitializer
     {
-        public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             SeedRoles(roleManager);
-            SeedUsers(userManager);
+            SeedUsers(userManager, configuration);
         }
 
-        public static void SeedUsers(UserManager<ApplicationUser> userManager)
+        public static void SeedUsers(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             if (userManager.FindByEmailAsync("admin@admin.com").Result == null)
             {
@@ -27,7 +28,7 @@ namespace Recruiter.Data
                     LastName = "Admin"
                 };
 
-                IdentityResult result = userManager.CreateAsync(user, "zaq1@WSX").Result;
+                IdentityResult result = userManager.CreateAsync(user, configuration["AdminPassword"]).Result;
 
                 if (result.Succeeded)
                 {
