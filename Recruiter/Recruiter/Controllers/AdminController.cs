@@ -189,7 +189,7 @@ namespace Recruiter.Controllers
             var role = await _roleManager.FindByIdAsync(id);
 
             if (role == null)
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction("RoleManagement");
 
             var editRoleViewModel = new EditRoleViewModel
             {
@@ -219,14 +219,14 @@ namespace Recruiter.Controllers
                 var result = await _roleManager.UpdateAsync(role);
 
                 if (result.Succeeded)
-                    return RedirectToAction("RoleManagement", _roleManager.Roles);
+                    return RedirectToAction("RoleManagement");
 
                 ModelState.AddModelError("", "Role not updated, something went wrong.");
 
                 return View(editRoleViewModel);
             }
 
-            return RedirectToAction("RoleManagement", _roleManager.Roles);
+            return RedirectToAction("RoleManagement");
         }
 
         [HttpPost]

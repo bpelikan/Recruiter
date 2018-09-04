@@ -122,7 +122,13 @@ namespace Recruiter.Tests.Controllers
         private static readonly AddRoleViewModel addRoleViewModel = new AddRoleViewModel() {
             RoleName = "NewRole"
         };
-
+        private static readonly IdentityRole identityRole = new IdentityRole()
+        {
+            Id = Guid.NewGuid().ToString(),
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
+            Name = "Role1",
+            NormalizedName = "Role1".Normalize()
+        };
 
         public AdminControllerTests()
         {
@@ -702,6 +708,158 @@ namespace Recruiter.Tests.Controllers
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addRoleViewModel);
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
         }
+        #endregion
+
+        #region EditRole(string id) Tests
+        [Fact]
+        public void EditRole_InvalidId_ShouldRedirectToRoleManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(null));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.EditRole(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+        }
+
+        [Fact]
+        public void EditRole_ValidId_ShouldReturnViewModel()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(identityRole));
+            userManagerMock
+                .Setup(m => m.Users)
+                .Returns(applicationUsers.AsQueryable<ApplicationUser>());
+            userManagerMock
+                .Setup(m => m.IsInRoleAsync(applicationUsers.First(), identityRole.Name))
+                .Returns(Task.FromResult(true));
+
+            var id = Guid.NewGuid().ToString();
+            var editRoleViewModel = new EditRoleViewModel
+            {
+                Id = identityRole.Id,
+                RoleName = identityRole.Name,
+                Users = new List<string>()
+            };
+            editRoleViewModel.Users.Add(applicationUsers.First().UserName);
+
+            // Act
+            var result = controller.EditRole(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            userManagerMock.Verify(m => m.Users, Times.Once);
+            userManagerMock.Verify(m => m.IsInRoleAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()), Times.Exactly(applicationUsers.Count()));
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editRoleViewModel);
+        }
+        #endregion
+
+        #region EditRole(EditRoleViewModel editRoleViewModel) Tests
+        [Fact]
+        public void EditRole_EditRoleViewModelRoleNotExist_ShouldRedirectToRoleManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(null));
+
+            var editRoleViewModel = new EditRoleViewModel
+            {
+                Id = identityRole.Id,
+                RoleName = identityRole.Name,
+                Users = new List<string>()
+            };
+
+            // Act
+            var result = controller.EditRole(editRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(editRoleViewModel.Id), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+        }
+
+        [Fact]
+        public void EditRole_ValidEditUserViewModel_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(identityRole));
+            roleManagerMock
+               .Setup(m => m.UpdateAsync(It.IsAny<IdentityRole>()))
+               .Returns(Task.FromResult(IdentityResult.Success));
+
+            var editRoleViewModel = new EditRoleViewModel
+            {
+                Id = identityRole.Id,
+                RoleName = "NewRole",
+                Users = new List<string>()
+            };
+
+            IdentityRole role = identityRole;
+            role.Name = editRoleViewModel.RoleName;
+
+            // Act
+            var result = controller.EditRole(editRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(editRoleViewModel.Id), Times.Once);
+            roleManagerMock.Verify(m => m.UpdateAsync(It.Is<IdentityRole>(x => x.Id == role.Id &&
+                                                                                x.ConcurrencyStamp == role.ConcurrencyStamp &&
+                                                                                x.Name == role.Name)), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+        }
+
+        [Fact]
+        public void EditRole_ValidEditRoleViewModel_UpdateAsyncWithIdentityErrorShouldReturnViewModelWithModelError()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(identityRole));
+            roleManagerMock
+               .Setup(m => m.UpdateAsync(It.IsAny<IdentityRole>()))
+               .Returns(Task.FromResult(IdentityResult.Failed()));
+
+            var editRoleViewModel = new EditRoleViewModel
+            {
+                Id = identityRole.Id,
+                RoleName = "NewRole",
+                Users = new List<string>()
+            };
+
+            IdentityRole role = identityRole;
+            role.Name = editRoleViewModel.RoleName;
+
+            // Act
+            var result = controller.EditRole(editRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(editRoleViewModel.Id), Times.Once);
+            roleManagerMock.Verify(m => m.UpdateAsync(It.Is<IdentityRole>(x => x.Id == role.Id &&
+                                                                                x.ConcurrencyStamp == role.ConcurrencyStamp &&
+                                                                                x.Name == role.Name)), Times.Once);
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editRoleViewModel);
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Role not updated, something went wrong.");
+        }
+
+
         #endregion
     }
 }
