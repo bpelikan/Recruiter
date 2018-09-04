@@ -22,7 +22,7 @@ namespace Recruiter.Tests.Controllers
         private readonly Mock<RoleManager<IdentityRole>> roleManagerMock;
         private readonly Mock<ILogger<AdminController>> iLoggerMock;
 
-        private static readonly ApplicationUser applicationUser = new ApplicationUser
+        private static readonly ApplicationUser applicationUser = new ApplicationUser()
         {
             Id = Guid.NewGuid().ToString(),
             Email = "test@test.com",
@@ -30,7 +30,7 @@ namespace Recruiter.Tests.Controllers
             LastName = "Dumny",
             PhoneNumber = "821654987"
         };
-        private static readonly List<ApplicationUser> applicationUsers = new List<ApplicationUser>
+        private static readonly List<ApplicationUser> applicationUsers = new List<ApplicationUser>()
                                         {
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
@@ -63,7 +63,7 @@ namespace Recruiter.Tests.Controllers
                                                 PhoneNumber = "821639587",
                                                  }
                                         };
-        private static readonly AddUserViewModel addUserViewModel = new AddUserViewModel
+        private static readonly AddUserViewModel addUserViewModel = new AddUserViewModel()
         {
             Email = "test@test.com",
             FirstName = "FirstName",
@@ -87,12 +87,12 @@ namespace Recruiter.Tests.Controllers
             LastName = "Nowak",
             PhoneNumber = "485738456",
         };
-        private static readonly IdentityError identityError = new IdentityError
+        private static readonly IdentityError identityError = new IdentityError()
         {
             Code = "",
             Description = "ErrorDescription"
         };
-        private static readonly List<IdentityRole> identityRoles = new List<IdentityRole>
+        private static readonly List<IdentityRole> identityRoles = new List<IdentityRole>()
                                         {
                                             new IdentityRole {
                                                 Id = Guid.NewGuid().ToString(),
@@ -119,7 +119,9 @@ namespace Recruiter.Tests.Controllers
                                                 NormalizedName = "Role4".Normalize()
                                                  },
                                         };
-
+        private static readonly AddRoleViewModel addRoleViewModel = new AddRoleViewModel() {
+            RoleName = "NewRole"
+        };
 
 
         public AdminControllerTests()
@@ -612,5 +614,94 @@ namespace Recruiter.Tests.Controllers
         }
         #endregion
 
+        #region AddRole() Tests 
+        [Fact]
+        public void AddRole_None_ShouldReturnTypeViewResult()
+        {
+            // Arrange
+
+            // Act
+            var result = controller.AddRole();
+
+            // Assert
+            result.Should().BeOfType<ViewResult>();
+        }
+
+        [Fact]
+        public void AddRole_None_ShouldInvokeViewWithEmptyViewNameParam()
+        {
+
+            // Act
+            var result = controller.AddRole();
+
+            // Assert
+            result.As<ViewResult>().ViewName.Should().BeNull();
+        }
+
+        [Fact]
+        public void AddRole_None_ShouldNotReturnAnyData()
+        {
+            // Arrange
+
+            // Act
+            var result = controller.AddRole();
+
+            // Assert
+            result.As<ViewResult>().ViewData.Model.Should().BeNull();
+        }
+        #endregion
+
+        #region AddRole(AddRoleViewModel addRoleViewModel) Tests
+        [Fact]
+        public void AddRole_ViewModelWithModelError_ShouldReturnViewModel()
+        {
+            // Arrange
+            controller.ModelState.AddModelError("TestModelError", "Model error from tests.");
+
+            // Act
+            var result = controller.AddRole(addRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeOfType<AddRoleViewModel>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addRoleViewModel);
+        }
+
+        [Fact]
+        public void AddRole_ValidViewModel_ShouldRedirectToRoleManagement()
+        {
+            // Arrange
+            roleManagerMock
+                .Setup(m => m.CreateAsync(It.IsAny<IdentityRole>()))
+                .Returns(Task.FromResult(IdentityResult.Success));
+
+            // Act
+            var result = controller.AddRole(addRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.CreateAsync(It.Is<IdentityRole>(x => x.Name == addRoleViewModel.RoleName)), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+        }
+
+        [Fact]
+        public void AddRole_ViewModel_CreateAsyncWithIdentityErrorShouldReturnViewModelWithModelError()
+        {
+            // Arrange
+            roleManagerMock
+                .Setup(m => m.CreateAsync(It.IsAny<IdentityRole>()))
+                .Returns(Task.FromResult(IdentityResult.Failed(identityError)));
+
+            // Act
+            var result = controller.AddRole(addRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.CreateAsync(It.Is<IdentityRole>(x => x.Name == addRoleViewModel.RoleName)), Times.Once);
+            result.Result.As<ViewResult>().ViewName.Should().BeNull();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(addRoleViewModel);
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(identityError.Description);
+        }
+        #endregion
     }
 }

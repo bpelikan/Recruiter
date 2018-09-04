@@ -154,13 +154,13 @@ namespace Recruiter.Controllers
             return View(roles);
         }
 
-        public IActionResult AddNewRole()
+        public IActionResult AddRole()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewRole(AddRoleViewModel addRoleViewModel)
+        public async Task<IActionResult> AddRole(AddRoleViewModel addRoleViewModel)
         {
 
             if (!ModelState.IsValid) return View(addRoleViewModel);
@@ -174,7 +174,7 @@ namespace Recruiter.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction("RoleManagement");
             }
 
             foreach (IdentityError error in result.Errors)
@@ -197,7 +197,6 @@ namespace Recruiter.Controllers
                 RoleName = role.Name,
                 Users = new List<string>()
             };
-
 
             foreach (var user in _userManager.Users)
             {
