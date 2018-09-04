@@ -858,7 +858,75 @@ namespace Recruiter.Tests.Controllers
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editRoleViewModel);
             controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Role not updated, something went wrong.");
         }
+        #endregion
 
+        #region DeleteRole(string id) Tests
+        [Fact]
+        public void DeleteRole_InvalidId_ShouldRedirectToUserManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(null));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteRole(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("This role can't be found.");
+        }
+
+        [Fact]
+        public void DeleteRole_ValidId_DeleteSucceededShouldRedirectToRoleManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(identityRole));
+            roleManagerMock
+              .Setup(m => m.DeleteAsync(It.IsAny<IdentityRole>()))
+              .Returns(Task.FromResult(IdentityResult.Success));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteRole(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            roleManagerMock.Verify(m => m.DeleteAsync(identityRole), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+        }
+
+        [Fact]
+        public void DeleteRole_ValidId_DeleteFailedShouldRedirectToUserManagement()
+        {
+            // Arrange
+            roleManagerMock
+               .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+               .Returns(Task.FromResult<IdentityRole>(identityRole));
+            roleManagerMock
+              .Setup(m => m.DeleteAsync(It.IsAny<IdentityRole>()))
+              .Returns(Task.FromResult(IdentityResult.Failed()));
+
+            var id = Guid.NewGuid().ToString();
+
+            // Act
+            var result = controller.DeleteRole(id);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
+            roleManagerMock.Verify(m => m.DeleteAsync(identityRole), Times.Once);
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Something went wrong while deleting this role.");
+        }
 
         #endregion
     }
