@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.Models;
 using Recruiter.ViewModels;
@@ -17,12 +18,14 @@ namespace Recruiter.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger _logger;
+        private readonly IStringLocalizer<AdminController> _stringLocalizer;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AdminController> logger)
+        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AdminController> logger, IStringLocalizer<AdminController> stringLocalizer)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
+            _stringLocalizer = stringLocalizer;
         }
 
         public IActionResult Index()
@@ -113,7 +116,7 @@ namespace Recruiter.Controllers
                     return RedirectToAction("UserManagement");
                 }
 
-                ModelState.AddModelError("", "User not updated, something went wrong.");
+                ModelState.AddModelError("", _stringLocalizer["User not updated, something went wrong."]);
 
                 return View(user);
             }
@@ -136,12 +139,12 @@ namespace Recruiter.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Something went wrong while deleting this user.");
+                    ModelState.AddModelError("", _stringLocalizer["Something went wrong while deleting this user."]);
                 }
             }
             else
             {
-                ModelState.AddModelError("", "This user can't be found.");
+                ModelState.AddModelError("", _stringLocalizer["This user can't be found."]);
             }
             return RedirectToAction("UserManagement");
         }
@@ -221,7 +224,7 @@ namespace Recruiter.Controllers
                 if (result.Succeeded)
                     return RedirectToAction("RoleManagement");
 
-                ModelState.AddModelError("", "Role not updated, something went wrong.");
+                ModelState.AddModelError("", _stringLocalizer["Role not updated, something went wrong."]);
 
                 return View(editRoleViewModel);
             }
@@ -238,11 +241,11 @@ namespace Recruiter.Controllers
                 var result = await _roleManager.DeleteAsync(role);
                 if (result.Succeeded)
                     return RedirectToAction("RoleManagement");
-                ModelState.AddModelError("", "Something went wrong while deleting this role.");
+                ModelState.AddModelError("", _stringLocalizer["Something went wrong while deleting this role."]);
             }
             else
             {
-                ModelState.AddModelError("", "This role can't be found.");
+                ModelState.AddModelError("", _stringLocalizer["This role can't be found."]);
             }
             return RedirectToAction("RoleManagement");
         }
@@ -278,7 +281,7 @@ namespace Recruiter.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(_stringLocalizer["User not found."]);
             }
 
             var result = await _userManager.AddToRoleAsync(user, role.Name);
@@ -324,7 +327,7 @@ namespace Recruiter.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(_stringLocalizer["User not found."]);
             }
 
             var result = await _userManager.RemoveFromRoleAsync(user, role.Name);
