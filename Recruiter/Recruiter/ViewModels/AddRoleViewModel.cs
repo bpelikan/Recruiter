@@ -8,8 +8,8 @@ namespace Recruiter.ViewModels
 {
     public class AddRoleViewModel
     {
-        [Required]
         [Display(Name = "Role name")]
+        [Required(ErrorMessage = "{0} is required")]
         public string RoleName { get; set; }
     }
 }

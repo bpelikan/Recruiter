@@ -1,14 +1,19 @@
-﻿@model Recruiter.ViewModels.AddRoleViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Recruiter.ViewModels.AddRoleViewModel
 
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "AddNewRole";
+    ViewData["Title"] = Localizer["Add New Role"];
+    ViewData["Create a new role"] = Localizer["Create a new role"];
+    ViewData["Enter the role details below"] = Localizer["Enter the role details below"];
+    ViewData["Create role"] = Localizer["Create role"];
 }
 
-<h2>Create a new role</h2>
+<h2>@ViewData["Create a new role"]</h2>
 
 <form asp-controller="Admin" asp-action="AddRole" method="post" class="form-horizontal" role="form">
-    <h4>Enter the role details below</h4>
+    <h4>@ViewData["Enter the role details below"]</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -22,7 +27,7 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Create role" />
+            <input type="submit" class="btn btn-primary" value="@ViewData["Create role"]" />
         </div>
     </div>
 </form>

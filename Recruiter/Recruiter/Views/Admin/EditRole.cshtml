@@ -1,14 +1,22 @@
-﻿@model Recruiter.ViewModels.EditRoleViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Recruiter.ViewModels.EditRoleViewModel
 
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "EditRole";
+    ViewData["Title"] = Localizer["Edit Role"];
+    ViewData["Edit Role"] = Localizer["Edit Role"];
+    ViewData["Users in this role"] = Localizer["Users in this role"];
+    ViewData["Add users to role"] = Localizer["Add users to role"];
+    ViewData["Remove users from role"] = Localizer["Remove users from role"];
+    ViewData["Save role"] = Localizer["Save role"];
+    ViewData["Cancel"] = Localizer["Cancel"];
 }
 
-<h2>Edit role</h2>
+<h2>@ViewData["Edit Role"]</h2>
 
 <form asp-controller="Admin" asp-action="EditRole" method="post" class="form-horizontal" role="form">
-    <h4>You can change the role details below</h4>
+    <h4>@*You can change the role details below*@</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -30,13 +38,13 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Save role" />
-            <a asp-action="RoleManagement" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="@ViewData["Save role"]" />
+            <a asp-action="RoleManagement" class="btn btn-default">@ViewData["Cancel"]</a>
         </div>
     </div>
 </form>
 
-<h3>Users in this role</h3>
+<h3>@ViewData["Users in this role"]</h3>
 <ul>
     @foreach (var user in Model.Users)
     {
@@ -46,5 +54,5 @@
     }
 </ul>
 
-<a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Add users to role</a>
-<a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-danger">Remove users from role</a>
+<a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">@ViewData["Add users to role"]</a>
+<a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-danger">@ViewData["Remove users from role"]</a>

@@ -1,10 +1,16 @@
-﻿@model Recruiter.ViewModels.EditUserViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Recruiter.ViewModels.EditUserViewModel
+
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "EditUser";
+    ViewData["Title"] = Localizer["Edit User"];
+    ViewData["User edit"] = Localizer["User edit"];
+    ViewData["Save user"] = Localizer["Save user"];
+    ViewData["Cancel"] = Localizer["Cancel"];
 }
 
-<h2>User edit</h2>
+<h2>@ViewData["User edit"]</h2>
 
 <form asp-controller="Admin" asp-action="EditUser" method="post" class="form-horizontal" role="form">
     <hr />
@@ -52,8 +58,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Save user" />
-            <a asp-action="UserManagement" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="@ViewData["Save user"]" />
+            <a asp-action="UserManagement" class="btn btn-default">@ViewData["Cancel"]</a>
         </div>
     </div>
 </form>

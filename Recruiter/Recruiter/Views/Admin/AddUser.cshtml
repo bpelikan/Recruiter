@@ -1,10 +1,16 @@
-﻿@model Recruiter.ViewModels.AddUserViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Recruiter.ViewModels.AddUserViewModel
+
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "AddUser";
+    ViewData["Title"] = Localizer["Add User"];
+    ViewData["Create a new user"] = Localizer["Create a new user"];
+    ViewData["Create"] = Localizer["Create"];
+    ViewData["Cancel"] = Localizer["Cancel"];
 }
 
-<h2>Create a new user</h2>
+<h2>@ViewData["Create a new user"]</h2>
 
 <form asp-controller="Admin" asp-action="AddUser" method="post" class="form-horizontal" role="form">
     <h4>@*Enter the user details below*@</h4>
@@ -53,8 +59,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Create" />
-            <a asp-action="UserManagement" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="@ViewData["Create"]" />
+            <a asp-action="UserManagement" class="btn btn-default">@ViewData["Cancel"]</a>
         </div>
     </div>
 </form>
