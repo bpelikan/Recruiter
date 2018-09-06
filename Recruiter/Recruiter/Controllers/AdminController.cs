@@ -98,6 +98,9 @@ namespace Recruiter.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel editUserViewModel)
         {
+            if (!ModelState.IsValid)
+                return View(editUserViewModel);
+
             var user = await _userManager.FindByIdAsync(editUserViewModel.Id);
 
             if (user != null)
@@ -166,7 +169,8 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> AddRole(AddRoleViewModel addRoleViewModel)
         {
 
-            if (!ModelState.IsValid) return View(addRoleViewModel);
+            if (!ModelState.IsValid)
+                return View(addRoleViewModel);
 
             var role = new IdentityRole
             {
@@ -213,6 +217,9 @@ namespace Recruiter.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRole(EditRoleViewModel editRoleViewModel)
         {
+            if (!ModelState.IsValid)
+                return View(editRoleViewModel);
+
             var role = await _roleManager.FindByIdAsync(editRoleViewModel.Id);
 
             if (role != null)

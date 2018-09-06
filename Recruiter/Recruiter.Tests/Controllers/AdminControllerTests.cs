@@ -415,6 +415,22 @@ namespace Recruiter.Tests.Controllers
         #endregion
 
         #region EditUser(EditUserViewModel editUserViewModel) Tests 
+
+        [Fact]
+        public void EditUser_ViewModelWithModelError_ShouldReturnViewModel()
+        {
+            // Arrange
+            controller.ModelState.AddModelError("TestModelError", "Model error from tests.");
+
+            // Act
+            var result = controller.EditUser(editUserViewModelNew);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeOfType<EditUserViewModel>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editUserViewModelNew);
+        }
+
         [Fact]
         public void EditUser_EditUserViewModelUserNotExist_ShouldRedirectToUserManagement()
         {
@@ -788,6 +804,28 @@ namespace Recruiter.Tests.Controllers
         #endregion
 
         #region EditRole(EditRoleViewModel editRoleViewModel) Tests
+        [Fact]
+        public void EditRole_ViewModelWithModelError_ShouldReturnViewModel()
+        {
+            // Arrange
+            controller.ModelState.AddModelError("TestModelError", "Model error from tests.");
+
+            var editRoleViewModel = new EditRoleViewModel
+            {
+                Id = identityRole.Id,
+                RoleName = identityRole.Name,
+                Users = new List<string>()
+            };
+
+            // Act
+            var result = controller.EditRole(editRoleViewModel);
+
+            // Assert
+            result.Should().BeOfType<Task<IActionResult>>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeOfType<EditRoleViewModel>();
+            result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editRoleViewModel);
+        }
+
         [Fact]
         public void EditRole_EditRoleViewModelRoleNotExist_ShouldRedirectToRoleManagement()
         {
