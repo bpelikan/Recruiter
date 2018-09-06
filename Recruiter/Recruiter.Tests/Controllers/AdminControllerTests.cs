@@ -12,6 +12,7 @@ using Xunit;
 using Recruiter.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Localization;
 
 namespace Recruiter.Tests.Controllers
 {
@@ -21,6 +22,9 @@ namespace Recruiter.Tests.Controllers
         private readonly Mock<UserManager<ApplicationUser>> userManagerMock;
         private readonly Mock<RoleManager<IdentityRole>> roleManagerMock;
         private readonly Mock<ILogger<AdminController>> iLoggerMock;
+        private readonly Mock<IStringLocalizer<AdminController>> stringLocalizerMock;
+
+        private readonly IStringLocalizer<AdminController> _stringLocalizer;
 
         private static readonly ApplicationUser applicationUser = new ApplicationUser()
         {
@@ -135,10 +139,21 @@ namespace Recruiter.Tests.Controllers
             userManagerMock = MockHelpers.MockUserManager<ApplicationUser>();
             roleManagerMock = MockHelpers.MockRoleManager<IdentityRole>();
             iLoggerMock = MockHelpers.MockILogger<AdminController>();
+            stringLocalizerMock = new Mock<IStringLocalizer<AdminController>>();
 
-            controller = new AdminController(userManagerMock.Object, roleManagerMock.Object, iLoggerMock.Object);
+            _stringLocalizer = stringLocalizerMock.Object;
+
+            controller = new AdminController(userManagerMock.Object, roleManagerMock.Object, iLoggerMock.Object, _stringLocalizer);
             //controller.ViewData.ModelState.Clear();
         }
+
+        private void SetLocalizedString(string stringKey)
+        {
+            //var stringKey = key;
+            var localizedString = new LocalizedString(stringKey, stringKey);
+            stringLocalizerMock.Setup(_ => _[stringKey]).Returns(localizedString);
+        }
+
 
         #region Index() Tests  
         [Fact]
@@ -461,6 +476,8 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.UpdateAsync(It.IsAny<ApplicationUser>()))
                .Returns(Task.FromResult(IdentityResult.Failed()));
 
+            SetLocalizedString("User not updated, something went wrong.");
+
             ApplicationUser user = applicationUser;
             user.UserName = editUserViewModelNew.Email.Normalize().ToUpper();
             user.Email = editUserViewModelNew.Email;
@@ -483,7 +500,7 @@ namespace Recruiter.Tests.Controllers
             
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(user);
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("User not updated, something went wrong.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(_stringLocalizer["User not updated, something went wrong."]);
         }
         #endregion
 
@@ -496,6 +513,8 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
                .Returns(Task.FromResult<ApplicationUser>(null));
 
+            SetLocalizedString("This user can't be found.");
+
             var id = Guid.NewGuid().ToString();
 
             // Act
@@ -505,7 +524,7 @@ namespace Recruiter.Tests.Controllers
             result.Should().BeOfType<Task<IActionResult>>();
             userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("This user can't be found.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(_stringLocalizer["This user can't be found."]);
         }
 
         [Fact]
@@ -542,6 +561,8 @@ namespace Recruiter.Tests.Controllers
               .Setup(m => m.DeleteAsync(It.IsAny<ApplicationUser>()))
               .Returns(Task.FromResult(IdentityResult.Failed()));
 
+            SetLocalizedString("Something went wrong while deleting this user.");
+
             var id = Guid.NewGuid().ToString();
 
             // Act
@@ -552,7 +573,7 @@ namespace Recruiter.Tests.Controllers
             userManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             userManagerMock.Verify(m => m.DeleteAsync(applicationUser), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Something went wrong while deleting this user.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(_stringLocalizer["Something went wrong while deleting this user."]);
         }
         #endregion
 
@@ -835,6 +856,8 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.UpdateAsync(It.IsAny<IdentityRole>()))
                .Returns(Task.FromResult(IdentityResult.Failed()));
 
+            SetLocalizedString("Role not updated, something went wrong.");
+
             var editRoleViewModel = new EditRoleViewModel
             {
                 Id = identityRole.Id,
@@ -856,7 +879,7 @@ namespace Recruiter.Tests.Controllers
                                                                                 x.Name == role.Name)), Times.Once);
             result.Result.As<ViewResult>().ViewName.Should().BeNull();
             result.Result.As<ViewResult>().ViewData.Model.Should().BeEquivalentTo(editRoleViewModel);
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Role not updated, something went wrong.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(_stringLocalizer["Role not updated, something went wrong."]);
         }
         #endregion
 
@@ -869,6 +892,8 @@ namespace Recruiter.Tests.Controllers
                .Setup(m => m.FindByIdAsync(It.IsAny<string>()))
                .Returns(Task.FromResult<IdentityRole>(null));
 
+            SetLocalizedString("This role can't be found.");
+
             var id = Guid.NewGuid().ToString();
 
             // Act
@@ -878,7 +903,7 @@ namespace Recruiter.Tests.Controllers
             result.Should().BeOfType<Task<IActionResult>>();
             roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("This role can't be found.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(stringLocalizerMock.Object["This role can't be found."]);
         }
 
         [Fact]
@@ -915,6 +940,8 @@ namespace Recruiter.Tests.Controllers
               .Setup(m => m.DeleteAsync(It.IsAny<IdentityRole>()))
               .Returns(Task.FromResult(IdentityResult.Failed()));
 
+            SetLocalizedString("Something went wrong while deleting this role.");
+
             var id = Guid.NewGuid().ToString();
 
             // Act
@@ -925,7 +952,7 @@ namespace Recruiter.Tests.Controllers
             roleManagerMock.Verify(m => m.FindByIdAsync(id), Times.Once);
             roleManagerMock.Verify(m => m.DeleteAsync(identityRole), Times.Once);
             result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("RoleManagement");
-            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo("Something went wrong while deleting this role.");
+            controller.ViewData.ModelState.Root.Errors[0].ErrorMessage.Should().BeEquivalentTo(_stringLocalizer["Something went wrong while deleting this role."]);
         }
 
         #endregion
