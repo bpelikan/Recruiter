@@ -13,22 +13,22 @@ namespace Recruiter.Data
         public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             SeedRoles(roleManager);
-            SeedUsers(userManager, configuration);
+            SeedUsers(userManager, configuration["AdminEmail"], configuration["AdminPassword"]);
         }
 
-        public static void SeedUsers(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public static void SeedUsers(UserManager<ApplicationUser> userManager, string adminEmail, string adminPassword)
         {
             if (userManager.FindByEmailAsync("admin@admin.com").Result == null)
             {
                 var user = new ApplicationUser()
                 {
-                    Email = "admin@admin.com",
-                    UserName = "admin@admin.com".Normalize().ToUpper(),
+                    Email = adminEmail,
+                    UserName = adminEmail.Normalize().ToUpper(),
                     FirstName = "Admin",
                     LastName = "Admin"
                 };
 
-                IdentityResult result = userManager.CreateAsync(user, configuration["AdminPassword"]).Result;
+                IdentityResult result = userManager.CreateAsync(user, adminPassword).Result;
 
                 if (result.Succeeded)
                 {
