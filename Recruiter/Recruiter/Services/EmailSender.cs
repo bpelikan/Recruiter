@@ -36,11 +36,11 @@ namespace Recruiter.Services
             };
             msg.AddTo(new EmailAddress(email));
 
-            // Disable click tracking.
+            // Enable click tracking.
             // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
             msg.TrackingSettings = new TrackingSettings
             {
-                ClickTracking = new ClickTracking { Enable = false }
+                ClickTracking = new ClickTracking { Enable = true }
             };
 
             return client.SendEmailAsync(msg);
