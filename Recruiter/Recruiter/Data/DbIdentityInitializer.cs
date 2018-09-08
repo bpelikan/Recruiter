@@ -23,10 +23,11 @@ namespace Recruiter.Data
                 var user = new ApplicationUser()
                 {
                     Email = adminEmail,
-                    UserName = adminEmail.Normalize().ToUpper(),
+                    UserName = adminEmail,
                     FirstName = "Admin",
                     LastName = "Admin",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    CreatedAt = DateTime.Now
                 };
 
                 IdentityResult result = userManager.CreateAsync(user, adminPassword).Result;

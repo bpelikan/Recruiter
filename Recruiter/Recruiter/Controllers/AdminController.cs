@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.Models;
-using Recruiter.ViewModels;
+using Recruiter.Models.AdminViewModels;
 
 namespace Recruiter.Controllers
 {
@@ -57,7 +57,8 @@ namespace Recruiter.Controllers
                 Email = addUserViewModel.Email,
                 FirstName = addUserViewModel.FirstName,
                 LastName = addUserViewModel.LastName,
-                PhoneNumber = addUserViewModel.PhoneNumber
+                PhoneNumber = addUserViewModel.PhoneNumber,
+                CreatedAt = DateTime.Now
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, addUserViewModel.Password);
