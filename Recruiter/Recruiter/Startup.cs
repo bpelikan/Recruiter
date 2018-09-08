@@ -34,13 +34,10 @@ namespace Recruiter
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>( config => {
-                    config.SignIn.RequireConfirmedEmail = true;
+                    config.SignIn.RequireConfirmedEmail = false;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
             services
@@ -62,6 +59,9 @@ namespace Recruiter
                     opts.SupportedCultures = supportedCultures;
                     opts.SupportedUICultures = supportedCultures;
                 });
+
+            // Add application services.
+            services.AddTransient<IEmailSender, FakeEmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
