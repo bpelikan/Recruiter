@@ -9,5 +9,6 @@ What you need:
     * `"ConnectionStrings:DefaultConnection": "{connection_string_to_sql_database}"`
     * `"AdminEmail": "{email_for_admin_account}"`
     * `"AdminPassword": "{password_for_admin_account}"`
+    * `"SendGridKey": "{SendGrid_API_Key}"`
 
 * **SQL database**
