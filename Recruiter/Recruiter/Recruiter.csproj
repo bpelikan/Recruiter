@@ -8,6 +8,17 @@
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20180908203010_TestMigration.cs" />
+    <Compile Remove="Data\Migrations\20180908203010_TestMigration.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180908215345_TestTest.cs" />
+    <Compile Remove="Data\Migrations\20180908215345_TestTest.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180908221256_TestTest.cs" />
+    <Compile Remove="Data\Migrations\20180908221256_TestTest.Designer.cs" />
+    <Compile Remove="Data\Migrations\20180908224322_TestTest.cs" />
+    <Compile Remove="Data\Migrations\20180908224322_TestTest.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
@@ -52,6 +63,18 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Admin\UserManagement.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\Components\AdminMenu\Default.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_Layout.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_LoginPartial.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Shared\_SelectLanguagePartial.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>

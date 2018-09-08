@@ -9,10 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using Recruiter.ViewModels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Localization;
+using Recruiter.Models.AdminViewModels;
 
 namespace Recruiter.Tests.Controllers
 {
@@ -40,31 +40,31 @@ namespace Recruiter.Tests.Controllers
                                                 Id = Guid.NewGuid().ToString(),
                                                 FirstName = "Kamil",
                                                 LastName = "Dumny",
-                                                PhoneNumber = "321654987",
+                                                PhoneNumber = "321654987"
                                                  },
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
                                                 FirstName = "Jan",
                                                 LastName = "Kowalski",
-                                                PhoneNumber = "123456789",
+                                                PhoneNumber = "123456789"
                                                  },
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
                                                 FirstName = "Adam",
                                                 LastName = "Miskiewisz",
-                                                PhoneNumber = "789678567",
+                                                PhoneNumber = "789678567"
                                                 },
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
                                                 FirstName = "Dorota",
                                                 LastName = "Polak",
-                                                PhoneNumber = "345678987",
+                                                PhoneNumber = "345678987"
                                                  },
                                             new ApplicationUser {
                                                 Id = Guid.NewGuid().ToString(),
                                                 FirstName = "Adam",
                                                 LastName = "Romilak",
-                                                PhoneNumber = "821639587",
+                                                PhoneNumber = "821639587"
                                                  }
                                         };
         private static readonly AddUserViewModel addUserViewModel = new AddUserViewModel()
