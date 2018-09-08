@@ -25,7 +25,8 @@ namespace Recruiter.Data
                     Email = adminEmail,
                     UserName = adminEmail.Normalize().ToUpper(),
                     FirstName = "Admin",
-                    LastName = "Admin"
+                    LastName = "Admin",
+                    EmailConfirmed = true
                 };
 
                 IdentityResult result = userManager.CreateAsync(user, adminPassword).Result;
