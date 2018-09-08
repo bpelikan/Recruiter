@@ -8,6 +8,17 @@ namespace Recruiter.Models.AccountViewModels
 {
     public class RegisterViewModel
     {
+        [Display(Name = "First name")]
+        [Required(ErrorMessage = "{0} is required")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last name")]
+        [Required(ErrorMessage = "{0} is required")]
+        public string LastName { get; set; }
+
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
