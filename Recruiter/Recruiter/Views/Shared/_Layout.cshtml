@@ -1,18 +1,9 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @*@using Microsoft.AspNetCore.Authorization*@
-
-@inject IViewLocalizer Localizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @*@inject IAuthorizationService AuthorizationService*@
 @inject UserManager<ApplicationUser> UserManager
-
-@{
-    ViewData["Home"] = Localizer["Home"];
-    ViewData["About"] = Localizer["About"];
-    ViewData["Contact"] = Localizer["Contact"];
-}
 
 <!DOCTYPE html>
 <html>
@@ -47,9 +38,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">@ViewData["Home"]</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">@ViewData["About"]</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">@ViewData["Contact"]</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     @*<li><a asp-controller="Admin" asp-action="UserManagement">UserManagement</a></li>*@
                     @if (SignInManager.IsSignedIn(User))
                     {

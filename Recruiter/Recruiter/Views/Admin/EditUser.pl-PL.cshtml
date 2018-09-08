@@ -1,10 +1,10 @@
 ﻿@model Recruiter.ViewModels.EditUserViewModel
 
 @{
-    ViewData["Title"] = "Edit User";
+    ViewData["Title"] = "Edyja użytkownika";
 }
 
-<h2>User edit</h2>
+<h2>Edyja użytkownika</h2>
 
 <form asp-controller="Admin" asp-action="EditUser" method="post" class="form-horizontal" role="form">
     <hr />
@@ -52,8 +52,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Save" />
-            <a asp-action="UserManagement" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="Zapisz" />
+            <a asp-action="UserManagement" class="btn btn-default">Anuluj</a>
         </div>
     </div>
 </form>

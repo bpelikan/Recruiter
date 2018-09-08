@@ -1,13 +1,13 @@
 ﻿@model Recruiter.ViewModels.AddRoleViewModel
 
 @{
-    ViewData["Title"] = "Add New Role";
+    ViewData["Title"] = "Nowa rola";
 }
 
-<h2>Create a new role</h2>
+<h2>Utwórz nową rolę</h2>
 
 <form asp-controller="Admin" asp-action="AddRole" method="post" class="form-horizontal" role="form">
-    <h4>Enter the role details below</h4>
+    <h4>@*Enter the role details below*@</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
 
@@ -21,7 +21,7 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Create role" />
+            <input type="submit" class="btn btn-primary" value="Utwórz" />
         </div>
     </div>
 </form>

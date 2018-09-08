@@ -1,10 +1,10 @@
 ﻿@model Recruiter.ViewModels.EditRoleViewModel
 
 @{
-    ViewData["Title"] = "Edit Role";
+    ViewData["Title"] = "Edycja roli";
 }
 
-<h2>Edit Role</h2>
+<h2>Edycja roli</h2>
 
 <form asp-controller="Admin" asp-action="EditRole" method="post" class="form-horizontal" role="form">
     <h4>@*You can change the role details below*@</h4>
@@ -29,13 +29,13 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Save" />
-            <a asp-action="RoleManagement" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="Zapisz" />
+            <a asp-action="RoleManagement" class="btn btn-default">Anuluj</a>
         </div>
     </div>
 </form>
 
-<h3>Users in this role</h3>
+<h3>Użytkownicy w roli</h3>
 <ul>
     @foreach (var user in Model.Users)
     {
@@ -45,5 +45,5 @@
     }
 </ul>
 
-<a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Add users to role</a>
-<a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-danger">Remove users from role</a>
+<a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Dodaj użytkownika do roli</a>
+<a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-danger">Usuń użytkownika z roli</a>
