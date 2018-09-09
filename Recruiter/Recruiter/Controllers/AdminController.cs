@@ -384,7 +384,7 @@ namespace Recruiter.Controllers
 
         private IActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (returnUrl != null && Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }

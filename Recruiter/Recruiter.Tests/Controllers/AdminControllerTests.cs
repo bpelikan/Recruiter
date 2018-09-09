@@ -467,7 +467,7 @@ namespace Recruiter.Tests.Controllers
             user.PhoneNumber = editUserViewModelNew.PhoneNumber;
             
             // Act
-            var result = controller.EditUser(editUserViewModelNew);
+            var result = controller.EditUser(editUserViewModelNew, null);
 
             // Assert
             result.Should().BeOfType<Task<IActionResult>>();
@@ -478,7 +478,8 @@ namespace Recruiter.Tests.Controllers
                                                                                 x.FirstName == user.FirstName &&
                                                                                 x.LastName == user.LastName &&
                                                                                 x.PhoneNumber == user.PhoneNumber)), Times.Once);
-            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("UserManagement");
+            result.Result.As<RedirectToActionResult>().ActionName.Should().BeEquivalentTo("Index");
+            result.Result.As<RedirectToActionResult>().ControllerName.Should().BeEquivalentTo("Home");
         }
 
         [Fact]
