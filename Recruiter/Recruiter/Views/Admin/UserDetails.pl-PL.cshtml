@@ -51,11 +51,18 @@
     <form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">
         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
         {
-            <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id">Edytuj</a>
+            <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edytuj</a>
             <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');" class="btn btn-sm btn-danger">
                 Usuń
             </button>
         }
-        <a class="btn btn-sm btn-default" asp-action="UserManagement">Wróć</a>
+        @if (ViewData["ReturnUrl"] != null)
+        {
+            <a asp- class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+        }
+        else
+        {
+            <a asp- class="btn btn-sm btn-default" asp-action="UserManagement">Wróć</a>
+        }
     </form>
 </div>
