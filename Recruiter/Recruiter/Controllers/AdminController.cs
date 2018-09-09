@@ -45,8 +45,10 @@ namespace Recruiter.Controllers
             return View();
         }
 
-        public async Task<IActionResult> UserDetails(string id)
+        public async Task<IActionResult> UserDetails(string id, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+            
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
@@ -98,8 +100,9 @@ namespace Recruiter.Controllers
             return View(addUserViewModel);
         }
 
-        public async Task<IActionResult> EditUser(string id)
+        public async Task<IActionResult> EditUser(string id, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
@@ -118,8 +121,9 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(EditUserViewModel editUserViewModel)
+        public async Task<IActionResult> EditUser(EditUserViewModel editUserViewModel, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid)
                 return View(editUserViewModel);
 
@@ -138,7 +142,8 @@ namespace Recruiter.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User changed successfully.");
-                    return RedirectToAction(nameof(AdminController.UserDetails), "Admin", new { id = user.Id });
+                    //return RedirectToAction(nameof(AdminController.UserDetails), "Admin", new { id = user.Id });
+                    return RedirectToLocal(returnUrl);
                 }
 
                 ModelState.AddModelError("", _stringLocalizer["User not updated, something went wrong."]);
@@ -375,5 +380,20 @@ namespace Recruiter.Controllers
         }
         #endregion
 
+        #region Helpers
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+        }
+
+        #endregion
     }
 }
