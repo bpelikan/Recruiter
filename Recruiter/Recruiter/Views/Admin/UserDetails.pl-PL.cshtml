@@ -1,0 +1,61 @@
+﻿@model Recruiter.Models.AdminViewModels.UserDetailsViewModel
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Szczegóły użytkownika";
+}
+
+<h2>Szczegóły użytkownika</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+            @if (Model.EmailConfirmed)
+            {
+                <span class="glyphicon glyphicon-ok"></span>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+    </dl>
+</div>
+<div>
+    <form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">
+        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
+        {
+            <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id">Edytuj</a>
+            <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');" class="btn btn-sm btn-danger">
+                Usuń
+            </button>
+        }
+        <a class="btn btn-sm btn-default" asp-action="UserManagement">Wróć</a>
+    </form>
+</div>

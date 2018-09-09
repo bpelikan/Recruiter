@@ -45,6 +45,27 @@ namespace Recruiter.Controllers
             return View();
         }
 
+        public async Task<IActionResult> UserDetails(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return RedirectToAction(nameof(AdminController.UserManagement));
+
+            var vm = new UserDetailsViewModel()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                PhoneNumber = user.PhoneNumber,
+                CreatedAt = user.CreatedAt
+            };
+
+            return View(vm);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserViewModel addUserViewModel)
         {
@@ -66,7 +87,7 @@ namespace Recruiter.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User added successfully.");
-                return RedirectToAction("UserManagement");
+                return RedirectToAction(nameof(AdminController.UserManagement));
             }
 
             foreach (IdentityError error in result.Errors)
@@ -82,7 +103,7 @@ namespace Recruiter.Controllers
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
-                return RedirectToAction("UserManagement");
+                return RedirectToAction(nameof(AdminController.UserManagement));
 
             var vm = new EditUserViewModel()
             {
@@ -117,7 +138,7 @@ namespace Recruiter.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User changed successfully.");
-                    return RedirectToAction("UserManagement");
+                    return RedirectToAction(nameof(AdminController.UserDetails), "Admin", new { id = user.Id });
                 }
 
                 ModelState.AddModelError("", _stringLocalizer["User not updated, something went wrong."]);
@@ -125,7 +146,7 @@ namespace Recruiter.Controllers
                 return View(user);
             }
 
-            return RedirectToAction("UserManagement");
+            return RedirectToAction(nameof(AdminController.UserManagement));
         }
 
         [HttpPost]
@@ -139,7 +160,7 @@ namespace Recruiter.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User deleted successfully.");
-                    return RedirectToAction("UserManagement");
+                    return RedirectToAction(nameof(AdminController.UserManagement));
                 }
                 else
                 {
@@ -150,7 +171,7 @@ namespace Recruiter.Controllers
             {
                 ModelState.AddModelError("", _stringLocalizer["This user can't be found."]);
             }
-            return RedirectToAction("UserManagement");
+            return RedirectToAction(nameof(AdminController.UserManagement));
         }
         #endregion
 
@@ -182,7 +203,7 @@ namespace Recruiter.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("RoleManagement");
+                return RedirectToAction(nameof(AdminController.RoleManagement));
             }
 
             foreach (IdentityError error in result.Errors)
@@ -197,7 +218,7 @@ namespace Recruiter.Controllers
             var role = await _roleManager.FindByIdAsync(id);
 
             if (role == null)
-                return RedirectToAction("RoleManagement");
+                return RedirectToAction(nameof(AdminController.RoleManagement));
 
             var editRoleViewModel = new EditRoleViewModel
             {
@@ -230,14 +251,14 @@ namespace Recruiter.Controllers
                 var result = await _roleManager.UpdateAsync(role);
 
                 if (result.Succeeded)
-                    return RedirectToAction("RoleManagement");
+                    return RedirectToAction(nameof(AdminController.RoleManagement));
 
                 ModelState.AddModelError("", _stringLocalizer["Role not updated, something went wrong."]);
 
                 return View(editRoleViewModel);
             }
 
-            return RedirectToAction("RoleManagement");
+            return RedirectToAction(nameof(AdminController.RoleManagement));
         }
 
         [HttpPost]
@@ -248,14 +269,14 @@ namespace Recruiter.Controllers
             {
                 var result = await _roleManager.DeleteAsync(role);
                 if (result.Succeeded)
-                    return RedirectToAction("RoleManagement");
+                    return RedirectToAction(nameof(AdminController.RoleManagement));
                 ModelState.AddModelError("", _stringLocalizer["Something went wrong while deleting this role."]);
             }
             else
             {
                 ModelState.AddModelError("", _stringLocalizer["This role can't be found."]);
             }
-            return RedirectToAction("RoleManagement");
+            return RedirectToAction(nameof(AdminController.RoleManagement));
         }
         #endregion
 
@@ -266,7 +287,7 @@ namespace Recruiter.Controllers
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
 
             var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
 
@@ -296,7 +317,7 @@ namespace Recruiter.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
             }
 
             foreach (IdentityError error in result.Errors)
@@ -312,7 +333,7 @@ namespace Recruiter.Controllers
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
 
             var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
 
@@ -342,7 +363,7 @@ namespace Recruiter.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction("RoleManagement", _roleManager.Roles);
+                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
             }
 
             foreach (IdentityError error in result.Errors)

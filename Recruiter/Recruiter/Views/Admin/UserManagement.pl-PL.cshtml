@@ -15,7 +15,6 @@ else
     <table class="table table-condensed table-bordered" header header-content="User Management">
         <tr>
             <th>ID użytkownika</th>
-            <th>Czas utworzenia</th>
             <th>Imię i nazwisko</th>
             <th>Email</th>
             <th>Numer telefonu</th>
@@ -26,12 +25,12 @@ else
         {
             <tr>
                 <td>@user.Id</td>
-                <td>@user.CreatedAt</td>
                 <td>@user.FirstAndLastName</td>
                 <td>@user.Email</td>
                 <td>@user.PhoneNumber</td>
                 <td>
                     <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post">
+                        <a class="btn btn-sm btn-default" asp-action="UserDetails" asp-route-id="@user.Id">Szczegóły</a>
                         <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@user.Id">Edytuj</a>
                         <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć użytkownika?');" class="btn btn-sm btn-danger">
                             Usuń
