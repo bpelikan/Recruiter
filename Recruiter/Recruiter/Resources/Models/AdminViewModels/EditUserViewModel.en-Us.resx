@@ -129,6 +129,9 @@
   <data name="The email address is not entered in a correct format" xml:space="preserve">
     <value>The email address is not entered in a correct format</value>
   </data>
+  <data name="The {0} field is not a valid e-mail address." xml:space="preserve">
+    <value>The {0} field is not a valid e-mail address.</value>
+  </data>
   <data name="{0} is required" xml:space="preserve">
     <value>{0} is required</value>
   </data>
