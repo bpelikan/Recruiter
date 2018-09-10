@@ -1,7 +1,8 @@
 # Recruiter
 [![Build Status](https://bpelikan.visualstudio.com/Recruiter/_apis/build/status/Recruiter-master-CI)](https://bpelikan.visualstudio.com/Recruiter/_build/latest?definitionId=2)
 * **Web App**, 
-* **SQL database**
+* **SQL database**,
+* **Storage account**
 ## Setting up
 What you need:
 * **Web App** with:
