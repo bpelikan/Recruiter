@@ -28,10 +28,7 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Email)
-            @if (Model.EmailConfirmed)
-            {
-                <span class="glyphicon glyphicon-ok"></span>
-            }
+            <span condition="Model.EmailConfirmed" class="glyphicon glyphicon-ok"></span>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -48,21 +45,13 @@
     </dl>
 </div>
 <div>
+    @*<form condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")" asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">*@
     <form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">
-        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Administrator"))
-        {
-            <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
-            <button type="submit" onclick="return confirm('Do you really want to delete this user?');" class="btn btn-sm btn-danger">
-                Delete
-            </button>
-        }
-        @if (ViewData["ReturnUrl"] != null)
-        {
-            <a asp- class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-        }
-        else
-        {
-            <a asp- class="btn btn-sm btn-default" asp-action="UserManagement">Back</a>
-        }
+        <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
+        <button type="submit" onclick="return confirm('Do you really want to delete this user?');" class="btn btn-sm btn-danger">
+            Delete
+        </button>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="UserManagement">Back</a>
     </form>
 </div>
