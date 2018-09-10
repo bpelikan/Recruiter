@@ -15,3 +15,5 @@ What you need:
     * `"blobKeyValue": "{blob_access_key}"`
 
 * **SQL database**
+* **Storage account** with:
+  * `Blobs Container` named `cvstorage`
