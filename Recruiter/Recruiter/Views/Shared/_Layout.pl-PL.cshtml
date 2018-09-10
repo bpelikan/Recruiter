@@ -42,6 +42,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">O stronie</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontakt</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")">@await Component.InvokeAsync("AdminMenu")</li>
+                    <li condition="@SignInManager.IsSignedIn(User) && !@User.IsInRole("Administrator")"><a asp-area="" asp-controller="Cv" asp-action="Index">Upload CV</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

@@ -62,6 +62,7 @@ namespace Recruiter
 
             // Add application services.
             services.AddTransient<IEmailSender, FakeEmailSender>();
+            services.AddSingleton<ICvStorage, CvStorage>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

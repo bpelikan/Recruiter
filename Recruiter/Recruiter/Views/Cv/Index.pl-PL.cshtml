@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Wyślij CV";
+}
+
+ <h2>Wyślij CV</h2>
+ <form method="post" enctype="multipart/form-data" asp-action="Upload">
+    <input type="file" name="cv" />
+    <hr />
+    <input class="btn btn-primary" type="submit" value="Wyślij" />
+</form> 
