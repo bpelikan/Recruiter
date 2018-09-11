@@ -1,0 +1,37 @@
+﻿@model Recruiter.Models.ApplicationViewModels.ShowApplicationViewModel
+
+@{
+    ViewData["Title"] = "Application";
+}
+
+<h2>Your application</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CvUri)
+        </dt>
+        <dd>
+            <a href="@Model.CvUri" target="_blank">Click to view CV</a>
+        </dd>
+    </dl>
+</div>

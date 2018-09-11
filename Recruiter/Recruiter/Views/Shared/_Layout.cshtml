@@ -41,13 +41,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && !@User.IsInRole("Administrator")"><a asp-area="" asp-controller="Application" asp-action="Add">Application</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")">@await Component.InvokeAsync("AdminMenu")</li>
                     <li condition="@SignInManager.IsSignedIn(User) && !@User.IsInRole("Administrator")"><a asp-area="" asp-controller="Cv" asp-action="Index">Upload CV</a></li>
-    
-    @*@if (SignInManager.IsSignedIn(User))
-                    {
-                        @await Component.InvokeAsync("AdminMenu")
-                    }*@
+
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

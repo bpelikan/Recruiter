@@ -40,15 +40,10 @@ namespace Recruiter.Controllers
             return View(users);
         }
 
-        public IActionResult AddUser()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> UserDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            
+
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
@@ -66,6 +61,11 @@ namespace Recruiter.Controllers
             };
 
             return View(vm);
+        }
+
+        public IActionResult AddUser()
+        {
+            return View();
         }
 
         [HttpPost]

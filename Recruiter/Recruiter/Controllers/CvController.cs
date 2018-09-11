@@ -36,6 +36,7 @@ namespace Recruiter.Controllers
             }
             return View();
         }
+
         public ActionResult Show(string id)
         {
             var model = new ShowModel { Uri = cvStorage.UriFor(id) };
