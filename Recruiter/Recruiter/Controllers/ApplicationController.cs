@@ -40,12 +40,12 @@ namespace Recruiter.Controllers
 
             if (cv != null)
             {
+                var userId = _userManager.GetUserId(HttpContext.User);
                 using (var stream = cv.OpenReadStream())
                 {
-                    var pdfId = await cvStorage.SaveCv(stream);
+                    var pdfId = await cvStorage.SaveCv(stream, userId);
                     addApplicationViewModel.CvId = pdfId;
-
-                    addApplicationViewModel.UserId = _userManager.GetUserId(HttpContext.User);
+                    addApplicationViewModel.UserId = userId;
 
                     //return RedirectToAction("Show", new { id = pdfId });
                     return RedirectToAction(nameof(ApplicationController.Show), addApplicationViewModel);
