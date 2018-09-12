@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using Recruiter.Repositories;
 
 namespace Recruiter
 {
@@ -63,6 +64,8 @@ namespace Recruiter
             // Add application services.
             services.AddTransient<IEmailSender, FakeEmailSender>();
             services.AddSingleton<ICvStorage, CvStorage>();
+            services.AddScoped<IJobPositionRepository, InMemoryJobPositionRepository>();
+            services.AddScoped<IJobPositionService, JobPositionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

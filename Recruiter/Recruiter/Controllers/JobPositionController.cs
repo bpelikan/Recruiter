@@ -5,25 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Recruiter.Data;
 using Recruiter.Models.JobPositionViewModels;
+using Recruiter.Services;
 
 namespace Recruiter.Controllers
 {
     public class JobPositionController : Controller
     {
+        private readonly IJobPositionService _jobPositionService;
 
-        private readonly ApplicationDbContext _context;
-
-        public JobPositionController(ApplicationDbContext context)
+        public JobPositionController(IJobPositionService jobPositionService)
         {
-            _context = context;
+            _jobPositionService = jobPositionService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var jobpositions = _context.JobPositions;
+            var jobpositions = await _jobPositionService.GetAllAsync();
             return View(jobpositions);
         }
-
-        
     }
 }
