@@ -15,6 +15,8 @@ namespace Recruiter.Data
         {
         }
 
+        public DbSet<JobPosition> JobPositions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

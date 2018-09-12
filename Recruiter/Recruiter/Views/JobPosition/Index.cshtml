@@ -1,0 +1,31 @@
+﻿@model IEnumerable<JobPosition>
+
+@{
+    ViewData["Title"] = "Job Positions";
+}
+
+<h2>Job Positions</h2>
+
+@if (!Model.Any())
+{
+    <tr><td colspan="3" class="text-center">No job posotion</td></tr>
+}
+else
+{
+    <table class="table table-condensed table-bordered" header header-content="Job position management">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+
+        @foreach (JobPosition jobPosition in Model)
+        {
+            <tr>
+                <td>@jobPosition.Id</td>
+                <td>@jobPosition.Name</td>
+                <td>@jobPosition.Description</td>
+            </tr>
+        }
+    </table>
+}

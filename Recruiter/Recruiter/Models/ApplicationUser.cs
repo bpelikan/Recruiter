@@ -18,5 +18,7 @@ namespace Recruiter.Models
         {
             get { return FirstName + " " + LastName; }
         }
+
+        public virtual ICollection<Application> Applications { get; set; }
     }
 }
