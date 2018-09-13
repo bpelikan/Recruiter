@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,15 @@ namespace Recruiter.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger _logger;
         private readonly IStringLocalizer<AdminController> _stringLocalizer;
+        private readonly IMapper _mapper;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AdminController> logger, IStringLocalizer<AdminController> stringLocalizer)
+        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AdminController> logger, IStringLocalizer<AdminController> stringLocalizer, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
             _stringLocalizer = stringLocalizer;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -49,16 +52,7 @@ namespace Recruiter.Controllers
             if (user == null)
                 return RedirectToAction(nameof(AdminController.UserManagement));
 
-            var vm = new UserDetailsViewModel()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                EmailConfirmed = user.EmailConfirmed,
-                PhoneNumber = user.PhoneNumber,
-                CreatedAt = user.CreatedAt
-            };
+            var vm = _mapper.Map<ApplicationUser, UserDetailsViewModel>(user);
 
             return View(vm);
         }
@@ -108,14 +102,7 @@ namespace Recruiter.Controllers
             if (user == null)
                 return RedirectToAction(nameof(AdminController.UserManagement));
 
-            var vm = new EditUserViewModel()
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-            };
+            var vm = _mapper.Map<ApplicationUser, EditUserViewModel>(user);
 
             return View(vm);
         }
@@ -224,7 +211,7 @@ namespace Recruiter.Controllers
 
             if (role == null)
                 return RedirectToAction(nameof(AdminController.RoleManagement));
-
+            
             var editRoleViewModel = new EditRoleViewModel
             {
                 Id = role.Id,

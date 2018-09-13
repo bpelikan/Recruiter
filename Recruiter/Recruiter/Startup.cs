@@ -16,6 +16,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Recruiter.Repositories;
+using AutoMapper;
 
 namespace Recruiter
 {
@@ -39,6 +40,8 @@ namespace Recruiter
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAutoMapper();
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
             services
