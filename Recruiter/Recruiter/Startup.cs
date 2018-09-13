@@ -67,7 +67,7 @@ namespace Recruiter
             // Add application services.
             services.AddTransient<IEmailSender, FakeEmailSender>();
             services.AddSingleton<ICvStorage, CvStorage>();
-            services.AddScoped<IJobPositionRepository, InMemoryJobPositionRepository>();
+            services.AddScoped<IJobPositionRepository, JobPositionRepository>();
             services.AddScoped<IJobPositionService, JobPositionService>();
         }
 

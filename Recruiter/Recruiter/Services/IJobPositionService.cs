@@ -1,4 +1,5 @@
 ﻿using Recruiter.Models;
+using Recruiter.Models.JobPositionViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,8 @@ namespace Recruiter.Services
 {
     public interface IJobPositionService
     {
-        Task<IEnumerable<JobPosition>> GetAllAsync();
-        Task<JobPosition> GetAsync(string id);
+        Task<IEnumerable<JobPositionViewModel>> GetAllAsync();
+        Task<JobPositionViewModel> GetAsync(string id);
+        Task<string> AddAsync(AddJobPositionViewModel addJobPositionViewModel);
     }
 }

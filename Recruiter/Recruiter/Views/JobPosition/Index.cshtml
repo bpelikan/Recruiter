@@ -1,10 +1,13 @@
-﻿@model IEnumerable<JobPosition>
+﻿@using Recruiter.Models.JobPositionViewModels
+@model IEnumerable<JobPositionViewModel>
 
 @{
     ViewData["Title"] = "Job Positions";
 }
 
 <h2>Job Positions</h2>
+
+<a class="btn btn-sm btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add</a>
 
 @if (!Model.Any())
 {
@@ -17,14 +20,24 @@ else
             <th>Id</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Akcje</th>
         </tr>
 
-        @foreach (JobPosition jobPosition in Model)
+        @foreach (JobPositionViewModel jobPosition in Model)
         {
             <tr>
                 <td>@jobPosition.Id</td>
                 <td>@jobPosition.Name</td>
                 <td>@jobPosition.Description</td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@jobPosition.Id" method="post">
+                        <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
+                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
+                        <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                </td>
             </tr>
         }
     </table>

@@ -12,6 +12,6 @@ namespace Recruiter.Repositories
         Task<IEnumerable<JobPosition>> GetAllAsync();
         Task AddAsync(JobPosition jobPosition);
         Task UpdateAsync(JobPosition jobPosition);
-        Task RemoveAsync(string id);
+        Task RemoveAsync(JobPosition jobPosition);
     }
 }

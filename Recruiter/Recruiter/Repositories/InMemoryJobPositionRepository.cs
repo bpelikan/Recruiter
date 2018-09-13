@@ -59,5 +59,11 @@ namespace Recruiter.Repositories
             _jobPositions.Remove(jobPosition);
             await Task.CompletedTask;
         }
+
+        public async Task RemoveAsync(JobPosition jobPosition)
+        {
+            _jobPositions.Remove(jobPosition);
+            await Task.CompletedTask;
+        }
     }
 }
