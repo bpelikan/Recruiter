@@ -6,9 +6,9 @@
 }
 
 <h2>Job Positions</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <a class="btn btn-sm btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add</a>
-
 @if (!Model.Any())
 {
     <tr><td colspan="3" class="text-center">No job posotion</td></tr>

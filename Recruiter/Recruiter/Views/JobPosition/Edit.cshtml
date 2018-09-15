@@ -1,15 +1,23 @@
-﻿@model Recruiter.Models.JobPositionViewModels.AddJobPositionViewModel
+﻿@model Recruiter.Models.JobPositionViewModels.EditJobPositionViewModel
 
 @{
-    ViewData["Title"] = "Add Job Position";
+    ViewData["Title"] = "Edit Job Position";
 }
 
-<h2>Add Job Position</h2>
+<h2>Edit Job Position</h2>
 
-<form asp-controller="JobPosition" asp-action="Add" method="post" class="form-horizontal" role="form">
+<form asp-controller="JobPosition" asp-action="Edit" method="post" class="form-horizontal" role="form">
     <h4>@*Enter the user details below*@</h4>
     <hr />
     <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="Id" class="text-danger"></span>
+        </div>
+    </div>
 
     <div class="form-group">
         <label asp-for="Name" class="col-md-2 control-label"></label>
@@ -29,7 +37,7 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Create" />
+            <input type="submit" class="btn btn-primary" value="Edit" />
             <a asp-action="Index" class="btn btn-default">Cancel</a>
         </div>
     </div>
@@ -38,10 +46,3 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
-
-@*@{
-        ViewData["Title"] = "Add";
-    }
-
-    <h2>Add</h2>*@
-

@@ -25,20 +25,20 @@ namespace Recruiter.Repositories
 
         public async Task AddAsync(JobPosition jobPosition)
         {
-            var test = await _context.JobPositions.AddAsync(jobPosition);
-            var test2 = await _context.SaveChangesAsync();
+            await _context.JobPositions.AddAsync(jobPosition);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(JobPosition jobPosition)
         {
-            var test = _context.JobPositions.Update(jobPosition);
-            var test2 = await _context.SaveChangesAsync();
+            _context.JobPositions.Update(jobPosition);
+            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(JobPosition jobPosition)
         {
-            var test = _context.JobPositions.Remove(jobPosition);
-            var test2 = await _context.SaveChangesAsync();
+            _context.JobPositions.Remove(jobPosition);
+            await _context.SaveChangesAsync();
         }
 
         //private DbSet<JobPosition> JobPositions => _context.JobPositions;

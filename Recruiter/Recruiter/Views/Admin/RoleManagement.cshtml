@@ -6,6 +6,7 @@
 
 <h2>Role Management</h2>
 
+<div asp-validation-summary="All" class="text-danger"></div>
 @if (!Model.Any())
 {
     <tr><td colspan="3" class="text-center">No roles defined yet. Please create the first role.</td></tr>

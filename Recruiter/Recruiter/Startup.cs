@@ -68,7 +68,7 @@ namespace Recruiter
             services.AddTransient<IEmailSender, FakeEmailSender>();
             services.AddSingleton<ICvStorage, CvStorage>();
             services.AddScoped<IJobPositionRepository, JobPositionRepository>();
-            services.AddScoped<IJobPositionService, JobPositionService>();
+            //services.AddScoped<IJobPositionService, JobPositionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
