@@ -28,7 +28,6 @@
         <dd>
             @Html.DisplayFor(model => model.Description)
         </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>
@@ -41,9 +40,8 @@
         <dd>
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-
         <dt>
-            @Html.DisplayNameFor(model => model.Creator.FirstName) @Html.DisplayNameFor(model => model.Creator.LastName)
+            @Html.DisplayNameFor(model => model.Creator) 
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Creator.FirstName) @Html.DisplayFor(model => model.Creator.LastName)
