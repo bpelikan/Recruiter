@@ -13,10 +13,14 @@ namespace Recruiter.Models
 
         public string Description { get; set; }
 
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public string CreatorId { get; set; }
+        public virtual ApplicationUser Creator { get; set; }
+
         //public virtual ICollection<Application> Applications { get; set; }
 
-        //public DateTime StartDate { get; set; }
-
-        //public DateTime EndDate { get; set; }
     }
 }

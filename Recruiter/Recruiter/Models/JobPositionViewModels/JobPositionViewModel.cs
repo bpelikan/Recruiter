@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Recruiter.Models.AdminViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,5 +16,14 @@ namespace Recruiter.Models.JobPositionViewModels
 
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [Display(Name = "End Date")]
+        public DateTime? EndDate { get; set; }
+
+        public string CreatorId { get; set; }
+        public virtual UserDetailsViewModel Creator { get; set; }
     }
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Recruiter.Models;
+using Recruiter.Models.AdminViewModels;
 using Recruiter.Models.JobPositionViewModels;
 using Recruiter.Repositories;
 
@@ -14,9 +16,11 @@ namespace Recruiter.Controllers
     {
         private readonly IJobPositionRepository _jobPositionRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JobPositionController(IJobPositionRepository jobPositionRepository, IMapper mapper)
+        public JobPositionController(UserManager<ApplicationUser> userManager, IJobPositionRepository jobPositionRepository, IMapper mapper)
         {
+            _userManager = userManager;
             _jobPositionRepository = jobPositionRepository;
             _mapper = mapper;
         }
@@ -34,6 +38,8 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var jobPosition = await _jobPositionRepository.GetAsync(id);
+            //jobPosition.Creator = _mapper.Map<ApplicationUser, UserDetailsViewModel>(jobPosition.Creator);
+
             if (jobPosition == null)
                 return RedirectToAction(nameof(JobPositionController.Index));
 
@@ -44,7 +50,12 @@ namespace Recruiter.Controllers
 
         public IActionResult Add()
         {
-            return View();
+            var vm = new AddJobPositionViewModel()
+            {
+                StartDate = DateTime.Now
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
@@ -53,11 +64,15 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
                 return View(addJobPositionViewModel);
 
+            var userId = _userManager.GetUserId(HttpContext.User);
             var jobPosition = new JobPosition()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = addJobPositionViewModel.Name,
-                Description = addJobPositionViewModel.Description
+                Description = addJobPositionViewModel.Description,
+                StartDate = addJobPositionViewModel.StartDate,
+                EndDate = addJobPositionViewModel.EndDate,
+                CreatorId = userId
             };
 
             await _jobPositionRepository.AddAsync(jobPosition);
@@ -100,6 +115,8 @@ namespace Recruiter.Controllers
             {
                 jobPosition.Name = editJobPositionViewModel.Name;
                 jobPosition.Description = editJobPositionViewModel.Description;
+                jobPosition.StartDate = editJobPositionViewModel.StartDate;
+                jobPosition.EndDate = editJobPositionViewModel.EndDate;
 
                 await _jobPositionRepository.UpdateAsync(jobPosition);
 

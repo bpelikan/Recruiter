@@ -18,7 +18,7 @@ namespace Recruiter.Repositories
         }
 
         public async Task<JobPosition> GetAsync(string id)
-            => await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == id);
+            => await _context.JobPositions.Include(x => x.Creator).SingleOrDefaultAsync(x => x.Id == id);
 
         public async Task<IEnumerable<JobPosition>> GetAllAsync()
             => await _context.JobPositions.AsQueryable().ToListAsync();
