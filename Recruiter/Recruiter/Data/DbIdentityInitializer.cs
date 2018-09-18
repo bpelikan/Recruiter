@@ -50,11 +50,11 @@ namespace Recruiter.Data
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
 
-            if (!roleManager.RoleExistsAsync("HumanResources").Result)
+            if (!roleManager.RoleExistsAsync("Recruiter").Result)
             {
                 IdentityRole role = new IdentityRole()
                 {
-                    Name = "HumanResources"
+                    Name = "Recruiter"
                 };
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
