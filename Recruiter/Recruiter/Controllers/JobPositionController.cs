@@ -13,7 +13,7 @@ using Recruiter.Repositories;
 
 namespace Recruiter.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Recruiter")]
     public class JobPositionController : Controller
     {
         private readonly IJobPositionRepository _jobPositionRepository;
@@ -52,7 +52,6 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "HumanResources")]
         public IActionResult Add()
         {
             var vm = new AddJobPositionViewModel()
@@ -63,7 +62,6 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel)
         {
@@ -92,7 +90,6 @@ namespace Recruiter.Controllers
             return View(addJobPositionViewModel);
         }
 
-        [Authorize(Roles = "HumanResources")]
         public async Task<IActionResult> Edit(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -110,7 +107,6 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Edit(EditJobPositionViewModel editJobPositionViewModel)
         {
@@ -135,7 +131,6 @@ namespace Recruiter.Controllers
             return View(editJobPositionViewModel);
         }
 
-        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
