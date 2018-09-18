@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Recruiter.Models;
@@ -12,6 +13,7 @@ using Recruiter.Repositories;
 
 namespace Recruiter.Controllers
 {
+    [Authorize]
     public class JobPositionController : Controller
     {
         private readonly IJobPositionRepository _jobPositionRepository;
@@ -25,6 +27,7 @@ namespace Recruiter.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var jobPositions = await _jobPositionRepository.GetAllAsync();
@@ -33,6 +36,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -48,6 +52,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [Authorize(Roles = "HumanResources")]
         public IActionResult Add()
         {
             var vm = new AddJobPositionViewModel()
@@ -58,6 +63,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel)
         {
@@ -86,6 +92,7 @@ namespace Recruiter.Controllers
             return View(addJobPositionViewModel);
         }
 
+        [Authorize(Roles = "HumanResources")]
         public async Task<IActionResult> Edit(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -103,6 +110,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Edit(EditJobPositionViewModel editJobPositionViewModel)
         {
@@ -127,6 +135,7 @@ namespace Recruiter.Controllers
             return View(editJobPositionViewModel);
         }
 
+        [Authorize(Roles = "HumanResources")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
