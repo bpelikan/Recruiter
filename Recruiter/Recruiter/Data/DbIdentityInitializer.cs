@@ -49,6 +49,15 @@ namespace Recruiter.Data
                 };
                 IdentityResult roleResult = roleManager.CreateAsync(role).Result;
             }
+
+            if (!roleManager.RoleExistsAsync("HumanResources").Result)
+            {
+                IdentityRole role = new IdentityRole()
+                {
+                    Name = "HumanResources"
+                };
+                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            }
         }
     }
 }

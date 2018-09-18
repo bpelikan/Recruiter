@@ -26,6 +26,7 @@ namespace Recruiter.Models.JobPositionViewModels
         public DateTime? EndDate { get; set; }
 
         public string CreatorId { get; set; }
+
         [Display(Name = "Creator")]
         public virtual UserDetailsViewModel Creator { get; set; }
     }
