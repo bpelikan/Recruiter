@@ -14,8 +14,9 @@ namespace Recruiter.Data
             : base(options)
         {
         }
-
+        
         public DbSet<JobPosition> JobPositions { get; set; }
+        public DbSet<Application> Applications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

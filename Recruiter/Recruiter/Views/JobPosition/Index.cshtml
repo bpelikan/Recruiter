@@ -31,6 +31,7 @@ else
                 <td>@jobPosition.Description</td>
                 <td>
                     <form asp-action="Delete" asp-route-id="@jobPosition.Id" method="post">
+                        <a class="btn btn-sm btn-primary" asp-controller="Application" asp-action="Apply" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>
                         <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
                         <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
                         <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">

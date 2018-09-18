@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Recruiter.Models.ApplicationViewModels
+{
+    public class ApplyApplicationViewModel
+    {
+        public string JobPositionId { get; set; }
+        public string CvFileName { get; set; }
+    }
+}

@@ -20,7 +20,7 @@ namespace Recruiter.Models
         public string CreatorId { get; set; }
         public virtual ApplicationUser Creator { get; set; }
 
-        //public virtual ICollection<Application> Applications { get; set; }
+        public virtual ICollection<Application> Applications { get; set; }
 
     }
 }

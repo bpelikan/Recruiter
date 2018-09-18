@@ -40,7 +40,7 @@ namespace Recruiter.Services
             var sasPolicy = new SharedAccessBlobPolicy
             {
                 Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-15),
+                SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-5),
                 SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(15)
             };
             var container = blobClient.GetContainerReference("cvstorage");
