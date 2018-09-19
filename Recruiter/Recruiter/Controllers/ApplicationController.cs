@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -34,18 +35,66 @@ namespace Recruiter.Controllers
             return View();
         }
 
-        public ActionResult ShowMyApplicationDetails(string id)
+        [Authorize(Roles = "Recruiter")]
+        public IActionResult Applications()
         {
+            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
+
+            var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
+
+            return View(vm);
+        }
+
+        [Authorize(Roles = "Recruiter")]
+        public ActionResult ApplicationDetails(string id, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
+
+            if (application != null)
+            {
+                var vm = new ApplicationDetailsViewModel()
+                {
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                    CvFileUrl = _cvStorage.UriFor(application.CvFileName),
+                    CreatedAt = application.CreatedAt
+                };
+
+                return View(vm);
+            }
+
+            //Add error: loading application
+            return RedirectToAction(nameof(OfferController.Index));
+        }
+
+
+        public IActionResult MyApplications()
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Where(x => x.UserId == userId);
+
+            var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<MyApplicationsViewModel>>(applications);
+
+            return View(vm);
+        }
+
+        public ActionResult MyApplicationDetails(string id, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
             var userId = _userManager.GetUserId(HttpContext.User);
 
             if (application != null && userId == application.UserId )
             {
-                var vm = new ShowMyApplicationDetailsViewModel()
+                var vm = new MyApplicationDetailsViewModel()
                 {
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorage.UriFor(application.CvFileName),
+                    CreatedAt = application.CreatedAt
                 };
 
                 return View(vm);
@@ -93,17 +142,19 @@ namespace Recruiter.Controllers
                     Id = Guid.NewGuid().ToString(),
                     CvFileName = applyApplicationViewModel.CvFileName,
                     JobPositionId = applyApplicationViewModel.JobPositionId,
-                    UserId = userId
+                    UserId = userId,
+                    CreatedAt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second)
                 };
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(ApplicationController.ShowMyApplicationDetails), new { id = application.Id });
+                return RedirectToAction(nameof(ApplicationController.MyApplicationDetails), new { id = application.Id });
             }
 
             //add model error
 
-            return View(applyApplicationViewModel);
+            //return View(applyApplicationViewModel);
+            return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
         }
 
 

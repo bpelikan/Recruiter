@@ -19,12 +19,10 @@ namespace Recruiter.Models.ApplicationViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        public bool EmailConfirmed { get; set; }
+        //[Display(Name = "Phone Number")]
+        //public string PhoneNumber { get; set; }
 
-        [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; }
-
-        [Display(Name = "Created At")]
-        public DateTime CreatedAt { get; set; }
+        //[Display(Name = "Created At")]
+        //public DateTime CreatedAt { get; set; }
     }
 }
