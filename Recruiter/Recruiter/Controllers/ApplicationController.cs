@@ -34,14 +34,14 @@ namespace Recruiter.Controllers
             return View();
         }
 
-        public ActionResult ShowMyApplication(string id)
+        public ActionResult ShowMyApplicationDetails(string id)
         {
             var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
             var userId = _userManager.GetUserId(HttpContext.User);
 
-            if (userId == application.UserId)
+            if (application != null && userId == application.UserId )
             {
-                var vm = new ShowApplicationViewModel()
+                var vm = new ShowMyApplicationDetailsViewModel()
                 {
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
@@ -57,8 +57,10 @@ namespace Recruiter.Controllers
         }
 
 
-        public async Task<IActionResult> Apply(string id)
+        public async Task<IActionResult> Apply(string id, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var offer = await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == id);
             if (offer == null)
                 return RedirectToAction(nameof(OfferController.Index));
@@ -96,7 +98,7 @@ namespace Recruiter.Controllers
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(ApplicationController.ShowMyApplication), new { id = application.Id });
+                return RedirectToAction(nameof(ApplicationController.ShowMyApplicationDetails), new { id = application.Id });
             }
 
             //add model error

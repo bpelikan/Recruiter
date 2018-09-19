@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Models.ApplicationViewModels
 {
-    public class ShowApplicationViewModel
+    public class ShowMyApplicationDetailsViewModel
     {
         public virtual UserDetailsViewModel User { get; set; }
         public virtual JobPositionViewModel JobPosition { get; set; }
         public string CvFileUrl { get; set; }
-
     }
 }
