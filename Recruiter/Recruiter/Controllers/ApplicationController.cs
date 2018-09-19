@@ -9,9 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Recruiter.Data;
 using Recruiter.Models;
-using Recruiter.Models.AdminViewModels;
 using Recruiter.Models.ApplicationViewModels;
-using Recruiter.Models.JobPositionViewModels;
 using Recruiter.Services;
 
 namespace Recruiter.Controllers
@@ -36,27 +34,39 @@ namespace Recruiter.Controllers
             return View();
         }
 
-        //public ActionResult Show(ShowApplicationViewModel showApplicationViewModel)
-        public ActionResult Show(string id)
+        public ActionResult ShowMyApplication(string id)
         {
             var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
+            var userId = _userManager.GetUserId(HttpContext.User);
 
-            var vm = new ShowApplicationViewModel()
+            if (userId == application.UserId)
             {
-                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                CvFileName = _cvStorage.UriFor(application.CvFileName),
-            };
+                var vm = new ShowApplicationViewModel()
+                {
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                    CvFileUrl = _cvStorage.UriFor(application.CvFileName),
+                };
 
-            return View(vm);
+                return View(vm);
+            }
+
+            //Add error: It's not yours application/cv 
+            //redirect to my application list
+            return RedirectToAction(nameof(OfferController.Index));
         }
 
 
-        public IActionResult Apply(string id)
+        public async Task<IActionResult> Apply(string id)
         {
-            var vm = new ApplyApplicationViewModel()
+            var offer = await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == id);
+            if (offer == null)
+                return RedirectToAction(nameof(OfferController.Index));
+
+            var vm = new ApplyApplicationDetailsViewModel()
             {
-                JobPositionId = id
+                JobPositionId = offer.Id,
+                JobPositionName = offer.Name,
             };
             return View(vm);
         }
@@ -86,9 +96,9 @@ namespace Recruiter.Controllers
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(ApplicationController.Show), new { id = application.Id });
+                return RedirectToAction(nameof(ApplicationController.ShowMyApplication), new { id = application.Id });
             }
-            
+
             //add model error
 
             return View(applyApplicationViewModel);
