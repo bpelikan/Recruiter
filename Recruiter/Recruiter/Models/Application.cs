@@ -9,6 +9,8 @@ namespace Recruiter.Models
     {
         public string Id { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public string CvFileName { get; set; }
         //public virtual Cv Cv { get; set; }
 

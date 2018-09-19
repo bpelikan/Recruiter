@@ -7,8 +7,8 @@ namespace Recruiter.Models
 {
     public class Cv
     {
-        public string Id { get; set; }
+        //public string Id { get; set; }
 
-        public string FileName { get; set; }
+        //public string FileName { get; set; }
     }
 }
