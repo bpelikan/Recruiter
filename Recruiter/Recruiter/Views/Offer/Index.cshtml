@@ -1,0 +1,31 @@
+﻿@using Recruiter.Models.OfferViewModel
+@model IEnumerable<OfferViewModel>
+
+@{
+    ViewData["Title"] = "Offers";
+}
+
+<h2>Offers</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+@if (!Model.Any())
+{
+    <tr><td colspan="3" class="text-center">No offers</td></tr>
+}
+else
+{
+    <table class="table table-condensed table-bordered" header header-content="Job position management">
+        <tr>
+            <th>Name</th>
+        </tr>
+
+        @foreach (OfferViewModel offer in Model)
+        {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@offer.Id" asp-route-returnurl="@Context.Request.Path">@offer.Name</a>
+            </td>
+        </tr>
+        }
+    </table>
+}

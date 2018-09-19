@@ -1,0 +1,35 @@
+﻿@using Recruiter.Models.OfferViewModel
+@model OfferDetailsViewModel
+
+@{
+    ViewData["Title"] = "Job Position Details";
+}
+
+<h2>Job Position Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+</div>
+<div>
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <a class="btn btn-sm btn-primary" asp-controller="Application" asp-action="Apply" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+    </form>
+</div>
+
+
