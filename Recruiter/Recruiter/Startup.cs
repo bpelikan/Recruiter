@@ -59,7 +59,7 @@ namespace Recruiter
                         new CultureInfo("pl-PL"),
                     };
 
-                    opts.DefaultRequestCulture = new RequestCulture("pl-PL");
+                    opts.DefaultRequestCulture = new RequestCulture("en-US");
                     opts.SupportedCultures = supportedCultures;
                     opts.SupportedUICultures = supportedCultures;
                 });
