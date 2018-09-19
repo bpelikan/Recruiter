@@ -13,7 +13,7 @@ using Recruiter.Repositories;
 
 namespace Recruiter.Controllers
 {
-    [Authorize(Roles = "Recruiter")]
+    [Authorize(Roles = "Recruiter, Administrator")]
     public class JobPositionController : Controller
     {
         private readonly IJobPositionRepository _jobPositionRepository;

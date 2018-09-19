@@ -42,8 +42,8 @@
         <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
 
-                    <li condition="@SignInManager.IsSignedIn(User) && !(@User.IsInRole("Recruiter") || @User.IsInRole("Administrator"))"><a asp-area="" asp-controller="Offer" asp-action="Index">Offers</a></li>
-                    <li condition="@SignInManager.IsSignedIn(User) && !(@User.IsInRole("Recruiter") || @User.IsInRole("Administrator"))"><a asp-area="" asp-controller="Application" asp-action="MyApplications">My applications</a></li>
+                    <li><a asp-area="" asp-controller="Offer" asp-action="Index">Offers</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole("Recruit"))"><a asp-area="" asp-controller="Application" asp-action="MyApplications">My applications</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole("Recruiter") || @User.IsInRole("Administrator"))"><a asp-area="" asp-controller="Application" asp-action="Applications">Applications</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole("Recruiter") || @User.IsInRole("Administrator"))"><a asp-area="" asp-controller="JobPosition" asp-action="Index">Job position</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")">@await Component.InvokeAsync("AdminMenu")</li>

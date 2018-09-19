@@ -32,10 +32,11 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
+            //redirect
             return View();
         }
 
-        [Authorize(Roles = "Recruiter")]
+        [Authorize(Roles = "Recruiter, Administrator")]
         public IActionResult Applications()
         {
             var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
@@ -45,7 +46,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Recruiter")]
+        [Authorize(Roles = "Recruiter, Administrator")]
         public ActionResult ApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -69,7 +70,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(OfferController.Index));
         }
 
-
+        [Authorize(Roles = "Recruit")]
         public IActionResult MyApplications()
         {
             var userId = _userManager.GetUserId(HttpContext.User);
@@ -80,6 +81,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [Authorize(Roles = "Recruit")]
         public ActionResult MyApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -105,7 +107,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(OfferController.Index));
         }
 
-
+        [Authorize(Roles = "Recruit")]
         public async Task<IActionResult> Apply(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -123,6 +125,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Recruit")]
         public async Task<IActionResult> Apply(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel)
         {
             if (!ModelState.IsValid)
