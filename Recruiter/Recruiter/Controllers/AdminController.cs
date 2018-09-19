@@ -39,7 +39,7 @@ namespace Recruiter.Controllers
         #region UserManagement
         public IActionResult UserManagement()
         {
-            var users = _userManager.Users;
+            var users = _userManager.Users.OrderBy(x => x.FirstAndLastName);
             return View(users);
         }
 
