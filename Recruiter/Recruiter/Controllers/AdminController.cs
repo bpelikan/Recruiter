@@ -52,7 +52,23 @@ namespace Recruiter.Controllers
             if (user == null)
                 return RedirectToAction(nameof(AdminController.UserManagement));
 
-            var vm = _mapper.Map<ApplicationUser, UserDetailsViewModel>(user);
+            //var vm = _mapper.Map<ApplicationUser, UserDetailsViewModel>(user);
+            var vm = new UserDetailsWithRolesViewModel()
+            {
+                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(user)
+            };
+
+            foreach (var role in _roleManager.Roles)
+            {
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    vm.AddRole(role.Name, true);
+                }
+                else
+                {
+                    vm.AddRole(role.Name, false);
+                }
+            }
 
             return View(vm);
         }
@@ -216,13 +232,12 @@ namespace Recruiter.Controllers
             {
                 Id = role.Id,
                 RoleName = role.Name,
-                Users = new List<string>()
             };
 
             foreach (var user in _userManager.Users)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
-                    editRoleViewModel.Users.Add(user.UserName);
+                    editRoleViewModel.AddUser(user);
             }
 
             return View(editRoleViewModel);
@@ -273,32 +288,10 @@ namespace Recruiter.Controllers
         #endregion
 
         #region Users in roles
-
-        public async Task<IActionResult> AddUserToRole(string roleId)
+        public async Task<IActionResult> AddUserToRole(string id, string roleName, string returnUrl = null)
         {
-            var role = await _roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
-                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
-
-            var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
-
-            foreach (var user in _userManager.Users)
-            {
-                if (!await _userManager.IsInRoleAsync(user, role.Name))
-                {
-                    addUserToRoleViewModel.Users.Add(user);
-                }
-            }
-
-            return View(addUserToRoleViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddUserToRole(UserRoleViewModel userRoleViewModel)
-        {
-            var user = await _userManager.FindByIdAsync(userRoleViewModel.UserId);
-            var role = await _roleManager.FindByIdAsync(userRoleViewModel.RoleId);
+            var user = await _userManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByNameAsync(roleName);
 
             if (user == null)
             {
@@ -307,44 +300,18 @@ namespace Recruiter.Controllers
 
             var result = await _userManager.AddToRoleAsync(user, role.Name);
 
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
-            }
-
             foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
 
-            return View(userRoleViewModel);
+            return RedirectToLocal(returnUrl);
         }
 
-        public async Task<IActionResult> DeleteUserFromRole(string roleId)
+        public async Task<IActionResult> DeleteUserFromRole(string id, string roleName, string returnUrl = null)
         {
-            var role = await _roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
-                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
-
-            var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
-
-            foreach (var user in _userManager.Users)
-            {
-                if (await _userManager.IsInRoleAsync(user, role.Name))
-                {
-                    addUserToRoleViewModel.Users.Add(user);
-                }
-            }
-
-            return View(addUserToRoleViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteUserFromRole(UserRoleViewModel userRoleViewModel)
-        {
-            var user = await _userManager.FindByIdAsync(userRoleViewModel.UserId);
-            var role = await _roleManager.FindByIdAsync(userRoleViewModel.RoleId);
+            var user = await _userManager.FindByIdAsync(id);
+            var role = await _roleManager.FindByNameAsync(roleName);
 
             if (user == null)
             {
@@ -353,17 +320,12 @@ namespace Recruiter.Controllers
 
             var result = await _userManager.RemoveFromRoleAsync(user, role.Name);
 
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
-            }
-
             foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
 
-            return View(userRoleViewModel);
+            return RedirectToLocal(returnUrl);
         }
         #endregion
 
@@ -384,3 +346,97 @@ namespace Recruiter.Controllers
         #endregion
     }
 }
+
+
+
+//public async Task<IActionResult> AddUserToRole(string roleId)
+//{
+//    var role = await _roleManager.FindByIdAsync(roleId);
+
+//    if (role == null)
+//        return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
+
+//    var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
+
+//    foreach (var user in _userManager.Users)
+//    {
+//        if (!await _userManager.IsInRoleAsync(user, role.Name))
+//        {
+//            addUserToRoleViewModel.Users.Add(user);
+//        }
+//    }
+
+//    return View(addUserToRoleViewModel);
+//}
+
+//[HttpPost]
+//public async Task<IActionResult> AddUserToRole(UserRoleViewModel userRoleViewModel)
+//{
+//    var user = await _userManager.FindByIdAsync(userRoleViewModel.UserId);
+//    var role = await _roleManager.FindByIdAsync(userRoleViewModel.RoleId);
+
+//    if (user == null)
+//    {
+//        return NotFound(_stringLocalizer["User not found."]);
+//    }
+
+//    var result = await _userManager.AddToRoleAsync(user, role.Name);
+
+//    if (result.Succeeded)
+//    {
+//        return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
+//    }
+
+//    foreach (IdentityError error in result.Errors)
+//    {
+//        ModelState.AddModelError("", error.Description);
+//    }
+
+//    return View(userRoleViewModel);
+//}
+
+//public async Task<IActionResult> DeleteUserFromRole(string roleId)
+//{
+//    var role = await _roleManager.FindByIdAsync(roleId);
+
+//    if (role == null)
+//        return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
+
+//    var addUserToRoleViewModel = new UserRoleViewModel { RoleId = role.Id };
+
+//    foreach (var user in _userManager.Users)
+//    {
+//        if (await _userManager.IsInRoleAsync(user, role.Name))
+//        {
+//            addUserToRoleViewModel.Users.Add(user);
+//        }
+//    }
+
+//    return View(addUserToRoleViewModel);
+//}
+
+//[HttpPost]
+//public async Task<IActionResult> DeleteUserFromRole(UserRoleViewModel userRoleViewModel)
+//{
+//    var user = await _userManager.FindByIdAsync(userRoleViewModel.UserId);
+//    var role = await _roleManager.FindByIdAsync(userRoleViewModel.RoleId);
+
+//    if (user == null)
+//    {
+//        return NotFound(_stringLocalizer["User not found."]);
+//    }
+
+//    var result = await _userManager.RemoveFromRoleAsync(user, role.Name);
+
+//    if (result.Succeeded)
+//    {
+//        return RedirectToAction(nameof(AdminController.RoleManagement), _roleManager.Roles);
+//    }
+
+//    foreach (IdentityError error in result.Errors)
+//    {
+//        ModelState.AddModelError("", error.Description);
+//    }
+
+//    return View(userRoleViewModel);
+//}
