@@ -31,6 +31,11 @@ namespace Recruiter.Controllers
         //    return View();
         //}
 
+        public IActionResult Test(string id = null)
+        {
+            throw new Exception($"Test function with exception id: {id}.");
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

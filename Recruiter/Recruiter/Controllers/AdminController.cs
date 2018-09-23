@@ -300,9 +300,12 @@ namespace Recruiter.Controllers
 
             var result = await _userManager.AddToRoleAsync(user, role.Name);
 
-            foreach (IdentityError error in result.Errors)
+            if (!result.Succeeded)
             {
-                ModelState.AddModelError("", error.Description);
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             }
 
             return RedirectToLocal(returnUrl);
@@ -320,9 +323,12 @@ namespace Recruiter.Controllers
 
             var result = await _userManager.RemoveFromRoleAsync(user, role.Name);
 
-            foreach (IdentityError error in result.Errors)
+            if (!result.Succeeded)
             {
-                ModelState.AddModelError("", error.Description);
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             }
 
             return RedirectToLocal(returnUrl);

@@ -35,17 +35,6 @@
     </div>
 </form>
 
-@*<h3>Users in this role</h3>
-<hr />
-<ul>
-    @foreach (var user in Model.Users)
-    {
-        <li>
-            @user.FirstName @user.LastName (@user.Email)
-        </li>
-    }
-</ul>*@
-
 <br />
 <h3>Users in this role</h3>
 <div>
@@ -80,6 +69,18 @@
         @:There is no users in this role.
     }
 </div>
+
+
+@*<h3>Users in this role</h3>
+    <hr />
+    <ul>
+        @foreach (var user in Model.Users)
+        {
+            <li>
+                @user.FirstName @user.LastName (@user.Email)
+            </li>
+        }
+    </ul>*@
 
 @*<a asp-action="AddUserToRole" asp-route-roleId="@Model.Id" class="btn btn-primary">Add users to role</a>
     <a asp-action="DeleteUserFromRole" asp-route-roleId="@Model.Id" class="btn btn-danger">Remove users from role</a>*@

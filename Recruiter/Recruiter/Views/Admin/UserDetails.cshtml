@@ -45,7 +45,6 @@
     </dl>
 </div>
 <div>
-    @*<form condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")" asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">*@
     <form asp-action="DeleteUser" asp-route-id="@Model.User.Id" method="post">
         <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.User.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
         <button type="submit" onclick="return confirm('Do you really want to delete this user?');" class="btn btn-sm btn-danger">
@@ -95,7 +94,10 @@
         </table>
     }
     else
-    { 
+    {
         @:There is no roles.
     }
 </div>
+
+
+@*<form condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")" asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">*@
