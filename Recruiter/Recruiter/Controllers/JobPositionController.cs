@@ -87,6 +87,7 @@ namespace Recruiter.Controllers
 
             ModelState.AddModelError("", "Something went wrong while adding this job position.");
 
+            //throw new Exception()
             return View(addJobPositionViewModel);
         }
 
@@ -98,8 +99,9 @@ namespace Recruiter.Controllers
 
             if (jobPosition == null)
             {
-                ModelState.AddModelError("", "Something went wrong while getting job position for editing.");
-                return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
+                throw new Exception($"Job position with id {id} not found.");
+                //ModelState.AddModelError("", "Something went wrong while getting job position for editing.");
+                //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
             }
 
             var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
@@ -127,8 +129,9 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
             }
 
-            ModelState.AddModelError("", "Something went wrong while editing job position.");
-            return View(editJobPositionViewModel);
+            throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found.");
+            //ModelState.AddModelError("", "Something went wrong while editing job position.");
+            //return View(editJobPositionViewModel);
         }
 
         [HttpPost]
@@ -142,8 +145,9 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(JobPositionController.Index));
             }
 
-            ModelState.AddModelError("", "Something went wrong while deleting this user.");
-            return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
+            throw new Exception($"Job position with id {id} not found.");
+            //ModelState.AddModelError("", "Something went wrong while deleting this user.");
+            //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
         }
     }
 }
