@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Recruiter.Models;
@@ -12,6 +13,13 @@ namespace Recruiter.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public HomeController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -33,7 +41,7 @@ namespace Recruiter.Controllers
 
         public IActionResult Test(string id = null)
         {
-            throw new Exception($"Test function with exception id: {id}.");
+            throw new Exception($"Test function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
         }
 
         public IActionResult Error()

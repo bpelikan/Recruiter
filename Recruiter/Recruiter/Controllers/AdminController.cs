@@ -276,7 +276,9 @@ namespace Recruiter.Controllers
             {
                 var result = await _roleManager.DeleteAsync(role);
                 if (result.Succeeded)
+                {
                     return RedirectToAction(nameof(AdminController.RoleManagement));
+                }
                 ModelState.AddModelError("", _stringLocalizer["Something went wrong while deleting this role."]);
             }
             else
@@ -318,6 +320,7 @@ namespace Recruiter.Controllers
 
             if (user == null)
             {
+                //throw new Exception($"User with id {id} not found. ({_userManager.GetUserId(HttpContext.User)})");
                 return NotFound(_stringLocalizer["User not found."]);
             }
 
