@@ -48,8 +48,6 @@
                     <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole("Recruiter") || @User.IsInRole("Administrator"))"><a asp-area="" asp-controller="JobPosition" asp-action="Index">Job position</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")">@await Component.InvokeAsync("AdminMenu")</li>
 
-                    @*<li condition="@SignInManager.IsSignedIn(User) && !@User.IsInRole("Administrator")"><a asp-area="" asp-controller="Application" asp-action="Add">Application</a></li>*@
-
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
