@@ -27,7 +27,7 @@ namespace Recruiter.Controllers
             _mapper = mapper;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var jobPositions = await _jobPositionRepository.GetAllAsync();
@@ -36,7 +36,6 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [AllowAnonymous]
         public async Task<IActionResult> Details(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
