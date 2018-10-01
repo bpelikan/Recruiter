@@ -93,6 +93,7 @@ namespace Recruiter.Controllers
             {
                 var vm = new MyApplicationDetailsViewModel()
                 {
+                    Id = application.Id,
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorage.UriFor(application.CvFileName),
@@ -105,6 +106,34 @@ namespace Recruiter.Controllers
             //Add error: It's not yours application/cv 
             //redirect to my application list
             return RedirectToAction(nameof(OfferController.Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Recruit")]
+        public async Task<IActionResult> DeleteMyApplication(string id)
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (application == null)
+            {
+                throw new Exception($"Application with id: {id} doesn't exist.");
+            }
+            if (application.UserId != userId)
+            {
+                throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
+            }
+            
+            var delete = await _cvStorage.DeleteCvAsync(application.CvFileName);
+            if (!delete)
+            {
+                throw new Exception($"Something went wrong while deleting cv: {application.CvFileName}.");
+            }
+
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ApplicationController.MyApplications));
         }
 
         [Authorize(Roles = "Recruit")]
@@ -136,7 +165,7 @@ namespace Recruiter.Controllers
                 var userId = _userManager.GetUserId(HttpContext.User);
                 using (var stream = cv.OpenReadStream())
                 {
-                    var CvFileName = await _cvStorage.SaveCv(stream, userId);
+                    var CvFileName = await _cvStorage.SaveCvAsync(stream, userId);
                     applyApplicationViewModel.CvFileName = CvFileName;
                 }
 
@@ -159,7 +188,6 @@ namespace Recruiter.Controllers
             //return View(applyApplicationViewModel);
             return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
         }
-
 
 
         //public IActionResult Add()

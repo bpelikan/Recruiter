@@ -26,7 +26,17 @@ namespace Recruiter.Services
             var credential = new StorageCredentials(blobAccountName, blobKeyValue);
             blobClient = new CloudBlobClient(new Uri(baseBlobUri), credential);
         }
-        public async Task<string> SaveCv(Stream CvStream, string userId)
+
+        public async Task<bool> DeleteCvAsync(string cvId)
+        {
+            var container = blobClient.GetContainerReference("cvstorage");
+            var blob = container.GetBlockBlobReference(cvId);
+
+            var result = await blob.DeleteIfExistsAsync();
+            return result;
+        }
+
+        public async Task<string> SaveCvAsync(Stream CvStream, string userId)
         {
             var cvId = userId + "." + Guid.NewGuid().ToString() + ".pdf";
             var container = blobClient.GetContainerReference("cvstorage");

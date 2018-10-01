@@ -8,6 +8,7 @@ namespace Recruiter.Models.ApplicationViewModels
 {
     public class MyApplicationDetailsViewModel
     {
+        public string Id { get; set; }
         public virtual UserDetailsViewModel User { get; set; }
 
         public virtual JobPositionViewModel JobPosition { get; set; }

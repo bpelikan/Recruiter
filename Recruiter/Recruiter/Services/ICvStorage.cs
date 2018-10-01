@@ -8,7 +8,8 @@ namespace Recruiter.Services
 {
     public interface ICvStorage
     {
-        Task<string> SaveCv(Stream CvStream, string userId);
+        Task<string> SaveCvAsync(Stream CvStream, string userId);
+        Task<bool> DeleteCvAsync(string cvId);
         string UriFor(string cvId);
     }
 }

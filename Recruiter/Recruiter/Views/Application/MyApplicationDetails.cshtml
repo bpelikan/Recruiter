@@ -35,5 +35,13 @@
         </dd>
     </dl>
 </div>
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Back</a>
+
+<form asp-action="DeleteMyApplication" asp-route-id="@Model.Id" method="post">
+    <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
+        Delete
+    </button>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Back</a>
+</form>
+
+
