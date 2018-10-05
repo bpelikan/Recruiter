@@ -44,7 +44,14 @@
             @Html.DisplayNameFor(model => model.Creator) 
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Creator.FirstName) @Html.DisplayFor(model => model.Creator.LastName)
+            @if (Model.CreatorId == null)
+            {
+                <i>(CREATOR WAS DELETED)</i>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.Creator.FirstName) @: @Html.DisplayFor(model => model.Creator.LastName)
+            }
         </dd>
     </dl>
 </div>

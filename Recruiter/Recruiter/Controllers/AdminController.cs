@@ -45,7 +45,8 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            //return View();
+            return RedirectToAction(nameof(AdminController.UserManagement));
         }
 
         #region UserManagement
