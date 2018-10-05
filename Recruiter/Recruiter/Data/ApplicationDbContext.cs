@@ -30,6 +30,15 @@ namespace Recruiter.Data
             //   .WithMany(x => x.JobPositions)
             //   .HasForeignKey(x => x.CreatorId);
 
+            builder.Entity<ApplicationUser>()
+                .HasMany(x => x.JobPositions)
+                .WithOne(x => x.Creator)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(x => x.Applications)
+                .WithOne(x => x.User)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
