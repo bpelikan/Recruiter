@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.AdminViewModels;
+using Recruiter.Services;
 
 namespace Recruiter.Controllers
 {
@@ -18,14 +20,24 @@ namespace Recruiter.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
+        private readonly ICvStorage _cvStorage;
         private readonly ILogger _logger;
         private readonly IStringLocalizer<AdminController> _stringLocalizer;
         private readonly IMapper _mapper;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AdminController> logger, IStringLocalizer<AdminController> stringLocalizer, IMapper mapper)
+        public AdminController(UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager, 
+            ApplicationDbContext context,
+            ICvStorage cvStorage,
+            ILogger<AdminController> logger, 
+            IStringLocalizer<AdminController> stringLocalizer, 
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
+            _cvStorage = cvStorage;
             _logger = logger;
             _stringLocalizer = stringLocalizer;
             _mapper = mapper;
@@ -164,6 +176,18 @@ namespace Recruiter.Controllers
             
             if (user != null)
             {
+                var usersApplications = _context.Applications.Where(x => x.UserId == user.Id);
+
+                foreach (var application in usersApplications)
+                {
+                    var deleteResult = await _cvStorage.DeleteCvAsync(application.CvFileName);
+
+                    if (!deleteResult)
+                    {
+                        throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
+                    }
+                }
+
                 IdentityResult result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {

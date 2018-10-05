@@ -127,7 +127,7 @@ namespace Recruiter.Controllers
             var delete = await _cvStorage.DeleteCvAsync(application.CvFileName);
             if (!delete)
             {
-                throw new Exception($"Something went wrong while deleting cv: {application.CvFileName}.");
+                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
             }
 
             _context.Applications.Remove(application);
