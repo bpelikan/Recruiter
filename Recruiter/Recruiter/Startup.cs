@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using Recruiter.Repositories;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace Recruiter
 {
@@ -72,7 +73,11 @@ namespace Recruiter
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, 
+                                IHostingEnvironment env, 
+                                ILoggerFactory loggerFactory, 
+                                UserManager<ApplicationUser> userManager, 
+                                RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -84,6 +89,8 @@ namespace Recruiter
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            loggerFactory.AddApplicationInsights(app.ApplicationServices, LogLevel.Warning);
 
             app.UseStaticFiles();
 
