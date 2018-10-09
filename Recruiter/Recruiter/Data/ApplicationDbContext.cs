@@ -39,6 +39,11 @@ namespace Recruiter.Data
                 .HasMany(x => x.Applications)
                 .WithOne(x => x.User)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<JobPosition>()
+                .HasMany(x => x.Applications)
+                .WithOne(x => x.JobPosition)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

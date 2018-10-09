@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Services
 {
-    public interface ICvStorage
+    public interface ICvStorageService
     {
         Task<string> SaveCvAsync(Stream CvStream, string userId);
         Task<bool> DeleteCvAsync(string cvId);

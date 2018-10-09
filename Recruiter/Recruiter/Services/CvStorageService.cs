@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Services
 {
-    public class CvStorage : ICvStorage
+    public class CvStorageService : ICvStorageService
     {
         private readonly IConfiguration configuration;
         CloudBlobClient blobClient;
@@ -17,7 +17,7 @@ namespace Recruiter.Services
         string blobAccountName;
         string blobKeyValue;
 
-        public CvStorage(IConfiguration configuration)
+        public CvStorageService(IConfiguration configuration)
         {
             this.configuration = configuration;
             baseBlobUri = configuration["baseBlobUri"];

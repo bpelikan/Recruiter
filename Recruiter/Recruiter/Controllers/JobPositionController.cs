@@ -6,6 +6,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.AdminViewModels;
 using Recruiter.Models.JobPositionViewModels;
@@ -18,11 +20,13 @@ namespace Recruiter.Controllers
     {
         private readonly IJobPositionRepository _jobPositionRepository;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public JobPositionController(UserManager<ApplicationUser> userManager, IJobPositionRepository jobPositionRepository, IMapper mapper)
+        public JobPositionController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IJobPositionRepository jobPositionRepository, IMapper mapper)
         {
             _userManager = userManager;
+            _context = context;
             _jobPositionRepository = jobPositionRepository;
             _mapper = mapper;
         }
@@ -136,7 +140,11 @@ namespace Recruiter.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            var jobPosition = await _jobPositionRepository.GetAsync(id);
+            //var jobPosition = await _jobPositionRepository.GetAsync(id);
+            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == id);
+
+            if(jobPosition.Applications.Count != 0)
+                throw new Exception($"Job position with id {id} has Applications. (UserID: {_userManager.GetUserId(HttpContext.User)})");
 
             if (jobPosition != null)
             {
