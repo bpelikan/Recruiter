@@ -21,7 +21,7 @@ namespace Recruiter.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        private readonly ICvStorage _cvStorage;
+        private readonly ICvStorageService _cvStorageService;
         private readonly ILogger _logger;
         private readonly IStringLocalizer<AdminController> _stringLocalizer;
         private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ namespace Recruiter.Controllers
         public AdminController(UserManager<ApplicationUser> userManager, 
             RoleManager<IdentityRole> roleManager, 
             ApplicationDbContext context,
-            ICvStorage cvStorage,
+            ICvStorageService cvStorageService,
             ILogger<AdminController> logger, 
             IStringLocalizer<AdminController> stringLocalizer, 
             IMapper mapper)
@@ -37,7 +37,7 @@ namespace Recruiter.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
-            _cvStorage = cvStorage;
+            _cvStorageService = cvStorageService;
             _logger = logger;
             _stringLocalizer = stringLocalizer;
             _mapper = mapper;
@@ -181,7 +181,7 @@ namespace Recruiter.Controllers
 
                 foreach (var application in usersApplications)
                 {
-                    var deleteResult = await _cvStorage.DeleteCvAsync(application.CvFileName);
+                    var deleteResult = await _cvStorageService.DeleteCvAsync(application.CvFileName);
 
                     if (!deleteResult)
                     {

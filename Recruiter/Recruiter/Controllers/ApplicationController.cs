@@ -17,14 +17,14 @@ namespace Recruiter.Controllers
 {
     public class ApplicationController : Controller
     {
-        private readonly ICvStorage _cvStorage;
+        private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public ApplicationController(ICvStorage cvStorage, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public ApplicationController(ICvStorageService cvStorageService, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
-            _cvStorage = cvStorage;
+            _cvStorageService = cvStorageService;
             _mapper = mapper;
             _userManager = userManager;
             _context = context;
@@ -59,7 +59,7 @@ namespace Recruiter.Controllers
                 {
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                    CvFileUrl = _cvStorage.UriFor(application.CvFileName),
+                    CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
                     CreatedAt = application.CreatedAt
                 };
 
@@ -96,7 +96,7 @@ namespace Recruiter.Controllers
                     Id = application.Id,
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                    CvFileUrl = _cvStorage.UriFor(application.CvFileName),
+                    CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
                     CreatedAt = application.CreatedAt
                 };
 
@@ -124,7 +124,7 @@ namespace Recruiter.Controllers
                 throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
             }
             
-            var delete = await _cvStorage.DeleteCvAsync(application.CvFileName);
+            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
             if (!delete)
             {
                 throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
@@ -165,7 +165,7 @@ namespace Recruiter.Controllers
                 var userId = _userManager.GetUserId(HttpContext.User);
                 using (var stream = cv.OpenReadStream())
                 {
-                    var CvFileName = await _cvStorage.SaveCvAsync(stream, userId);
+                    var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId);
                     applyApplicationViewModel.CvFileName = CvFileName;
                 }
 
