@@ -32,6 +32,4 @@ namespace Recruiter.Models.AdminViewModels
             public bool IsInRole { get; set; }
         }
     }
-
-    
 }
