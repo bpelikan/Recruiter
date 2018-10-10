@@ -56,8 +56,8 @@ namespace Recruiter
                 {
                     var supportedCultures = new List<CultureInfo>
                     {
-                        new CultureInfo("en-US"),
-                        new CultureInfo("pl-PL"),
+                        new CultureInfo("en-US")
+                        //new CultureInfo("pl-PL"),
                     };
 
                     opts.DefaultRequestCulture = new RequestCulture("en-US");

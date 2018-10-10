@@ -31,7 +31,6 @@ namespace Recruiter.Controllers
             _mapper = mapper;
         }
 
-        //[AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var jobPositions = await _jobPositionRepository.GetAllAsync();
