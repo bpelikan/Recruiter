@@ -33,6 +33,7 @@ namespace Recruiter.Services
             var blob = container.GetBlockBlobReference(cvId);
 
             var result = await blob.DeleteIfExistsAsync();
+            
             return result;
         }
 
@@ -45,6 +46,7 @@ namespace Recruiter.Services
             await blob.UploadFromStreamAsync(CvStream);
             return cvId;
         }
+
         public string UriFor(string cvId)
         {
             var sasPolicy = new SharedAccessBlobPolicy

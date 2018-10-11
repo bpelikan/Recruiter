@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -167,6 +168,11 @@ namespace Recruiter.Controllers
                 {
                     var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId);
                     applyApplicationViewModel.CvFileName = CvFileName;
+                }
+
+                if (Path.GetExtension(cv.FileName) != ".pdf")
+                {
+                    return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
                 }
 
                 var application = new Application()
