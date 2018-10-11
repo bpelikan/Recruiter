@@ -166,14 +166,12 @@ namespace Recruiter.Controllers
                 var userId = _userManager.GetUserId(HttpContext.User);
                 using (var stream = cv.OpenReadStream())
                 {
-                    var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId);
+                    var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId, cv.FileName);
                     applyApplicationViewModel.CvFileName = CvFileName;
                 }
 
                 if (Path.GetExtension(cv.FileName) != ".pdf")
-                {
                     return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
-                }
 
                 var application = new Application()
                 {

@@ -32,14 +32,15 @@ namespace Recruiter.Services
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
 
-            var result = await blob.DeleteIfExistsAsync();
-            
+            //var result = await blob.DeleteIfExistsAsync();
+            var result = await Task.FromResult(true);
+
             return result;
         }
 
-        public async Task<string> SaveCvAsync(Stream CvStream, string userId)
+        public async Task<string> SaveCvAsync(Stream CvStream, string userId, string fileName)
         {
-            var cvId = userId + "." + Guid.NewGuid().ToString() + ".pdf";
+            var cvId = userId + "." + Guid.NewGuid().ToString() + "." + Path.GetFileNameWithoutExtension(fileName) + Path.GetExtension(fileName);
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
             blob.Properties.ContentType = "application/pdf";
@@ -52,8 +53,8 @@ namespace Recruiter.Services
             var sasPolicy = new SharedAccessBlobPolicy
             {
                 Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-5),
-                SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(15)
+                SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-1),
+                SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
             };
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
