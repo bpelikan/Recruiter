@@ -32,8 +32,7 @@ namespace Recruiter.Services
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
 
-            //var result = await blob.DeleteIfExistsAsync();
-            var result = await Task.FromResult(true);
+            var result = await blob.DeleteIfExistsAsync();
 
             return result;
         }
