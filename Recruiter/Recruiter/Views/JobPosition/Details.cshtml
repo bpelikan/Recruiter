@@ -41,7 +41,7 @@
             @Html.DisplayFor(model => model.EndDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Creator) 
+            @Html.DisplayNameFor(model => model.Creator)
         </dt>
         <dd>
             @if (Model.CreatorId == null)
@@ -54,6 +54,31 @@
             }
         </dd>
     </dl>
+
+    <table class="table table-condensed table-bordered" header header-content="Job position management">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
+            <th>Required</th>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+        </tr>
+    </table>
+
 </div>
 <div>
     <form asp-action="Delete" asp-route-id="@Model.Id" method="post">

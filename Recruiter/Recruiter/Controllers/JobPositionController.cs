@@ -78,7 +78,8 @@ namespace Recruiter.Controllers
                 Description = addJobPositionViewModel.Description,
                 StartDate = addJobPositionViewModel.StartDate,
                 EndDate = addJobPositionViewModel.EndDate,
-                CreatorId = userId
+                CreatorId = userId,
+                ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
             };
 
             await _jobPositionRepository.AddAsync(jobPosition);

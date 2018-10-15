@@ -21,5 +21,8 @@ namespace Recruiter.Models.JobPositionViewModels
         [Display(Name = "End Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime? EndDate { get; set; }
+
+        [Display(Name = "Application Stages Requirement")]
+        public virtual ApplicationStagesRequirement ApplicationStagesRequirement { get; set; }
     }
 }

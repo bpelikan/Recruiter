@@ -29,5 +29,8 @@ namespace Recruiter.Models.JobPositionViewModels
 
         [Display(Name = "Creator")]
         public virtual UserDetailsViewModel Creator { get; set; }
+
+        [Display(Name = "Application Stages Requirement")]
+        public virtual ApplicationStagesRequirement ApplicationStagesRequirement { get; set; }
     }
 }
