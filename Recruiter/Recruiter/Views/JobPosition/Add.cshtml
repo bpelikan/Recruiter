@@ -46,7 +46,6 @@
     <div class="form-group">
         <label asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" class="col-md-6 control-label"></label>
         <div class="col-md-1">
-            @*<input asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" class="form-control" />*@
             @Html.CheckBoxFor(m => m.ApplicationStagesRequirement.IsApplicationApprovalRequired)
             <span asp-validation-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" class="text-danger"></span>
         </div>
@@ -55,7 +54,6 @@
     <div class="form-group">
         <label asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" class="col-md-6 control-label"></label>
         <div class="col-md-1">
-            @*<input asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" class="form-control" />*@
             @Html.CheckBoxFor(m => m.ApplicationStagesRequirement.IsPhoneCallRequired)
             <span asp-validation-for="ApplicationStagesRequirement.IsPhoneCallRequired" class="text-danger"></span>
         </div>
@@ -64,7 +62,7 @@
     <div class="form-group">
         <label asp-for="ApplicationStagesRequirement.IsHomeworkRequired" class="col-md-6 control-label"></label>
         <div class="col-md-1">
-            <input asp-for="ApplicationStagesRequirement.IsHomeworkRequired" class="form-control" />
+            @Html.CheckBoxFor(m => m.ApplicationStagesRequirement.IsHomeworkRequired)
             <span asp-validation-for="ApplicationStagesRequirement.IsHomeworkRequired" class="text-danger"></span>
         </div>
     </div>
@@ -72,7 +70,7 @@
     <div class="form-group">
         <label asp-for="ApplicationStagesRequirement.IsInterviewRequired" class="col-md-6 control-label"></label>
         <div class="col-md-1">
-            <input asp-for="ApplicationStagesRequirement.IsInterviewRequired" class="form-control" />
+            @Html.CheckBoxFor(m => m.ApplicationStagesRequirement.IsInterviewRequired)
             <span asp-validation-for="ApplicationStagesRequirement.IsInterviewRequired" class="text-danger"></span>
         </div>
     </div>
