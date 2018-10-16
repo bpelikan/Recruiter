@@ -51,6 +51,13 @@ namespace Recruiter.Controllers
 
             var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
 
+            var applications = await _context.Applications.Include(x => x.User).Where(x => x.JobPositionId == jobPosition.Id).ToListAsync();
+
+            foreach (var application in applications)
+            {
+                vm.AddApplication(application);
+            }
+
             return View(vm);
         }
 

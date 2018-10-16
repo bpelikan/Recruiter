@@ -54,33 +54,75 @@
             }
         </dd>
     </dl>
+    <div>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            @*<a class="btn btn-sm btn-primary" asp-controller="Application" asp-action="Apply" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>*@
+            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
+            <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
+                Delete
+            </button>
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+        </form>
+    </div>
 
-    <table class="table table-condensed table-bordered" header header-content="Job position management">
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
-            <th>Required</th>
-        </tr>
+    <h3>Stages</h3>
+    <div>
+        <table class="table table-condensed table-bordered" header header-content="Job position management">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
+                <th>Required</th>
+            </tr>
 
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
-            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
-            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
-            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
-            <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
-        </tr>
-    </table>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+            </tr>
+        </table>
+    </div>
 
+    <h3>Applications</h3>
+    <div>
+        @*<hr />*@
+        @if (Model.Applications.Count() != 0)
+        {
+            <table class="table table-condensed table-bordered" header header-content="Job position management">
+                <tr>
+                    <th>First and last name</th>
+                    <th>Created at</th>
+                    <th>Application</th>
+                </tr>
+
+                @foreach (var application in Model.Applications)
+                {
+                    <tr>
+                        <td>@application.User.FirstName @application.User.LastName</td>
+                        <td>@Html.DisplayFor(model => application.CreatedAt)</td>
+                        <td><a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">Show</a></td>
+                    </tr>
+                }
+
+            </table>
+        }
+        else
+        {
+            @:Applications not found.
+        }
+    </div>
 </div>
-<div>
+@*<div>
     <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
         <a class="btn btn-sm btn-primary" asp-controller="Application" asp-action="Apply" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>
         <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
@@ -90,6 +132,6 @@
         <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
         <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
     </form>
-</div>
+</div>*@
 
 

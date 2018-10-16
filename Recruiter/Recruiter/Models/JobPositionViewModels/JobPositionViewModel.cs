@@ -9,6 +9,11 @@ namespace Recruiter.Models.JobPositionViewModels
 {
     public class JobPositionViewModel
     {
+        public JobPositionViewModel()
+        {
+            Applications = new List<ApplicationsViewModel>();
+        }
+
         public string Id { get; set; }
 
         [Display(Name = "Name")]
@@ -32,5 +37,40 @@ namespace Recruiter.Models.JobPositionViewModels
 
         [Display(Name = "Application Stages Requirement")]
         public virtual ApplicationStagesRequirement ApplicationStagesRequirement { get; set; }
+
+
+        public List<ApplicationsViewModel> Applications { get; }
+
+        public void AddApplication(Application application)
+        {
+            Applications.Add(new ApplicationsViewModel()
+            {
+                Id = application.Id,
+                CreatedAt = application.CreatedAt,
+                User = new UserDetailsViewModel() {
+                    FirstName = application.User.FirstName,
+                    LastName = application.User.LastName
+                }
+            });
+        }
+
+        public class ApplicationsViewModel
+        {
+            public string Id { get; set; }
+
+            [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+            public DateTime CreatedAt { get; set; }
+
+            public virtual UserDetailsViewModel User { get; set; }
+        }
+
+        public class UserDetailsViewModel
+        {
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
+        }
     }
 }
