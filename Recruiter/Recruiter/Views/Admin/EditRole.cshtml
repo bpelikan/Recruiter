@@ -57,7 +57,7 @@
                 {
                     <tr>
                         <td>@user.FirstName @user.LastName (@user.Email)</td>
-                        <td><a class="btn btn-sm btn-danger" asp-action="DeleteUserFromRole" asp-route-id="@user.Id" asp-route-roleName="@Model.RoleName" asp-route-returnurl="@Context.Request.Path">Delete</a></td>
+                        <td><a class="btn btn-sm btn-danger" onclick="return confirm('Do you really want to delete this user (@user.FirstName @user.LastName) from @Model.RoleName role?');" asp-action="DeleteUserFromRole" asp-route-id="@user.Id" asp-route-roleName="@Model.RoleName" asp-route-returnurl="@Context.Request.Path">Delete</a></td>
                     </tr>
 
                 }

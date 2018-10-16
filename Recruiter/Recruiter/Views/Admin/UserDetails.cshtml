@@ -81,7 +81,7 @@
                     <tr condition="role.IsInRole == true" style="background-color: lightyellow;">
                         <td>@role.Name</td>
                         <td></td>
-                        <td><a class="btn btn-sm btn-danger" asp-action="DeleteUserFromRole" asp-route-id="@Model.User.Id" asp-route-roleName="@role.Name" asp-route-returnurl="@Context.Request.Path">Delete</a></td>
+                        <td><a class="btn btn-sm btn-danger" onclick="return confirm('Do you really want to delete this user from @role.Name role?');" asp-action="DeleteUserFromRole" asp-route-id="@Model.User.Id" asp-route-roleName="@role.Name" asp-route-returnurl="@Context.Request.Path">Delete</a></td>
                     </tr>
                     <tr condition="role.IsInRole == false">
                         <td>@role.Name</td>
