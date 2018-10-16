@@ -198,11 +198,6 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationController.MyApplicationDetails), new { id = application.Id });
             }
 
-            //add model error
-
-            //return View(applyApplicationViewModel);
-            //return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
-
             ModelState.AddModelError("", "CV file not found.");
             return View(applyApplicationViewModel);
         }
