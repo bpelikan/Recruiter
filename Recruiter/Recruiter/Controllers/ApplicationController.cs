@@ -34,7 +34,8 @@ namespace Recruiter.Controllers
         public IActionResult Index()
         {
             //redirect
-            return View();
+            //return View();
+            return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
         [Authorize(Roles = "Recruiter, Administrator")]
