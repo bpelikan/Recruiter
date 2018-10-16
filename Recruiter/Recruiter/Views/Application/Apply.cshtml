@@ -1,4 +1,4 @@
-﻿@model Recruiter.Models.ApplicationViewModels.ApplyApplicationDetailsViewModel
+﻿@model Recruiter.Models.ApplicationViewModels.ApplyApplicationViewModel
 
 @{
     ViewData["Title"] = "Apply";
@@ -17,8 +17,16 @@
         </div>
     </div>
 
+    <div class="form-group" hidden>
+        <label asp-for="JobPositionName" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="JobPositionName" class="form-control" readonly="readonly" value="@Model.JobPositionName" />
+            <span asp-validation-for="JobPositionName" class="text-danger"></span>
+        </div>
+    </div>
+
     <label asp-for="JobPositionName" class="col-md-2 control-label">@Html.DisplayFor(model => model.JobPositionName)</label>
-    
+
     @*@Html.DisplayNameFor(model => model.JobPositionName) : @Html.DisplayFor(model => model.JobPositionName)*@
     <br /><br />
 

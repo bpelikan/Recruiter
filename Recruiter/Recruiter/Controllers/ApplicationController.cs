@@ -147,7 +147,7 @@ namespace Recruiter.Controllers
             if (offer == null)
                 return RedirectToAction(nameof(OfferController.Index));
 
-            var vm = new ApplyApplicationDetailsViewModel()
+            var vm = new ApplyApplicationViewModel()
             {
                 JobPositionId = offer.Id,
                 JobPositionName = offer.Name,
@@ -172,7 +172,17 @@ namespace Recruiter.Controllers
                 }
 
                 if (Path.GetExtension(cv.FileName) != ".pdf")
-                    return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
+                {
+                    ModelState.AddModelError("", "CV must have .pdf extension.");
+                    return View(applyApplicationViewModel);
+                }
+
+                if (await _context.Applications
+                    .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
+                {
+                    ModelState.AddModelError("", "You have already sent application to this offer.");
+                    return View(applyApplicationViewModel);
+                }
 
                 var application = new Application()
                 {
@@ -191,7 +201,10 @@ namespace Recruiter.Controllers
             //add model error
 
             //return View(applyApplicationViewModel);
-            return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
+            //return RedirectToAction(nameof(ApplicationController.Apply), new { id = applyApplicationViewModel.JobPositionId });
+
+            ModelState.AddModelError("", "CV file not found.");
+            return View(applyApplicationViewModel);
         }
 
 

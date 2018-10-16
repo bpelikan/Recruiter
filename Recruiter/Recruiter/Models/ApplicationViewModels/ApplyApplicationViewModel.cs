@@ -8,6 +8,7 @@ namespace Recruiter.Models.ApplicationViewModels
     public class ApplyApplicationViewModel
     {
         public string JobPositionId { get; set; }
+        public string JobPositionName { get; set; }
         public string CvFileName { get; set; }
     }
 }
