@@ -151,8 +151,38 @@ namespace Recruiter.Controllers
             //var jobPosition = await _jobPositionRepository.GetAsync(id);
             var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == id);
 
-            if(jobPosition.Applications.Count != 0)
+            if (jobPosition.Applications.Count != 0)
+            {
                 throw new Exception($"Job position with id {id} has Applications. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            }
+
+            if (jobPosition != null)
+            {
+                await _jobPositionRepository.RemoveAsync(jobPosition);
+                return RedirectToAction(nameof(JobPositionController.Index));
+            }
+
+            throw new Exception($"Job position with id {id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            //ModelState.AddModelError("", "Something went wrong while deleting this user.");
+            //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFromIndex(string id)
+        {
+            //var jobPosition = await _jobPositionRepository.GetAsync(id);
+            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == id);
+
+            if (jobPosition.Applications.Count != 0)
+            {
+                ModelState.AddModelError("", "This JobPosition has already Applications.");
+
+                var jobPositions = await _jobPositionRepository.GetAllAsync();
+                jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
+
+                return View(nameof(JobPositionController.Index), vm);
+            }
 
             if (jobPosition != null)
             {
