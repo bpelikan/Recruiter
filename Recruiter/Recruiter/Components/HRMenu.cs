@@ -27,7 +27,7 @@ namespace Recruiter.Components
                 },
                 new HRMenuItem()
                 {
-                    DisplayValue = _stringLocalizer["JobPositions management"],
+                    DisplayValue = _stringLocalizer["Job Positions management"],
                     ControllerValue = "JobPosition",
                     ActionValue = "Index"
                 }};
