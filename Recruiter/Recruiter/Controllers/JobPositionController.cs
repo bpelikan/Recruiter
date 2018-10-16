@@ -34,6 +34,7 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> Index()
         {
             var jobPositions = await _jobPositionRepository.GetAllAsync();
+            jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
             var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
 
             return View(vm);

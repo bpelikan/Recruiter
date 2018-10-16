@@ -19,16 +19,23 @@ else
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Description</th>
-            <th>Akcje</th>
+            <th>End Time</th>
+            <th>Actions</th>
         </tr>
 
         @foreach (JobPositionViewModel jobPosition in Model)
         {
-            <tr>
+            @if (jobPosition.EndDate >= DateTime.Now || jobPosition.EndDate == null)
+            {
+                @:<tr style="background-color: lightyellow;">
+            }
+            else
+            {
+                @:<tr>
+            }
                 <td>@jobPosition.Id</td>
                 <td>@jobPosition.Name</td>
-                <td>@jobPosition.Description</td>
+                <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
                 <td>
                     <form asp-action="Delete" asp-route-id="@jobPosition.Id" method="post">
                         <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
@@ -38,7 +45,7 @@ else
                         </button>
                     </form>
                 </td>
-            </tr>
+            @:</tr>
         }
     </table>
 }
