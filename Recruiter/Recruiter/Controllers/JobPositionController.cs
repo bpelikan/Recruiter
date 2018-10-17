@@ -66,7 +66,7 @@ namespace Recruiter.Controllers
         {
             var vm = new AddJobPositionViewModel()
             {
-                StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00),
+                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 00),
             };
 
             return View(vm);

@@ -59,7 +59,7 @@ namespace Recruiter.Controllers
                 await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ViewTime = DateTime.UtcNow,
+                    ViewTime = DateTime.Now,
                     ApplicationId = application.Id,
                     UserId = _userManager.GetUserId(HttpContext.User)
                 });
@@ -71,7 +71,7 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt.ToLocalTime(),
+                    CreatedAt = application.CreatedAt,
                     ApplicationsViewHistories = await _context.ApplicationsViewHistories
                                                         .Where(x => x.ApplicationId == application.Id)
                                                         .OrderByDescending(x => x.ViewTime)
@@ -241,7 +241,7 @@ namespace Recruiter.Controllers
                     CvFileName = applyApplicationViewModel.CvFileName,
                     JobPositionId = applyApplicationViewModel.JobPositionId,
                     UserId = userId,
-                    CreatedAt = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, DateTime.UtcNow.Second)
+                    CreatedAt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second)
                 };
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
