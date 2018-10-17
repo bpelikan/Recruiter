@@ -18,6 +18,7 @@ namespace Recruiter.Data
         public DbSet<JobPosition> JobPositions { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationStagesRequirement> ApplicationStagesRequirements { get; set; }
+        public DbSet<ApplicationsViewHistory> ApplicationsViewHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -51,6 +52,16 @@ namespace Recruiter.Data
                 .HasOne(x => x.JobPosition)
                 .WithOne(x => x.ApplicationStagesRequirement)
                 .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ApplicationsViewHistory>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.ApplicationsViewHistories)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationsViewHistory>()
+                .HasOne(x => x.Application)
+                .WithMany(x => x.ApplicationsViewHistories)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -19,5 +19,7 @@ namespace Recruiter.Models
 
         public string JobPositionId { get; set; }
         public virtual JobPosition JobPosition { get; set; }
+
+        public virtual ICollection<ApplicationsViewHistory> ApplicationsViewHistories { get; set; }
     }
 }

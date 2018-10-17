@@ -21,6 +21,20 @@
     <Compile Remove="Data\Migrations\20180918150610_AddRelation.Designer.cs" />
     <Compile Remove="Data\Migrations\20181017141624_AddRelationRequirement2.cs" />
     <Compile Remove="Data\Migrations\20181017141624_AddRelationRequirement2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017142701_AddApplicationsViewHistory.cs" />
+    <Compile Remove="Data\Migrations\20181017142701_AddApplicationsViewHistory.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017144515_UpdateApplicationsViewHistory.cs" />
+    <Compile Remove="Data\Migrations\20181017144515_UpdateApplicationsViewHistory.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017145339_UpdateApplicationsViewHistory2.cs" />
+    <Compile Remove="Data\Migrations\20181017145339_UpdateApplicationsViewHistory2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017145707_UpdateApplicationsViewHistory2.cs" />
+    <Compile Remove="Data\Migrations\20181017145707_UpdateApplicationsViewHistory2.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017150041_UpdateApplicationsViewHistory.cs" />
+    <Compile Remove="Data\Migrations\20181017150041_UpdateApplicationsViewHistory.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017150324_UpdateApplicationsViewHistory.cs" />
+    <Compile Remove="Data\Migrations\20181017150324_UpdateApplicationsViewHistory.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017152122_AddApplicationsViewHistory.cs" />
+    <Compile Remove="Data\Migrations\20181017152122_AddApplicationsViewHistory.Designer.cs" />
   </ItemGroup>
 
 
