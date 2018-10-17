@@ -26,7 +26,7 @@ else
                     <a asp-action="MyApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">@application.JobPosition.Name</a>
                 </td>
                 <td>
-                    @application.CreatedAt
+                    @Html.DisplayFor(model => application.CreatedAt)
                 </td>
             </tr>
         }
