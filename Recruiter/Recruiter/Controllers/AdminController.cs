@@ -178,15 +178,23 @@ namespace Recruiter.Controllers
             if (user != null)
             {
                 var usersApplications = _context.Applications.Where(x => x.UserId == user.Id);
-
                 foreach (var application in usersApplications)
                 {
                     var deleteResult = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-
                     if (!deleteResult)
                     {
                         throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
                     }
+                }
+
+                var usersApplicationsViewHistory = _context.ApplicationsViewHistories.Where(x => x.UserId == user.Id);
+                _context.ApplicationsViewHistories.RemoveRange(usersApplicationsViewHistory);
+                await _context.SaveChangesAsync();
+
+                var historyCount = _context.ApplicationsViewHistories.Where(x => x.UserId == user.Id).Count();
+                if (historyCount != 0)
+                {
+                    throw new Exception($"Something went wrong while deleting users application view history. UserId: {user.Id}, HistoryCount: {historyCount}");
                 }
 
                 IdentityResult result = await _userManager.DeleteAsync(user);
