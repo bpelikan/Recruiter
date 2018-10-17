@@ -59,7 +59,7 @@ namespace Recruiter.Controllers
                 await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ViewTime = DateTime.Now,
+                    ViewTime = DateTime.UtcNow,
                     ApplicationId = application.Id,
                     UserId = _userManager.GetUserId(HttpContext.User)
                 });
@@ -71,7 +71,7 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt,
+                    CreatedAt = application.CreatedAt.ToLocalTime(),
                     ApplicationsViewHistories = await _context.ApplicationsViewHistories
                                                         .Where(x => x.ApplicationId == application.Id)
                                                         .OrderByDescending(x => x.ViewTime)
