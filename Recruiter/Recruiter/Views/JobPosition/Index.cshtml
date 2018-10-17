@@ -25,7 +25,7 @@ else
 
         @foreach (JobPositionViewModel jobPosition in Model)
         {
-            @if (jobPosition.EndDate >= DateTime.Now || jobPosition.EndDate == null)
+            @if ((jobPosition.EndDate >= DateTime.UtcNow.ToLocalTime() || jobPosition.EndDate == null) && jobPosition.StartDate <= DateTime.UtcNow.ToLocalTime())
             {
                 @:<tr style="background-color: lightyellow;">
             }

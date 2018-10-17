@@ -31,7 +31,7 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> Index()
         {
             var jobPositions = await _jobPositionRepository.GetAllAsync();
-            jobPositions = jobPositions.Where(x => x.EndDate >= DateTime.Now || x.EndDate == null);
+            jobPositions = jobPositions.Where(x => (x.EndDate >= DateTime.UtcNow || x.EndDate == null) && x.StartDate <= DateTime.UtcNow);
             var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<OfferViewModel>>(jobPositions);
 
             return View(vm);
