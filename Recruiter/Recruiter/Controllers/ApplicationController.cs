@@ -59,11 +59,19 @@ namespace Recruiter.Controllers
                 await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ViewTime = DateTime.Now,
+                    ViewTime = DateTime.UtcNow,
                     ApplicationId = application.Id,
                     UserId = _userManager.GetUserId(HttpContext.User)
                 });
                 await _context.SaveChangesAsync();
+
+                var viewHistories = await _context.ApplicationsViewHistories
+                                                    .Where(x => x.ApplicationId == application.Id)
+                                                    .OrderByDescending(x => x.ViewTime)
+                                                    .Take(20)
+                                                    .ToListAsync();
+                foreach (var viewHistory in viewHistories)
+                    viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
 
                 var vm = new ApplicationDetailsViewModel()
                 {
@@ -71,14 +79,10 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt,
-                    ApplicationsViewHistories = await _context.ApplicationsViewHistories
-                                                        .Where(x => x.ApplicationId == application.Id)
-                                                        .OrderByDescending(x => x.ViewTime)
-                                                        .Take(20)
-                                                        .ToListAsync()
+                    CreatedAt = application.CreatedAt.ToLocalTime(),
+                    ApplicationsViewHistories = viewHistories
                 };
-
+                
                 return View(vm);
             }
 
@@ -99,6 +103,8 @@ namespace Recruiter.Controllers
                                             .Where(x => x.ApplicationId == application.Id)
                                             .OrderByDescending(x => x.ViewTime)
                                             .ToListAsync();
+                foreach (var viewHistory in vm)
+                    viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
 
                 return View(vm);
             }
@@ -115,6 +121,8 @@ namespace Recruiter.Controllers
             var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Where(x => x.UserId == userId);
 
             var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<MyApplicationsViewModel>>(applications);
+            foreach (var application in vm)
+                application.CreatedAt = application.CreatedAt.ToLocalTime();
 
             return View(vm);
         }
@@ -132,7 +140,7 @@ namespace Recruiter.Controllers
                 await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ViewTime = DateTime.Now,
+                    ViewTime = DateTime.UtcNow,
                     ApplicationId = application.Id,
                     UserId = _userManager.GetUserId(HttpContext.User)
                 });
@@ -144,7 +152,7 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt,
+                    CreatedAt = application.CreatedAt.ToLocalTime(),
                     ApplicationViews = await _context.ApplicationsViewHistories
                                                     .Where(x => x.ApplicationId == application.Id && x.UserId != userId)
                                                     .CountAsync(),
@@ -241,7 +249,7 @@ namespace Recruiter.Controllers
                     CvFileName = applyApplicationViewModel.CvFileName,
                     JobPositionId = applyApplicationViewModel.JobPositionId,
                     UserId = userId,
-                    CreatedAt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second)
+                    CreatedAt = DateTime.UtcNow
                 };
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();

@@ -226,7 +226,7 @@ namespace Recruiter.Controllers
                     UserName = model.Email,
                     PhoneNumber = model.PhoneNumber,
                     Email = model.Email,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

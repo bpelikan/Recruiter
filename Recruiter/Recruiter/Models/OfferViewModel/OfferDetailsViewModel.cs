@@ -16,12 +16,12 @@ namespace Recruiter.Models.OfferViewModel
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Start Date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
-        public DateTime StartDate { get; set; }
+        //[Display(Name = "Start Date")]
+        //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
+        //public DateTime StartDate { get; set; }
 
-        [Display(Name = "End Date")]
-        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
-        public DateTime? EndDate { get; set; }
+        //[Display(Name = "End Date")]
+        //[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
+        //public DateTime? EndDate { get; set; }
     }
 }

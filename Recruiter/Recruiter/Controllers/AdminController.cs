@@ -70,6 +70,7 @@ namespace Recruiter.Controllers
             {
                 User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(user)
             };
+            vm.User.CreatedAt = vm.User.CreatedAt.ToLocalTime();
 
             foreach (var role in _roleManager.Roles)
             {
@@ -82,7 +83,6 @@ namespace Recruiter.Controllers
                     vm.AddRole(role.Name, false);
                 }
             }
-
             return View(vm);
         }
 
@@ -104,7 +104,7 @@ namespace Recruiter.Controllers
                 FirstName = addUserViewModel.FirstName,
                 LastName = addUserViewModel.LastName,
                 PhoneNumber = addUserViewModel.PhoneNumber,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, addUserViewModel.Password);

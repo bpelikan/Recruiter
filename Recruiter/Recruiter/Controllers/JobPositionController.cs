@@ -37,6 +37,12 @@ namespace Recruiter.Controllers
             jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
             var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
 
+            foreach (var jobPosition in vm)
+            {
+                jobPosition.StartDate = jobPosition.StartDate.ToLocalTime();
+                jobPosition.EndDate = jobPosition.EndDate?.ToLocalTime();
+            }
+
             return View(vm);
         }
 
@@ -45,17 +51,18 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var jobPosition = await _jobPositionRepository.GetAsync(id);
-            //jobPosition.Creator = _mapper.Map<ApplicationUser, UserDetailsViewModel>(jobPosition.Creator);
 
             if (jobPosition == null)
                 return RedirectToAction(nameof(JobPositionController.Index));
 
             var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
+            vm.StartDate = vm.StartDate.ToLocalTime();
+            vm.EndDate = vm.EndDate?.ToLocalTime();
 
             var applications = await _context.Applications.Include(x => x.User).Where(x => x.JobPositionId == jobPosition.Id).ToListAsync();
-
             foreach (var application in applications)
             {
+                application.CreatedAt = application.CreatedAt.ToLocalTime();
                 vm.AddApplication(application);
             }
 
@@ -66,7 +73,8 @@ namespace Recruiter.Controllers
         {
             var vm = new AddJobPositionViewModel()
             {
-                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 00),
+                StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 
+                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             };
 
             return View(vm);
@@ -84,8 +92,8 @@ namespace Recruiter.Controllers
                 Id = Guid.NewGuid().ToString(),
                 Name = addJobPositionViewModel.Name,
                 Description = addJobPositionViewModel.Description,
-                StartDate = addJobPositionViewModel.StartDate,
-                EndDate = addJobPositionViewModel.EndDate,
+                StartDate = addJobPositionViewModel.StartDate.ToUniversalTime(),
+                EndDate = addJobPositionViewModel.EndDate?.ToUniversalTime(),
                 CreatorId = userId,
                 ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
             };
@@ -116,6 +124,8 @@ namespace Recruiter.Controllers
             }
 
             var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
+            vm.StartDate = vm.StartDate.ToLocalTime();
+            vm.EndDate = vm.EndDate?.ToLocalTime();
 
             return View(vm);
         }
@@ -132,8 +142,8 @@ namespace Recruiter.Controllers
             {
                 jobPosition.Name = editJobPositionViewModel.Name;
                 jobPosition.Description = editJobPositionViewModel.Description;
-                jobPosition.StartDate = editJobPositionViewModel.StartDate;
-                jobPosition.EndDate = editJobPositionViewModel.EndDate;
+                jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
+                jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
 
                 await _jobPositionRepository.UpdateAsync(jobPosition);
 
