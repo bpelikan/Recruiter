@@ -25,7 +25,7 @@ namespace Recruiter.Models.AdminViewModels
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Created At")]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm:ss}")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime CreatedAt { get; set; }
     }
 }

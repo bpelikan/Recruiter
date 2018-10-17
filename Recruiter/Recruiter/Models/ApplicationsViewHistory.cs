@@ -11,7 +11,7 @@ namespace Recruiter.Models
         public string Id { get; set; }
 
         [Display(Name = "View Time")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime ViewTime { get; set; }
 
         [Display(Name = "User Id")]
