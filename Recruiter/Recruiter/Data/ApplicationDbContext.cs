@@ -39,6 +39,7 @@ namespace Recruiter.Data
             builder.Entity<ApplicationUser>()
                 .HasMany(x => x.Applications)
                 .WithOne(x => x.User)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<JobPosition>()
@@ -49,6 +50,7 @@ namespace Recruiter.Data
             builder.Entity<ApplicationStagesRequirement>()
                 .HasOne(x => x.JobPosition)
                 .WithOne(x => x.ApplicationStagesRequirement)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

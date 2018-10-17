@@ -19,6 +19,8 @@
     <Compile Remove="Data\Migrations\20180908224322_TestTest.Designer.cs" />
     <Compile Remove="Data\Migrations\20180918150610_AddRelation.cs" />
     <Compile Remove="Data\Migrations\20180918150610_AddRelation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20181017141624_AddRelationRequirement2.cs" />
+    <Compile Remove="Data\Migrations\20181017141624_AddRelationRequirement2.Designer.cs" />
   </ItemGroup>
 
 

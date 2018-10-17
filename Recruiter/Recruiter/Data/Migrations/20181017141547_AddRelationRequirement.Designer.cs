@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruiter.Data;
 
 namespace Recruiter.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181017141547_AddRelationRequirement")]
+    partial class AddRelationRequirement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +137,8 @@ namespace Recruiter.Data.Migrations
 
                     b.Property<string>("CvFileName");
 
-                    b.Property<string>("JobPositionId");
+                    b.Property<string>("JobPositionId")
+                        .IsRequired();
 
                     b.Property<string>("UserId")
                         .IsRequired();
