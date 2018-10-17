@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ApplicationsViewHistory>
+
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "ApplicationsViewHistory";
+}
+
+<h2>Applications View History (@Model.Count())</h2>
+
+
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>
+
+<div class="row panel-body">
+    @*<hr />*@
+    @if (Model.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Applications View History">
+            <thead>
+                <tr>
+                    <th>View Time</th>
+                    <th>User</th>
+                    <th>Application</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var applicationViewHistory in Model)
+                {
+                    @if (UserManager.GetUserId(User) == applicationViewHistory.UserId)
+                    {
+                        @:<tr style="background-color: lightgray;">
+                    }
+                    else
+                    {
+                        @:<tr>
+                    }
+                    
+                        <td>@Html.DisplayFor(model => applicationViewHistory.ViewTime)</td>
+                        <td><a asp-controller="Admin" asp-action="UserDetails" asp-route-id="@applicationViewHistory.UserId" asp-route-returnurl="@Context.Request.Path">@applicationViewHistory.UserId</a></td>
+                        <td><a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@applicationViewHistory.ApplicationId" asp-route-returnurl="@Context.Request.Path">@applicationViewHistory.ApplicationId</a></td>
+                    @:</tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Applications View History not found.
+    }
+</div>

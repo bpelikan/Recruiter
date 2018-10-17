@@ -8,6 +8,8 @@ namespace Recruiter.Models.ApplicationViewModels
 {
     public class ApplicationDetailsViewModel
     {
+        public string Id { get; set; }
+
         public virtual UserDetailsViewModel User { get; set; }
 
         public virtual JobPositionViewModel JobPosition { get; set; }
@@ -16,5 +18,7 @@ namespace Recruiter.Models.ApplicationViewModels
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime CreatedAt { get; set; }
+
+        public virtual ICollection<ApplicationsViewHistory> ApplicationsViewHistories { get; set; }
     }
 }

@@ -42,14 +42,13 @@ namespace Recruiter.Controllers
         public IActionResult Applications()
         {
             var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
-
             var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
 
             return View(vm);
         }
 
         [Authorize(Roles = "Recruiter, Administrator")]
-        public ActionResult ApplicationDetails(string id, string returnUrl = null)
+        public async Task<ActionResult> ApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
@@ -57,12 +56,27 @@ namespace Recruiter.Controllers
 
             if (application != null)
             {
+                await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ViewTime = DateTime.Now,
+                    ApplicationId = application.Id,
+                    UserId = _userManager.GetUserId(HttpContext.User)
+                });
+                await _context.SaveChangesAsync();
+
                 var vm = new ApplicationDetailsViewModel()
                 {
+                    Id = application.Id,
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt
+                    CreatedAt = application.CreatedAt,
+                    ApplicationsViewHistories = await _context.ApplicationsViewHistories
+                                                        .Where(x => x.ApplicationId == application.Id)
+                                                        .OrderByDescending(x => x.ViewTime)
+                                                        .Take(20)
+                                                        .ToListAsync()
                 };
 
                 return View(vm);
@@ -71,6 +85,28 @@ namespace Recruiter.Controllers
             //Add error: loading application
             return RedirectToAction(nameof(OfferController.Index));
         }
+
+        [Authorize(Roles = "Recruiter, Administrator")]
+        public async Task<ActionResult> ApplicationsViewHistory(string id, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var application = _context.Applications.FirstOrDefault(x => x.Id == id);
+
+            if (application != null)
+            {
+                var vm = await _context.ApplicationsViewHistories
+                                            .Where(x => x.ApplicationId == application.Id)
+                                            .OrderByDescending(x => x.ViewTime)
+                                            .ToListAsync();
+
+                return View(vm);
+            }
+
+            //Add error: loading application Views
+            return RedirectToAction(nameof(OfferController.Index));
+        }
+
 
         [Authorize(Roles = "Recruit")]
         public IActionResult MyApplications()
@@ -84,7 +120,7 @@ namespace Recruiter.Controllers
         }
 
         [Authorize(Roles = "Recruit")]
-        public ActionResult MyApplicationDetails(string id, string returnUrl = null)
+        public async Task<ActionResult> MyApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
@@ -93,13 +129,28 @@ namespace Recruiter.Controllers
 
             if (application != null && userId == application.UserId )
             {
+                await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ViewTime = DateTime.Now,
+                    ApplicationId = application.Id,
+                    UserId = _userManager.GetUserId(HttpContext.User)
+                });
+                await _context.SaveChangesAsync();
+
                 var vm = new MyApplicationDetailsViewModel()
                 {
                     Id = application.Id,
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt
+                    CreatedAt = application.CreatedAt,
+                    ApplicationViews = await _context.ApplicationsViewHistories
+                                                    .Where(x => x.ApplicationId == application.Id && x.UserId != userId)
+                                                    .CountAsync(),
+                    ApplicationViewsAll = await _context.ApplicationsViewHistories
+                                                    .Where(x => x.ApplicationId == application.Id)
+                                                    .CountAsync()
                 };
 
                 return View(vm);
