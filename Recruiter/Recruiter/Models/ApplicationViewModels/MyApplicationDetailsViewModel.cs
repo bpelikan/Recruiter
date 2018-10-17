@@ -15,7 +15,7 @@ namespace Recruiter.Models.ApplicationViewModels
 
         public string CvFileUrl { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy HH:mm:ss}")]
         public DateTime CreatedAt { get; set; }
 
         [Display(Name = "Views")]
