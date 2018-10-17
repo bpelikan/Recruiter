@@ -241,7 +241,7 @@ namespace Recruiter.Controllers
                     CvFileName = applyApplicationViewModel.CvFileName,
                     JobPositionId = applyApplicationViewModel.JobPositionId,
                     UserId = userId,
-                    CreatedAt = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second)
+                    CreatedAt = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, DateTime.UtcNow.Second)
                 };
                 await _context.Applications.AddAsync(application);
                 await _context.SaveChangesAsync();
