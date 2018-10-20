@@ -187,9 +187,6 @@ namespace Recruiter.Controllers
                 throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
             }
 
-            //var applicationStages = _context.ApplicationStages.Where(x => x.ApplicationId == application.Id);
-            //_context.ApplicationStages.RemoveRange(applicationStages);
-
             var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
             if (!delete)
             {
