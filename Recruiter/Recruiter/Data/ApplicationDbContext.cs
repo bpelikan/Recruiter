@@ -69,6 +69,12 @@ namespace Recruiter.Data
                 .HasOne(x => x.Application)
                 .WithMany(x => x.ApplicationsViewHistories)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ApplicationStageBase>()
+                .HasOne(x => x.Application)
+                .WithMany(x => x.ApplicationStages)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
