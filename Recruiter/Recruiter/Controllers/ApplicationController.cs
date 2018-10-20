@@ -186,7 +186,10 @@ namespace Recruiter.Controllers
             {
                 throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
             }
-            
+
+            var applicationStages = _context.ApplicationStages.Where(x => x.ApplicationId == application.Id);
+            _context.ApplicationStages.RemoveRange(applicationStages);
+
             var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
             if (!delete)
             {
@@ -254,7 +257,7 @@ namespace Recruiter.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
                 await _context.Applications.AddAsync(application);
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
 
                 var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
                 List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
