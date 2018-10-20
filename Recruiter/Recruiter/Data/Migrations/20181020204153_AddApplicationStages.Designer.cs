@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruiter.Data;
 
 namespace Recruiter.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181020204153_AddApplicationStages")]
+    partial class AddApplicationStages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,9 +162,6 @@ namespace Recruiter.Data.Migrations
 
                     b.Property<string>("ApplicationId");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
-
                     b.Property<int>("Level");
 
                     b.Property<string>("Note");
@@ -176,8 +175,6 @@ namespace Recruiter.Data.Migrations
                     b.HasIndex("ApplicationId");
 
                     b.ToTable("ApplicationStages");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationStageBase");
                 });
 
             modelBuilder.Entity("Recruiter.Models.ApplicationStagesRequirement", b =>
@@ -301,55 +298,6 @@ namespace Recruiter.Data.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("JobPositions");
-                });
-
-            modelBuilder.Entity("Recruiter.Models.ApplicationApproval", b =>
-                {
-                    b.HasBaseType("Recruiter.Models.ApplicationStageBase");
-
-
-                    b.ToTable("ApplicationApproval");
-
-                    b.HasDiscriminator().HasValue("ApplicationApproval");
-                });
-
-            modelBuilder.Entity("Recruiter.Models.Homework", b =>
-                {
-                    b.HasBaseType("Recruiter.Models.ApplicationStageBase");
-
-                    b.Property<string>("Description");
-
-                    b.Property<int>("Duration");
-
-                    b.Property<DateTime?>("EndTime");
-
-                    b.Property<DateTime?>("StartTime");
-
-                    b.Property<string>("Url");
-
-                    b.ToTable("Homework");
-
-                    b.HasDiscriminator().HasValue("Homework");
-                });
-
-            modelBuilder.Entity("Recruiter.Models.Interview", b =>
-                {
-                    b.HasBaseType("Recruiter.Models.ApplicationStageBase");
-
-
-                    b.ToTable("Interview");
-
-                    b.HasDiscriminator().HasValue("Interview");
-                });
-
-            modelBuilder.Entity("Recruiter.Models.PhoneCall", b =>
-                {
-                    b.HasBaseType("Recruiter.Models.ApplicationStageBase");
-
-
-                    b.ToTable("PhoneCall");
-
-                    b.HasDiscriminator().HasValue("PhoneCall");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

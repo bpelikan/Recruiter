@@ -19,6 +19,12 @@ namespace Recruiter.Data
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationStagesRequirement> ApplicationStagesRequirements { get; set; }
         public DbSet<ApplicationsViewHistory> ApplicationsViewHistories { get; set; }
+        public DbSet<ApplicationStageBase> ApplicationStages { get; set; }
+        public DbSet<ApplicationApproval> ApplicationApprovals { get; set; }
+        public DbSet<PhoneCall> PhoneCalls { get; set; }
+        public DbSet<Homework> Homeworks { get; set; }
+        public DbSet<Interview> Interviews { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

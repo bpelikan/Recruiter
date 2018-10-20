@@ -43,6 +43,8 @@ namespace Recruiter.Controllers
         {
             var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
             var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
+            foreach (var application in vm)
+                application.CreatedAt = application.CreatedAt.ToLocalTime();
 
             return View(vm);
         }
@@ -52,7 +54,7 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
+            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages).FirstOrDefault(x => x.Id == id);
 
             if (application != null)
             {
@@ -252,6 +254,51 @@ namespace Recruiter.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
                 await _context.Applications.AddAsync(application);
+                await _context.SaveChangesAsync();
+
+                var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
+                List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
+                if(applicationStagesRequirements.IsApplicationApprovalRequired)
+                {
+                    applicationStages.Add(new ApplicationApproval() {
+                        Id = Guid.NewGuid().ToString(),
+                        ApplicationId = application.Id,
+                        Level = 1,
+                        Accepted = false
+                    });
+                }
+                if (applicationStagesRequirements.IsPhoneCallRequired)
+                {
+                    applicationStages.Add(new PhoneCall()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ApplicationId = application.Id,
+                        Level = 2,
+                        Accepted = false
+                    });
+                }
+                if (applicationStagesRequirements.IsHomeworkRequired)
+                {
+                    applicationStages.Add(new Homework()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ApplicationId = application.Id,
+                        Level = 3,
+                        Accepted = false
+                    });
+                }
+                if (applicationStagesRequirements.IsInterviewRequired)
+                {
+                    applicationStages.Add(new Interview()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ApplicationId = application.Id,
+                        Level = 4,
+                        Accepted = false
+                    });
+                }
+
+                await _context.ApplicationStages.AddRangeAsync(applicationStages);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(ApplicationController.MyApplicationDetails), new { id = application.Id });
