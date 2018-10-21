@@ -67,6 +67,7 @@ namespace Recruiter.Controllers
                 });
                 await _context.SaveChangesAsync();
 
+                var applicationStages = _context.ApplicationStages.Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
                 var viewHistories = await _context.ApplicationsViewHistories
                                                     .Where(x => x.ApplicationId == application.Id)
                                                     .OrderByDescending(x => x.ViewTime)
@@ -74,7 +75,7 @@ namespace Recruiter.Controllers
                                                     .ToListAsync();
                 foreach (var viewHistory in viewHistories)
                     viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
-
+                
                 var vm = new ApplicationDetailsViewModel()
                 {
                     Id = application.Id,
@@ -82,7 +83,8 @@ namespace Recruiter.Controllers
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
                     CreatedAt = application.CreatedAt.ToLocalTime(),
-                    ApplicationsViewHistories = viewHistories
+                    ApplicationsViewHistories = viewHistories,
+                    ApplicationStages = applicationStages.ToList()
                 };
                 
                 return View(vm);

@@ -36,6 +36,40 @@
     </dl>
 </div>
 
+<h3>Stages</h3>
+
+<div class="row panel-body">
+    @*<hr />*@
+    @if (Model.ApplicationStages.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Type</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var applicationStage in Model.ApplicationStages)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => applicationStage.Level)</td>
+                        <td>
+                            @applicationStage.GetType().Name
+                            <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
+                        </td>
+                        <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Applications View History not found.
+    }
+</div>
 <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
 <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>
 
@@ -51,7 +85,6 @@
                 <tr>
                     <th>View Time</th>
                     <th>User</th>
-                    @*<th>Application</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +93,6 @@
                     <tr>
                         <td>@Html.DisplayFor(model => applicationViewHistory.ViewTime)</td>
                         <td><a asp-controller="Admin" asp-action="UserDetails" asp-route-id="@applicationViewHistory.UserId" asp-route-returnurl="@Context.Request.Path">@applicationViewHistory.UserId</a></td>
-                        @*<td><a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@applicationViewHistory.ApplicationId" asp-route-returnurl="@Context.Request.Path">@applicationViewHistory.ApplicationId</a></td>*@
                     </tr>
                 }
             </tbody>

@@ -19,6 +19,7 @@ namespace Recruiter.Models.ApplicationViewModels
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime CreatedAt { get; set; }
 
+        public virtual ICollection<ApplicationStageBase> ApplicationStages { get; set; }
         public virtual ICollection<ApplicationsViewHistory> ApplicationsViewHistories { get; set; }
     }
 }
