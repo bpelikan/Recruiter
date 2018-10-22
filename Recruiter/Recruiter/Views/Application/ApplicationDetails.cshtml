@@ -47,6 +47,7 @@
                 <tr>
                     <th>Level</th>
                     <th>Type</th>
+                    <th>State</th>
                     <th>Rate</th>
                 </tr>
             </thead>
@@ -59,6 +60,7 @@
                             @applicationStage.GetType().Name
                             <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
                         </td>
+                        <td>@Html.DisplayFor(model => applicationStage.State)</td>
                         <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
                     </tr>
                 }

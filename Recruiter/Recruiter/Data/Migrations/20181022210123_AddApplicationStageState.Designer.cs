@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruiter.Data;
 
 namespace Recruiter.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181022210123_AddApplicationStageState")]
+    partial class AddApplicationStageState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,6 +162,8 @@ namespace Recruiter.Data.Migrations
 
                     b.Property<string>("ApplicationId");
 
+                    b.Property<int>("ApplicationStageState");
+
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
@@ -168,8 +172,6 @@ namespace Recruiter.Data.Migrations
                     b.Property<string>("Note");
 
                     b.Property<int>("Rate");
-
-                    b.Property<int>("State");
 
                     b.HasKey("Id");
 
