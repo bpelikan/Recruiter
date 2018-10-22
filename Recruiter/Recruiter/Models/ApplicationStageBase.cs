@@ -69,7 +69,7 @@ namespace Recruiter.Models
     public enum ApplicationStageState
     {
         Waiting,
-        InProgress,
+        Assigned,
         Finished
     }
 }
