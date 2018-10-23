@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recruiter.Data;
 using Recruiter.Models;
@@ -23,7 +24,11 @@ namespace Recruiter.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public JobPositionController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, IJobPositionRepository jobPositionRepository, IMapper mapper)
+        public JobPositionController(
+            UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context, 
+            IJobPositionRepository jobPositionRepository, 
+            IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
@@ -69,13 +74,16 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
             var vm = new AddJobPositionViewModel()
             {
                 StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 
                                             DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             };
+
+            var users = await _userManager.GetUsersInRoleAsync("Recruiter");
+            ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email");
 
             return View(vm);
         }
@@ -84,7 +92,10 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel)
         {
             if (!ModelState.IsValid)
+            {
+                ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(_context.Users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
                 return View(addJobPositionViewModel);
+            }
 
             var userId = _userManager.GetUserId(HttpContext.User);
             var jobPosition = new JobPosition()
@@ -104,6 +115,7 @@ namespace Recruiter.Controllers
             if (jobPositionId != null)
                 return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
 
+            ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(_context.Users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
             ModelState.AddModelError("", "Something went wrong while adding this job position.");
 
             //throw new Exception()

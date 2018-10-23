@@ -197,6 +197,11 @@ namespace Recruiter.Controllers
                     throw new Exception($"Something went wrong while deleting users application view history. UserId: {user.Id}, HistoryCount: {historyCount}");
                 }
 
+                var applicatioApprovalResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForApplicatioApprovalId == user.Id);
+                foreach (var x in applicatioApprovalResponsibilities)
+                    x.DefaultResponsibleForApplicatioApprovalId = null;
+                await _context.SaveChangesAsync();
+
                 IdentityResult result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {

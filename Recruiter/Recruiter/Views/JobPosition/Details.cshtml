@@ -75,23 +75,33 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
                 <th>Required</th>
+                <th>Default Responsible</th>
             </tr>
 
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+                <td >
+                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.FirstAndLastName) 
+                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval != null">
+                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.Email))
+                    </b>
+                </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+                <td></td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+                <td></td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+                <td></td>
             </tr>
         </table>
     </div>
