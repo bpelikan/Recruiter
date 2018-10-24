@@ -12,6 +12,7 @@ using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.AdminViewModels;
 using Recruiter.Services;
+using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {

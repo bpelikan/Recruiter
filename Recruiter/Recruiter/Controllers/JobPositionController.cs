@@ -13,6 +13,7 @@ using Recruiter.Models;
 using Recruiter.Models.AdminViewModels;
 using Recruiter.Models.JobPositionViewModels;
 using Recruiter.Repositories;
+using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {

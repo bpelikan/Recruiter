@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Recruiter.Data
+namespace Recruiter.Shared
 {
     public static class RoleCollection
     {

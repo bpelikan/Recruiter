@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Recruiter.Models;
+using Recruiter.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

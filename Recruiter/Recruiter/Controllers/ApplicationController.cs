@@ -13,6 +13,7 @@ using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationViewModels;
 using Recruiter.Services;
+using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {
@@ -132,7 +133,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Recruit")]
+        [Authorize(Roles = RoleCollection.Recruit)]
         public async Task<ActionResult> MyApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -175,7 +176,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Recruit")]
+        [Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> DeleteMyApplication(string id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
@@ -202,7 +203,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationController.MyApplications));
         }
 
-        [Authorize(Roles = "Recruit")]
+        [Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> Apply(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -220,7 +221,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Recruit")]
+        [Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> Apply(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel)
         {
             if (!ModelState.IsValid)
