@@ -13,13 +13,10 @@ namespace Recruiter.Shared
 
         public const string Recruit = "Recruit";
 
-        public const string Test = "Test";
-
         public static HashSet<string> Roles = new HashSet<string>() {
                     Administrator,
                     Recruiter,
                     Recruit,
-                    Test
                 };
     }
 }
