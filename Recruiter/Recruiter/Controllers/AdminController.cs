@@ -201,7 +201,21 @@ namespace Recruiter.Controllers
                 var applicatioApprovalResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForApplicatioApprovalId == user.Id);
                 foreach (var x in applicatioApprovalResponsibilities)
                     x.DefaultResponsibleForApplicatioApprovalId = null;
+
+                var phoneCallResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForPhoneCallId == user.Id);
+                foreach (var x in phoneCallResponsibilities)
+                    x.DefaultResponsibleForApplicatioApprovalId = null;
+
+                var homeworkResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForHomeworkId == user.Id);
+                foreach (var x in homeworkResponsibilities)
+                    x.DefaultResponsibleForApplicatioApprovalId = null;
+
+                var interviewResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForInterviewId == user.Id);
+                foreach (var x in interviewResponsibilities)
+                    x.DefaultResponsibleForApplicatioApprovalId = null;
+
                 await _context.SaveChangesAsync();
+
 
                 IdentityResult result = await _userManager.DeleteAsync(user);
                 if (result.Succeeded)

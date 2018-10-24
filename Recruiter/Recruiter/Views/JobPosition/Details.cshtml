@@ -91,17 +91,32 @@
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
-                <td></td>
+                <td>
+                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.FirstAndLastName)
+                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall != null">
+                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.Email))
+                    </b>
+                </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
-                <td></td>
+                <td>
+                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.FirstAndLastName)
+                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForHomework != null">
+                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.Email))
+                    </b>
+                </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
                 <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
-                <td></td>
+                <td>
+                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.FirstAndLastName)
+                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForInterview != null">
+                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.Email))
+                    </b>
+                </td>
             </tr>
         </table>
     </div>
