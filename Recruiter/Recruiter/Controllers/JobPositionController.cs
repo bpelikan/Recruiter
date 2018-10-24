@@ -83,7 +83,7 @@ namespace Recruiter.Controllers
                                             DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             };
 
-            var users = await _userManager.GetUsersInRoleAsync("Recruiter");
+            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
             ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email");
             ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email");
             ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email");
@@ -118,7 +118,7 @@ namespace Recruiter.Controllers
                     ModelState.AddModelError("", "Something went wrong while adding this job position.");
             }
 
-            var users = await _userManager.GetUsersInRoleAsync("Recruiter");
+            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
             ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
             ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
             ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
@@ -127,7 +127,6 @@ namespace Recruiter.Controllers
             return View(addJobPositionViewModel);
 
             //throw new Exception()
-            //ModelState.AddModelError("", "Something went wrong while adding this job position.");
             //return View(addJobPositionViewModel);
         }
 
