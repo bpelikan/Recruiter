@@ -38,7 +38,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
-        [Authorize(Roles = "Recruiter, Administrator")]
+        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public IActionResult Applications()
         {
             var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
@@ -49,7 +49,7 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Recruiter, Administrator")]
+        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<ActionResult> ApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -95,7 +95,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(OfferController.Index));
         }
 
-        [Authorize(Roles = "Recruiter, Administrator")]
+        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<ActionResult> ApplicationsViewHistory(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -119,7 +119,7 @@ namespace Recruiter.Controllers
         }
 
 
-        [Authorize(Roles = "Recruit")]
+        [Authorize(Roles = RoleCollection.Recruit)]
         public IActionResult MyApplications()
         {
             var userId = _userManager.GetUserId(HttpContext.User);

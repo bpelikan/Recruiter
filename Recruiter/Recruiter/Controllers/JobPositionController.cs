@@ -16,7 +16,7 @@ using Recruiter.Repositories;
 
 namespace Recruiter.Controllers
 {
-    [Authorize(Roles = "Recruiter, Administrator")]
+    [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
     public class JobPositionController : Controller
     {
         private readonly IJobPositionRepository _jobPositionRepository;

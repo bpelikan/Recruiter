@@ -34,39 +34,51 @@ namespace Recruiter.Data
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "Administrator").Wait();
+                    userManager.AddToRoleAsync(user, RoleCollection.Administrator).Wait();
                 }
             }
         }
 
         public static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            if (!roleManager.RoleExistsAsync("Administrator").Result)
+            foreach (var roleName in RoleCollection.Roles)
             {
-                IdentityRole role = new IdentityRole()
+                if (!roleManager.RoleExistsAsync(roleName).Result)
                 {
-                    Name = "Administrator"
-                };
-                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                    IdentityRole role = new IdentityRole()
+                    {
+                        Name = roleName
+                    };
+                    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                }
             }
 
-            if (!roleManager.RoleExistsAsync("Recruiter").Result)
-            {
-                IdentityRole role = new IdentityRole()
-                {
-                    Name = "Recruiter"
-                };
-                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-            }
+            //if (!roleManager.RoleExistsAsync("Administrator").Result)
+            //{
+            //    IdentityRole role = new IdentityRole()
+            //    {
+            //        Name = "Administrator"
+            //    };
+            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            //}
 
-            if (!roleManager.RoleExistsAsync("Recruit").Result)
-            {
-                IdentityRole role = new IdentityRole()
-                {
-                    Name = "Recruit"
-                };
-                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-            }
+            //if (!roleManager.RoleExistsAsync("Recruiter").Result)
+            //{
+            //    IdentityRole role = new IdentityRole()
+            //    {
+            //        Name = "Recruiter"
+            //    };
+            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            //}
+
+            //if (!roleManager.RoleExistsAsync("Recruit").Result)
+            //{
+            //    IdentityRole role = new IdentityRole()
+            //    {
+            //        Name = "Recruit"
+            //    };
+            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+            //}
         }
     }
 }

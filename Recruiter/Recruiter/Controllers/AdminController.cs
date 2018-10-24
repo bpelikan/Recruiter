@@ -15,7 +15,7 @@ using Recruiter.Services;
 
 namespace Recruiter.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = RoleCollection.Administrator)]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
