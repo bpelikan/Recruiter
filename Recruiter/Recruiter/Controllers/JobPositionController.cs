@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recruiter.Data;
 using Recruiter.Models;
-using Recruiter.Models.AdminViewModels;
 using Recruiter.Models.JobPositionViewModels;
 using Recruiter.Repositories;
 using Recruiter.Shared;
@@ -98,6 +97,16 @@ namespace Recruiter.Controllers
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(HttpContext.User);
+
+                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId = 
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsApplicationApprovalRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId : null;
+                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId =
+                       addJobPositionViewModel.ApplicationStagesRequirement.IsPhoneCallRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId : null;
+                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId =
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsHomeworkRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId : null;
+                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId=
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsInterviewRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId : null;
+
                 var jobPosition = new JobPosition()
                 {
                     Id = Guid.NewGuid().ToString(),
