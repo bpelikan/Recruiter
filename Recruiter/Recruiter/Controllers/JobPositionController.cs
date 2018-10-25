@@ -98,14 +98,7 @@ namespace Recruiter.Controllers
             {
                 var userId = _userManager.GetUserId(HttpContext.User);
 
-                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId = 
-                    addJobPositionViewModel.ApplicationStagesRequirement.IsApplicationApprovalRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId : null;
-                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId =
-                       addJobPositionViewModel.ApplicationStagesRequirement.IsPhoneCallRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId : null;
-                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId =
-                    addJobPositionViewModel.ApplicationStagesRequirement.IsHomeworkRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId : null;
-                addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId=
-                    addJobPositionViewModel.ApplicationStagesRequirement.IsInterviewRequired ? addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId : null;
+                addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
 
                 var jobPosition = new JobPosition()
                 {

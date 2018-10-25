@@ -32,5 +32,17 @@ namespace Recruiter.Models
 
         public string JobPositionId { get; set; }
         public virtual JobPosition JobPosition { get; set; }
+
+        public void RemoveDefaultResponsibleIfStageIsDisabled()
+        {
+            if (!IsApplicationApprovalRequired)
+                DefaultResponsibleForApplicatioApprovalId = null;
+            if (!IsPhoneCallRequired)
+                DefaultResponsibleForPhoneCallId = null;
+            if (!IsHomeworkRequired)
+                DefaultResponsibleForHomeworkId = null;
+            if (!IsInterviewRequired)
+                DefaultResponsibleForInterviewId = null;
+        }
     }
 }
