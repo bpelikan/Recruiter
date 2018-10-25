@@ -214,6 +214,10 @@ namespace Recruiter.Controllers
                 foreach (var x in interviewResponsibilities)
                     x.DefaultResponsibleForApplicatioApprovalId = null;
 
+                var applicationStagesResponsibilities = _context.ApplicationStages.Where(x => x.ResponsibleUserId == user.Id);
+                foreach (var x in applicationStagesResponsibilities)
+                    x.ResponsibleUserId = null;
+
                 await _context.SaveChangesAsync();
 
 
