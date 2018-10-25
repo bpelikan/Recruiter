@@ -13,6 +13,8 @@ namespace Recruiter.Models.ApplicationViewModels
 
         public virtual JobPositionViewModel JobPosition { get; set; }
 
+        public virtual ICollection<ApplicationStageBase> ApplicationStages { get; set; }
+
         public string CvFileUrl { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]

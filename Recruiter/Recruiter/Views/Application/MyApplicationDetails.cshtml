@@ -39,6 +39,23 @@
         <dd>
             @Html.DisplayFor(model => model.ApplicationViews) (@Html.DisplayFor(model => model.ApplicationViewsAll))
         </dd>
+        <dt>
+            Stages
+        </dt>
+        <dd>
+            @foreach (var stage in Model.ApplicationStages)
+            {
+
+                @Html.DisplayFor(model => stage.GetType().Name)
+                <b Condition="!stage.Accepted">
+                    (@Html.DisplayFor(model => stage.State))
+                </b>
+                <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
+                <br />
+            }
+
+        </dd>
+        
     </dl>
 </div>
 

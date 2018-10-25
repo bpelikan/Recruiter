@@ -144,7 +144,7 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).FirstOrDefault(x => x.Id == id);
+            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages).FirstOrDefault(x => x.Id == id);
             var userId = _userManager.GetUserId(HttpContext.User);
 
             if (application != null && userId == application.UserId )
@@ -170,7 +170,9 @@ namespace Recruiter.Controllers
                                                     .CountAsync(),
                     ApplicationViewsAll = await _context.ApplicationsViewHistories
                                                     .Where(x => x.ApplicationId == application.Id)
-                                                    .CountAsync()
+                                                    .CountAsync(),
+                    ApplicationStages = application.ApplicationStages
+                                                    .OrderBy(x => x.Level).ToList()
                 };
 
                 return View(vm);

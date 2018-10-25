@@ -17,6 +17,6 @@ namespace Recruiter.Shared
                     Administrator,
                     Recruiter,
                     Recruit,
-                };
+        };
     }
 }
