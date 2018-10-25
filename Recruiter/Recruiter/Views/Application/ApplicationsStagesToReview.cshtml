@@ -1,0 +1,51 @@
+﻿@using Recruiter.Models.ApplicationViewModels
+@model ApplicationsStagesToReviewViewModel
+
+@{
+    ViewData["Title"] = "Applications";
+}
+
+<h2>Applications to review</h2>
+<a asp-action="ApplicationsStagesToReview" asp-route-stage="">All</a> |
+@foreach (var stage in Model.Stages)
+{
+    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+        @stage.Name
+        (@stage.Quantity)
+    </a> @:|
+}
+
+@*<a asp-action="Applications" asp-route-stage="ApplicationApproval">ApplicationApproval</a> |
+    <a asp-action="Applications" asp-route-stage="PhoneCall">PhoneCall</a> |
+    <a asp-action="Applications" asp-route-stage="Homework">Homework</a> |
+    <a asp-action="Applications" asp-route-stage="Interview">Interview</a>*@
+<br />
+@if (!Model.Applications.Any())
+{
+    <tr><td colspan="3" class="text-center">No applications</td></tr>
+}
+else
+{
+    <table class="table table-condensed table-bordered" header header-content="My applications">
+        <tr>
+            <th>User</th>
+            <th>Name</th>
+            <th>Apply time</th>
+        </tr>
+
+        @foreach (ApplicationViewModel application in Model.Applications)
+        {
+            <tr>
+                <td>
+                    @application.User.FirstName @application.User.LastName (@application.User.Email)
+                </td>
+                <td>
+                    <a asp-action="ApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">@application.JobPosition.Name</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => application.CreatedAt)
+                </td>
+            </tr>
+        }
+    </table>
+}

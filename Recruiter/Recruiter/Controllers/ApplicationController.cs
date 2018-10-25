@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +47,73 @@ namespace Recruiter.Controllers
             var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
             foreach (var application in vm)
                 application.CreatedAt = application.CreatedAt.ToLocalTime();
+
+            return View(vm);
+        }
+
+        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        public IActionResult ApplicationsStagesToReview(string stageName="")
+        {
+            //List<string> test = new List<string>();
+            //foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    if (t.IsSubclassOf(typeof(ApplicationStageBase)))
+            //        test.Add(t.Name);
+            //}
+            //IEnumerable<string> test = Assembly.GetExecutingAssembly()
+            //                        .GetTypes()
+            //                        .Where(x => x.IsSubclassOf(typeof(ApplicationStageBase)));
+            List<StagesViewModel> stages = new List<StagesViewModel>();
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            {
+                stages.Add(new StagesViewModel() {
+                    Name = t.Name,
+                    Quantity = _context.ApplicationStages
+                                    .Where(x => x.GetType().Name == t.Name && 
+                                                x.State == ApplicationStageState.InProgress &&
+                                                x.ResponsibleUserId == _userManager.GetUserId(HttpContext.User))
+                                    .Count(),
+                });
+            }
+
+            //List<Type> derivedTypes = ApplicationStageBase.GetDerivedTypes(typeof(BaseClass<>);
+
+            //ViewData["Stages"] = test;
+
+            var applications = _context.Applications
+                .Include(x => x.JobPosition)
+                .Include(x => x.User)
+                .Include(x => x.ApplicationStages)
+                .Where(x => x.ApplicationStages
+                                .Any(y =>   (y.GetType().Name == stageName || stageName == "") &&
+                                            y.State == ApplicationStageState.InProgress &&
+                                            y.ResponsibleUserId == _userManager.GetUserId(HttpContext.User))
+                );
+
+            var vm = new ApplicationsStagesToReviewViewModel() {
+                Stages = stages,
+            };
+            vm.Applications = new List<ApplicationViewModel>();
+            foreach (var app in applications)
+            {
+                vm.Applications.Add(new ApplicationViewModel()
+                {
+                    Id = app.Id,
+                    CreatedAt = app.CreatedAt.ToLocalTime(),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(app.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(app.JobPosition),
+                });
+            }
+
+
+            //var vm = new ApplicationsViewModel()
+            //{
+            //    Applications = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationViewModel>>(applications),
+            //    Stages = stages,
+            //};
+
+            //foreach (var application in vm.Applications)
+            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
 
             return View(vm);
         }
