@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.OfferViewModel;
 using Recruiter.Repositories;
-using Recruiter.Services;
 
 namespace Recruiter.Controllers
 {

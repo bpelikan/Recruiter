@@ -55,7 +55,10 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages).FirstOrDefault(x => x.Id == id);
+            var application = _context.Applications
+                                .Include(x => x.JobPosition)
+                                .Include(x => x.User)
+                                .FirstOrDefault(x => x.Id == id);
 
             if (application != null)
             {
@@ -68,7 +71,10 @@ namespace Recruiter.Controllers
                 });
                 await _context.SaveChangesAsync();
 
-                var applicationStages = _context.ApplicationStages.Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
+                var applicationStages = _context.ApplicationStages
+                                            .Include(x => x.ResponsibleUser)
+                                            .Include(x => x.AcceptedBy)
+                                            .Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
 
                 var viewHistories = await _context.ApplicationsViewHistories
                                                     .Where(x => x.ApplicationId == application.Id)
@@ -266,7 +272,8 @@ namespace Recruiter.Controllers
                 {
                     applicationStages.Add(new ApplicationApproval() {
                         Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id
+                        ApplicationId = application.Id,
+                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForApplicatioApprovalId
                     });
                 }
                 if (applicationStagesRequirements.IsPhoneCallRequired)
@@ -274,7 +281,8 @@ namespace Recruiter.Controllers
                     applicationStages.Add(new PhoneCall()
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id
+                        ApplicationId = application.Id,
+                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForPhoneCallId
                     });
                 }
                 if (applicationStagesRequirements.IsHomeworkRequired)
@@ -282,7 +290,8 @@ namespace Recruiter.Controllers
                     applicationStages.Add(new Homework()
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id
+                        ApplicationId = application.Id,
+                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId
                     });
                 }
                 if (applicationStagesRequirements.IsInterviewRequired)
@@ -290,7 +299,8 @@ namespace Recruiter.Controllers
                     applicationStages.Add(new Interview()
                     {
                         Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id
+                        ApplicationId = application.Id,
+                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForInterviewId
                     });
                 }
 

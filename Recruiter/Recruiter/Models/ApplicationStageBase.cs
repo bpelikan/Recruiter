@@ -24,8 +24,12 @@ namespace Recruiter.Models
         public string ApplicationId { get; set; }
         public virtual Application Application { get; set; }
 
+        public string ResponsibleUserId { get; set; }
+        public virtual ApplicationUser ResponsibleUser { get; set; }
+
         public string AcceptedById { get; set; }
         public virtual ApplicationUser AcceptedBy { get; set; }
+
     }
 
     public class ApplicationApproval : ApplicationStageBase
