@@ -6,13 +6,36 @@
 }
 
 <h2>Applications to review</h2>
-<a asp-action="ApplicationsStagesToReview" asp-route-stage="">All</a> |
+@if (Model.Stages.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
+{
+    <b>
+        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> |
+    </b>
+}
+else
+{
+    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> @:|
+}
+
 @foreach (var stage in Model.Stages)
 {
-    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-        @stage.Name
-        (@stage.Quantity)
-    </a> @:|
+    if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+    {
+        <b>
+            <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+                @stage.Name
+                (@stage.Quantity)
+            </a> |
+        </b>
+
+    }
+    else
+    {
+        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+            @stage.Name
+            (@stage.Quantity)
+        </a> @:|
+    }
 }
 
 @*<a asp-action="Applications" asp-route-stage="ApplicationApproval">ApplicationApproval</a> |
