@@ -69,9 +69,11 @@
                             @Html.DisplayFor(model => applicationStage.ResponsibleUser.LastName)
                             <b Condition="applicationStage.ResponsibleUserId != null">
                                 (@Html.DisplayFor(model => applicationStage.ResponsibleUser.Email))
+                                <a Condition="applicationStage.State == ApplicationStageState.Waiting" asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Change</a>
                             </b>
                             <b Condition="applicationStage.ResponsibleUserId == null">
                                 (not assigned)
+                                <a asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Assing</a>
                             </b>
                         </td>
                         <td>
