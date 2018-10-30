@@ -25,10 +25,10 @@ namespace Recruiter.Controllers
             _userManager = userManager;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        public IActionResult Index()
+        {
+            return RedirectToAction(nameof(HomeController.Index), "Home");
+        }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
