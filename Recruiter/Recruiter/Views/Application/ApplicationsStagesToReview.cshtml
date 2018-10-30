@@ -23,8 +23,8 @@ else
     {
         <b>
             <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-                @stage.Name
-                (@stage.Quantity)
+                @Html.DisplayFor(x => stage.Name)
+                (@Html.DisplayFor(x => stage.Quantity))
             </a> |
         </b>
 
@@ -32,8 +32,8 @@ else
     else
     {
         <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-            @stage.Name
-            (@stage.Quantity)
+            @Html.DisplayFor(x => stage.Name)
+            (@Html.DisplayFor(x => stage.Quantity))
         </a> @:|
     }
 }
