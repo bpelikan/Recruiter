@@ -65,10 +65,13 @@
                         <td>@Html.DisplayFor(model => applicationStage.State)</td>
                         <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
                         <td>
-                            @Html.DisplayFor(model => applicationStage.ResponsibleUser.FirstName) 
-                            @Html.DisplayFor(model => applicationStage.ResponsibleUser.LastName) 
+                            @Html.DisplayFor(model => applicationStage.ResponsibleUser.FirstName)
+                            @Html.DisplayFor(model => applicationStage.ResponsibleUser.LastName)
                             <b Condition="applicationStage.ResponsibleUserId != null">
                                 (@Html.DisplayFor(model => applicationStage.ResponsibleUser.Email))
+                            </b>
+                            <b Condition="applicationStage.ResponsibleUserId == null">
+                                (not assigned)
                             </b>
                         </td>
                         <td>

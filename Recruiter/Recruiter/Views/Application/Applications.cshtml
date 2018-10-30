@@ -32,6 +32,9 @@ else
                 </td>
                 <td>
                     @Html.DisplayFor(model => application.CurrentStage)
+                    <b Condition="!application.CurrentStageIsAssigned">
+                        (not assigned)
+                    </b>
                 </td>
                 <td>
                     @Html.DisplayFor(model => application.CreatedAt)

@@ -14,6 +14,7 @@ namespace Recruiter.Models.ApplicationViewModels
         public DateTime CreatedAt { get; set; }
 
         public string CurrentStage { get; set; }
+        public bool CurrentStageIsAssigned { get; set; }
 
         public virtual JobPositionViewModel JobPosition { get; set; }
 

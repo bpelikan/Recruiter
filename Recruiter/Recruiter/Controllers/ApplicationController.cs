@@ -59,13 +59,15 @@ namespace Recruiter.Controllers
 
             foreach (var application in applications)
             {
+                var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).First();
                 vm.Add(new ApplicationsViewModel()
                 {
                     Id = application.Id,
                     CreatedAt = application.CreatedAt.ToLocalTime(),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                    CurrentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).First().GetType().Name
+                    CurrentStage = currentStage.GetType().Name,
+                    CurrentStageIsAssigned = currentStage.ResponsibleUserId != null ? true : false
                 });
             }
 
