@@ -40,13 +40,38 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        //public IActionResult Applications()
+        //{
+        //    var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
+        //    var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
+        //    foreach (var application in vm)
+        //        application.CreatedAt = application.CreatedAt.ToLocalTime();
+
+        //    return View(vm);
+        //}
+
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public IActionResult Applications()
         {
-            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
-            var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
-            foreach (var application in vm)
-                application.CreatedAt = application.CreatedAt.ToLocalTime();
+            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
+            var vm = new List<ApplicationsViewModel>();
+
+            foreach (var application in applications)
+            {
+                vm.Add(new ApplicationsViewModel()
+                {
+                    Id = application.Id,
+                    CreatedAt = application.CreatedAt.ToLocalTime(),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                    CurrentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).First().GetType().Name
+                });
+            }
+
+            //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
+            //foreach (var application in vm)
+            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
 
             return View(vm);
         }

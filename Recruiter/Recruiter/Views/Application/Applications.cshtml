@@ -17,6 +17,7 @@ else
         <tr>
             <th>User</th>
             <th>Name</th>
+            <th>Current Stage</th>
             <th>Apply time</th>
         </tr>
 
@@ -28,6 +29,9 @@ else
                 </td>
                 <td>
                     <a asp-action="ApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">@application.JobPosition.Name</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => application.CurrentStage)
                 </td>
                 <td>
                     @Html.DisplayFor(model => application.CreatedAt)
