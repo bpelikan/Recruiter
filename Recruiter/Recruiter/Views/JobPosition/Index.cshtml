@@ -7,8 +7,42 @@
 
 <h2>Job Positions</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
-
 <a class="btn btn-sm btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add</a>
+<br />
+
+@if (!JobPositionActivity.Activities.Contains(@ViewContext.HttpContext.Request.Query["jobPositionActivity"]))
+{
+    <b><a asp-action="Index" asp-route-jobPositionActivity="">All</a> |</b>
+}
+else
+{
+    <a asp-action="Index" asp-route-jobPositionActivity="">All</a> @:|
+}
+
+@foreach (var activity in JobPositionActivity.Activities)
+{
+    if (@ViewContext.HttpContext.Request.Query["jobPositionActivity"] == activity)
+    {
+        <b>
+            <a asp-action="Index" asp-route-jobPositionActivity="@activity">
+                @activity
+            </a> |
+        </b>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-jobPositionActivity="@activity">
+            @activity
+        </a> @:|
+    }
+}
+
+@*<a asp-action="Applications" asp-route-stage="PhoneCall">All</a> |
+<a asp-action="Applications" asp-route-stage="PhoneCall">PhoneCall</a> |
+<a asp-action="Applications" asp-route-stage="PhoneCall">Active</a> |
+<a asp-action="Applications" asp-route-stage="PhoneCall">NotActive</a> |*@
+
+<br />
 @if (!Model.Any())
 {
     <tr><td colspan="3" class="text-center">No job position</td></tr>
@@ -19,6 +53,7 @@ else
         <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Start Time</th>
             <th>End Time</th>
             <th>Actions</th>
         </tr>
@@ -35,6 +70,7 @@ else
             }
                 <td>@jobPosition.Id</td>
                 <td>@jobPosition.Name</td>
+                <td>@Html.DisplayFor(model => jobPosition.StartDate)</td>
                 <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
                 <td>
                     <form asp-action="DeleteFromIndex" asp-route-id="@jobPosition.Id" method="post">
