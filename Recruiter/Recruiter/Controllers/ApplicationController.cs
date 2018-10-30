@@ -78,8 +78,6 @@ namespace Recruiter.Controllers
 
             //List<Type> derivedTypes = ApplicationStageBase.GetDerivedTypes(typeof(BaseClass<>);
 
-            //ViewData["Stages"] = test;
-
             var applications = _context.Applications
                 .Include(x => x.JobPosition)
                 .Include(x => x.User)
