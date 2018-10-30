@@ -36,7 +36,7 @@ namespace Recruiter.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(string jobPositionActivity = "")
+        public IActionResult Index(string jobPositionActivity = "")
         {
             IEnumerable<JobPosition> jobPositions = null;
             switch (jobPositionActivity)
