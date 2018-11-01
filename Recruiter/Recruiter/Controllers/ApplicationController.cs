@@ -95,7 +95,6 @@ namespace Recruiter.Controllers
             List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
             {
-
                 //var test = _context.Applications
                 //                            .Include(x => x.JobPosition)
                 //                            .Include(x => x.User)
@@ -246,6 +245,34 @@ namespace Recruiter.Controllers
 
             //Add error: loading application
             return RedirectToAction(nameof(OfferController.Index));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        public async Task<IActionResult> DeleteApplication(string id)
+        {
+            //var userId = _userManager.GetUserId(HttpContext.User);
+            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
+
+            if (application == null)
+            {
+                throw new Exception($"Application with id: {id} doesn't exist.");
+            }
+            //if (application.UserId != userId)
+            //{
+            //    throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
+            //}
+
+            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            if (!delete)
+            {
+                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
+            }
+
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
