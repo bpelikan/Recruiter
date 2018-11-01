@@ -251,17 +251,12 @@ namespace Recruiter.Controllers
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> DeleteApplication(string id, string returnUrl = null)
         {
-            //var userId = _userManager.GetUserId(HttpContext.User);
             var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
 
             if (application == null)
             {
                 throw new Exception($"Application with id: {id} doesn't exist.");
             }
-            //if (application.UserId != userId)
-            //{
-            //    throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
-            //}
 
             var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
             if (!delete)
@@ -280,7 +275,6 @@ namespace Recruiter.Controllers
             {
                 return RedirectToAction(nameof(ApplicationController.Applications));
             }
-            //return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
