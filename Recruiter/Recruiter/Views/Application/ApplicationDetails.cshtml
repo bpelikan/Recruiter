@@ -94,7 +94,7 @@
     }
 </div>
 
-<form asp-action="DeleteApplication" asp-route-id="@Model.Id" method="post">
+<form asp-action="DeleteApplication" asp-route-id="@Model.Id" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
     <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
         Delete
     </button>

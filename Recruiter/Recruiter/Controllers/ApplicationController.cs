@@ -249,7 +249,7 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public async Task<IActionResult> DeleteApplication(string id)
+        public async Task<IActionResult> DeleteApplication(string id, string returnUrl = null)
         {
             //var userId = _userManager.GetUserId(HttpContext.User);
             var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
@@ -272,7 +272,15 @@ namespace Recruiter.Controllers
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(ApplicationController.Applications));
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(ApplicationController.Applications));
+            }
+            //return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
