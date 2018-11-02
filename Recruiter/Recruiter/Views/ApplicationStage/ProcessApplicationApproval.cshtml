@@ -1,0 +1,214 @@
+﻿@model Recruiter.Models.ApplicationStageViewModels.ProcessApplicationApprovalViewModel
+
+@{
+    ViewData["Title"] = "ApplicationDetails";
+}
+
+<h2>Application Details</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Application.User.FirstName) @Html.DisplayFor(model => model.Application.User.LastName) (@Html.DisplayFor(model => model.Application.User.Email))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.JobPosition.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Application.JobPosition.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.CvFileUrl)
+        </dt>
+        <dd>
+            <a href="@Model.Application.CvFileUrl" target="_blank">Click to view CV</a>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.CreatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Application.CreatedAt)
+        </dd>
+    </dl>
+</div>
+
+<h3>Stages</h3>
+<div class="row panel-body">
+    @if (Model.ApplicationStages.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Note</th>
+                    <th>Rate</th>
+                    <th>Accepted</th>
+                    <th>Accepted By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var applicationStage in Model.ApplicationStages)
+                {
+                    //if (applicationStage.GetType().Name != "ApplicationApproval" && applicationStage.State == ApplicationStageState.Finished)
+                    if (applicationStage.GetType().Name != "ApplicationApproval")
+                    {
+                        <tr>
+                            <td>@applicationStage.GetType().Name</td>
+                            <td>@Html.DisplayFor(model => applicationStage.Note)</td>
+                            <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
+                            <td>@Html.DisplayFor(model => applicationStage.Accepted)</td>
+                            <td>@Html.DisplayFor(model => applicationStage.AcceptedById)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Applications View History not found.
+    }
+</div>
+
+<form asp-controller="ApplicationStage" asp-action="ProcessApplicationApproval" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group" hidden>
+        <label asp-for="Application.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Application.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="Application.Id" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group" hidden>
+        <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="StageToProcess.Id" class="text-danger"></span>
+        </div>
+    </div>
+
+    <table class="table table-condensed table-bordered" header header-content="Application Stages Requirement">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.StageToProcess.Note)</th>
+            <th>@Html.DisplayNameFor(model => model.StageToProcess.Rate)</th>
+            <th>@Html.DisplayNameFor(model => model.StageToProcess.Accepted)</th>
+        </tr>
+
+        <tr>
+            <td><input asp-for="StageToProcess.Note" class="form-control" /></td>
+            <td><input asp-for="StageToProcess.Rate" class="form-control" /></td>
+            <td>@Html.CheckBoxFor(model => model.StageToProcess.Accepted)</td>
+
+        </tr>
+    </table>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Save" />
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+        </div>
+    </div>
+</form>
+
+@*<div class="form-group">
+        <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="StageToProcess.Id" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StageToProcess.Note" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Note" class="form-control" />
+            <span asp-validation-for="StageToProcess.Note" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StageToProcess.Rate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Rate" class="form-control" />
+            <span asp-validation-for="StageToProcess.Rate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StageToProcess.Accepted" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Accepted" class="form-control" />
+            <span asp-validation-for="StageToProcess.Accepted" class="text-danger"></span>
+        </div>
+    </div>*@
+
+@*<h3>Stages</h3>
+
+    <div class="row panel-body">
+        @if (Model.ApplicationStages.Count() != 0)
+        {
+            <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Type</th>
+                        <th>State</th>
+                        <th>Rate</th>
+                        <th>Responsible User</th>
+                        <th>Accepted By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var applicationStage in Model.ApplicationStages)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(model => applicationStage.Level)</td>
+                            <td>
+                                @applicationStage.GetType().Name
+                                <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
+                            </td>
+                            <td>@Html.DisplayFor(model => applicationStage.State)</td>
+                            <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
+                            <td>
+                                @Html.DisplayFor(model => applicationStage.ResponsibleUser.FirstName)
+                                @Html.DisplayFor(model => applicationStage.ResponsibleUser.LastName)
+                                <b Condition="applicationStage.ResponsibleUserId != null">
+                                    (@Html.DisplayFor(model => applicationStage.ResponsibleUser.Email))
+                                    <a Condition="applicationStage.State == ApplicationStageState.Waiting" asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Change</a>
+                                </b>
+                                <b Condition="applicationStage.ResponsibleUserId == null">
+                                    (not assigned)
+                                    <a asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Assing</a>
+                                </b>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => applicationStage.AcceptedBy.FirstName)
+                                @Html.DisplayFor(model => applicationStage.AcceptedBy.LastName)
+                                <b Condition="applicationStage.AcceptedById != null">
+                                    (@Html.DisplayFor(model => applicationStage.AcceptedBy.Email))
+                                </b>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @:Applications View History not found.
+        }
+    </div>*@
+
+@*<form asp-action="DeleteApplication" asp-route-id="@Model.Id" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+        <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
+            Delete
+        </button>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>
+    </form>*@

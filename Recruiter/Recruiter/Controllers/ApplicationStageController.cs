@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationStageViewModels;
+using Recruiter.Services;
 using Recruiter.Shared;
 
 namespace Recruiter.Controllers
@@ -22,10 +23,12 @@ namespace Recruiter.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ICvStorageService _cvStorageService;
 
-        public ApplicationStageController(IMapper mapper, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ApplicationStageController(IMapper mapper, ICvStorageService cvStorageService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
+            _cvStorageService = cvStorageService;
             _context = context;
             _userManager = userManager;
         }
@@ -140,6 +143,72 @@ namespace Recruiter.Controllers
             }
 
             throw new Exception($"ApplicationStage with id {addResponsibleUserToStageViewModel.StageId} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        }
+
+        public async Task<IActionResult> ProcessApplicationApproval(string stageId)
+        {
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+
+            var vm = new ProcessApplicationApprovalViewModel()
+            {
+                Application = new ApplicationViewModel() {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStages = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage)
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessApplicationApproval(ProcessApplicationApprovalViewModel applicationApprovalViewModel)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == applicationApprovalViewModel.StageToProcess.Id);
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {applicationApprovalViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+            if(stage.ResponsibleUserId != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {applicationApprovalViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+
+            stage.Note = applicationApprovalViewModel.StageToProcess.Note;
+            stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
+            stage.Accepted = applicationApprovalViewModel.StageToProcess.Accepted;
+            stage.AcceptedById = myId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            var application = await _context.Applications
+                                                .Include(x => x.ApplicationStages)
+                                                .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
+            if(application == null)
+                throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+
+            if (application.ApplicationStages.Count() != 0)
+            {
+                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
+                if (nextStage.State != ApplicationStageState.Finished)
+                {
+                    nextStage.State = ApplicationStageState.InProgress;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
     }
 }
