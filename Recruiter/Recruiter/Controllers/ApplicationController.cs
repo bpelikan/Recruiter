@@ -78,122 +78,122 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public IActionResult ApplicationsStagesToReview(string stageName="")
-        {
-            //List<string> test = new List<string>();
-            //foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            //{
-            //    if (t.IsSubclassOf(typeof(ApplicationStageBase)))
-            //        test.Add(t.Name);
-            //}
-            //IEnumerable<string> test = Assembly.GetExecutingAssembly()
-            //                        .GetTypes()
-            //                        .Where(x => x.IsSubclassOf(typeof(ApplicationStageBase)));
-            var myId = _userManager.GetUserId(HttpContext.User);
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        //public IActionResult ApplicationsStagesToReview(string stageName="")
+        //{
+        //    //List<string> test = new List<string>();
+        //    //foreach (Type t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+        //    //{
+        //    //    if (t.IsSubclassOf(typeof(ApplicationStageBase)))
+        //    //        test.Add(t.Name);
+        //    //}
+        //    //IEnumerable<string> test = Assembly.GetExecutingAssembly()
+        //    //                        .GetTypes()
+        //    //                        .Where(x => x.IsSubclassOf(typeof(ApplicationStageBase)));
+        //    var myId = _userManager.GetUserId(HttpContext.User);
 
-            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            {
-                //var test = _context.Applications
-                //                            .Include(x => x.JobPosition)
-                //                            .Include(x => x.User)
-                //                            .Include(x => x.ApplicationStages)
-                //                            .Where(x =>
-                //                                        x.ApplicationStages
-                //                                            .OrderBy(y => y.Level)
-                //                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                //                                            .Take(1)
-                //                                            .Any(y => x.Id == y.ApplicationId &&
-                //                                                        (y.GetType().Name == t.Name) &&
-                //                                                        y.State != ApplicationStageState.Finished &&
-                //                                                        y.ResponsibleUserId == myId)
+        //    List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+        //    foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+        //    {
+        //        //var test = _context.Applications
+        //        //                            .Include(x => x.JobPosition)
+        //        //                            .Include(x => x.User)
+        //        //                            .Include(x => x.ApplicationStages)
+        //        //                            .Where(x =>
+        //        //                                        x.ApplicationStages
+        //        //                                            .OrderBy(y => y.Level)
+        //        //                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
+        //        //                                            .Take(1)
+        //        //                                            .Any(y => x.Id == y.ApplicationId &&
+        //        //                                                        (y.GetType().Name == t.Name) &&
+        //        //                                                        y.State != ApplicationStageState.Finished &&
+        //        //                                                        y.ResponsibleUserId == myId)
 
-                //                            )
-                //                            .ToList();
+        //        //                            )
+        //        //                            .ToList();
 
-                stagesSortedByName.Add(new StagesViewModel() {
-                    Name = t.Name,
-                    Quantity = _context.Applications
-                                            .Include(x => x.JobPosition)
-                                            .Include(x => x.User)
-                                            .Include(x => x.ApplicationStages)
-                                            .Where(x =>
-                                                        x.ApplicationStages
-                                                            .OrderBy(y => y.Level)
-                                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                                                            .Take(1)
-                                                            .Any(y => x.Id == y.ApplicationId &&
-                                                                        (y.GetType().Name == t.Name) &&
-                                                                        y.State != ApplicationStageState.Finished &&
-                                                                        y.ResponsibleUserId == myId)
+        //        stagesSortedByName.Add(new StagesViewModel() {
+        //            Name = t.Name,
+        //            Quantity = _context.Applications
+        //                                    .Include(x => x.JobPosition)
+        //                                    .Include(x => x.User)
+        //                                    .Include(x => x.ApplicationStages)
+        //                                    .Where(x =>
+        //                                                x.ApplicationStages
+        //                                                    .OrderBy(y => y.Level)
+        //                                                    .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
+        //                                                    .Take(1)
+        //                                                    .Any(y => x.Id == y.ApplicationId &&
+        //                                                                (y.GetType().Name == t.Name) &&
+        //                                                                y.State != ApplicationStageState.Finished &&
+        //                                                                y.ResponsibleUserId == myId)
 
-                                            )
-                                            .Count(),
-                    //Quantity = _context.ApplicationStages
-                    //                .Where(x => x.GetType().Name == t.Name &&
-                    //                            x.State != ApplicationStageState.Finished &&
-                    //                            x.ResponsibleUserId == myId)
-                    //                .Count(),
-                });
-            }
+        //                                    )
+        //                                    .Count(),
+        //            //Quantity = _context.ApplicationStages
+        //            //                .Where(x => x.GetType().Name == t.Name &&
+        //            //                            x.State != ApplicationStageState.Finished &&
+        //            //                            x.ResponsibleUserId == myId)
+        //            //                .Count(),
+        //        });
+        //    }
 
-            //List<Type> derivedTypes = ApplicationStageBase.GetDerivedTypes(typeof(BaseClass<>);
+        //    //List<Type> derivedTypes = ApplicationStageBase.GetDerivedTypes(typeof(BaseClass<>);
 
-            var applications = _context.Applications
-                                            .Include(x => x.JobPosition)
-                                            .Include(x => x.User)
-                                            .Include(x => x.ApplicationStages)
-                                            .Where(x =>
-                                                        x.ApplicationStages
-                                                            .OrderBy(y => y.Level)
-                                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                                                            .Take(1)
-                                                            .Any(y => x.Id == y.ApplicationId &&
-                                                                        (y.GetType().Name == stageName || stageName == "") &&
-                                                                        y.State != ApplicationStageState.Finished &&
-                                                                        y.ResponsibleUserId == myId)
-                                            );
-                                            //.ToList();
+        //    var applications = _context.Applications
+        //                                    .Include(x => x.JobPosition)
+        //                                    .Include(x => x.User)
+        //                                    .Include(x => x.ApplicationStages)
+        //                                    .Where(x =>
+        //                                                x.ApplicationStages
+        //                                                    .OrderBy(y => y.Level)
+        //                                                    .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
+        //                                                    .Take(1)
+        //                                                    .Any(y => x.Id == y.ApplicationId &&
+        //                                                                (y.GetType().Name == stageName || stageName == "") &&
+        //                                                                y.State != ApplicationStageState.Finished &&
+        //                                                                y.ResponsibleUserId == myId)
+        //                                    );
+        //                                    //.ToList();
 
-            //var applications = _context.Applications
-            //                                .Include(x => x.JobPosition)
-            //                                .Include(x => x.User)
-            //                                .Include(x => x.ApplicationStages)
-            //                                .Where(x => x.ApplicationStages
-            //                                                .OrderBy(y => y.Level)
-            //                                                .Any(y => (y.GetType().Name == stageName || stageName == "") &&
-            //                                                            y.State != ApplicationStageState.Finished &&
-            //                                                            y.ResponsibleUserId == myId)
-            //                                );
+        //    //var applications = _context.Applications
+        //    //                                .Include(x => x.JobPosition)
+        //    //                                .Include(x => x.User)
+        //    //                                .Include(x => x.ApplicationStages)
+        //    //                                .Where(x => x.ApplicationStages
+        //    //                                                .OrderBy(y => y.Level)
+        //    //                                                .Any(y => (y.GetType().Name == stageName || stageName == "") &&
+        //    //                                                            y.State != ApplicationStageState.Finished &&
+        //    //                                                            y.ResponsibleUserId == myId)
+        //    //                                );
 
-            var vm = new ApplicationsStagesToReviewViewModel() {
-                Stages = stagesSortedByName,
-            };
-            vm.Applications = new List<ApplicationViewModel>();
-            foreach (var app in applications)
-            {
-                vm.Applications.Add(new ApplicationViewModel()
-                {
-                    Id = app.Id,
-                    CreatedAt = app.CreatedAt.ToLocalTime(),
-                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(app.User),
-                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(app.JobPosition),
-                });
-            }
+        //    var vm = new ApplicationsStagesToReviewViewModel() {
+        //        Stages = stagesSortedByName,
+        //    };
+        //    vm.Applications = new List<ApplicationViewModel>();
+        //    foreach (var app in applications)
+        //    {
+        //        vm.Applications.Add(new ApplicationViewModel()
+        //        {
+        //            Id = app.Id,
+        //            CreatedAt = app.CreatedAt.ToLocalTime(),
+        //            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(app.User),
+        //            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(app.JobPosition),
+        //        });
+        //    }
 
 
-            //var vm = new ApplicationsViewModel()
-            //{
-            //    Applications = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationViewModel>>(applications),
-            //    Stages = stages,
-            //};
+        //    //var vm = new ApplicationsViewModel()
+        //    //{
+        //    //    Applications = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationViewModel>>(applications),
+        //    //    Stages = stages,
+        //    //};
 
-            //foreach (var application in vm.Applications)
-            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
+        //    //foreach (var application in vm.Applications)
+        //    //    application.CreatedAt = application.CreatedAt.ToLocalTime();
 
-            return View(vm);
-        }
+        //    return View(vm);
+        //}
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<ActionResult> ApplicationDetails(string id, string returnUrl = null)
@@ -267,14 +267,7 @@ namespace Recruiter.Controllers
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
 
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(ApplicationController.Applications));
-            }
+            return RedirectToLocal(returnUrl);
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
@@ -300,7 +293,19 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(OfferController.Index));
         }
 
-
+        #region Helpers
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(ApplicationController.Index));
+            }
+        }
+        #endregion
 
         //[Authorize(Roles = RoleCollection.Recruit)]
         //public IActionResult MyApplications()

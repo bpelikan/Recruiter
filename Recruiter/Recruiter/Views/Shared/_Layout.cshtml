@@ -43,7 +43,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
 
                     <li><a asp-area="" asp-controller="Offer" asp-action="Index">Offers</a></li>
-                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruiter)"><a asp-area="" asp-controller="Application" asp-action="ApplicationsStagesToReview">ApplicationsStagesToReview</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruiter)"><a asp-area="" asp-controller="ApplicationStage" asp-action="ApplicationsStagesToReview">ApplicationsStagesToReview</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruit)"><a asp-area="" asp-controller="MyApplication" asp-action="MyApplications">My applications</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruiter) || @User.IsInRole(RoleCollection.Administrator))">@await Component.InvokeAsync("HRMenu")</li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Administrator)">@await Component.InvokeAsync("AdminMenu")</li>
