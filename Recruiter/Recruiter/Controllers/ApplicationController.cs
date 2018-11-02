@@ -424,6 +424,7 @@ namespace Recruiter.Controllers
                     ModelState.AddModelError("", "CV must have .pdf extension.");
                     return View(applyApplicationViewModel);
                 }
+                
 
                 if (await _context.Applications
                     .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
