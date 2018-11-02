@@ -135,6 +135,14 @@ namespace Recruiter.Controllers
 
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == addResponsibleUserToStageViewModel.StageId);
 
+            if (stage.State == ApplicationStageState.InProgress)
+            {
+                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {addResponsibleUserToStageViewModel.StageId} that is InProgress state. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+
+                //ModelState.AddModelError("", "You can't change responsible user in application state that is in progress.");
+                //return View(addResponsibleUserToStageViewModel);
+            }
+
             if (stage != null)
             {
                 stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
