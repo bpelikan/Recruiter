@@ -52,7 +52,6 @@ namespace Recruiter.Services
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
 
-            //var result = await blob.DeleteIfExistsAsync();
             _logger.LogInformation("Starting deleting CV from blob");
             try
             {
@@ -71,7 +70,6 @@ namespace Recruiter.Services
             }
 
             return true;
-            //return result;
         }
 
         public async Task<string> SaveCvAsync(Stream CvStream, string userId, string fileName)
@@ -84,9 +82,6 @@ namespace Recruiter.Services
             var blob = container.GetBlockBlobReference(cvId);
             blob.Properties.ContentType = "application/pdf";
 
-            //_logger.LogInformation("Starting upload");
-            //await blob.UploadFromStreamAsync(CvStream);
-            //_logger.LogInformation($"Completed upload CV with ID: {cvId} ");
             _logger.LogInformation("Starting upload");
             try
             {
