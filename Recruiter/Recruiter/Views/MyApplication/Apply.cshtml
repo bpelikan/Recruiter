@@ -1,4 +1,5 @@
-﻿@*@model Recruiter.Models.ApplicationViewModels.ApplyApplicationViewModel
+﻿@using Recruiter.Models.MyApplicationViewModels
+@model ApplyApplicationViewModel
 
 @{
     ViewData["Title"] = "Apply";
@@ -6,7 +7,7 @@
 
 <h2>Apply</h2>
 
-<form asp-controller="Application" asp-action="Apply" method="post" enctype="multipart/form-data">
+<form asp-controller="MyApplication" asp-action="Apply" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group" hidden>
@@ -27,6 +28,7 @@
 
     <label asp-for="JobPositionName" class="col-md-2 control-label">@Html.DisplayFor(model => model.JobPositionName)</label>
 
+    @*@Html.DisplayNameFor(model => model.JobPositionName) : @Html.DisplayFor(model => model.JobPositionName)*@
     <br /><br />
 
     <input type="file" name="cv" />
@@ -34,4 +36,4 @@
     <input class="btn btn-primary" type="submit" value="Send" />
     <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
     <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Offer" asp-action="Index">Back</a>
-</form>*@ 
+</form>
