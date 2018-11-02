@@ -424,7 +424,11 @@ namespace Recruiter.Controllers
                     ModelState.AddModelError("", "CV must have .pdf extension.");
                     return View(applyApplicationViewModel);
                 }
-                
+                if (applyApplicationViewModel.CvFileName == null)
+                {
+                    ModelState.AddModelError("", "Something went wrong during uploading CV, try again or contact with admin.");
+                    return View(applyApplicationViewModel);
+                }
 
                 if (await _context.Applications
                     .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)

@@ -52,9 +52,26 @@ namespace Recruiter.Services
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
 
-            var result = await blob.DeleteIfExistsAsync();
+            //var result = await blob.DeleteIfExistsAsync();
+            _logger.LogInformation("Starting deleting CV from blob");
+            try
+            {
+                await blob.DeleteIfExistsAsync();
+                _logger.LogInformation("Deleting CV from blob completed");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                _logger.LogInformation("Deleting CV from blob failed");
+                return false;
+            }
+            finally
+            {
+                _logger.LogInformation("Completed operation: Deleting CV from blob");
+            }
 
-            return result;
+            return true;
+            //return result;
         }
 
         public async Task<string> SaveCvAsync(Stream CvStream, string userId, string fileName)
@@ -67,9 +84,25 @@ namespace Recruiter.Services
             var blob = container.GetBlockBlobReference(cvId);
             blob.Properties.ContentType = "application/pdf";
 
+            //_logger.LogInformation("Starting upload");
+            //await blob.UploadFromStreamAsync(CvStream);
+            //_logger.LogInformation($"Completed upload CV with ID: {cvId} ");
             _logger.LogInformation("Starting upload");
-            await blob.UploadFromStreamAsync(CvStream);
-            _logger.LogInformation($"Completed upload CV with ID: {cvId} ");
+            try
+            {
+                await blob.UploadFromStreamAsync(CvStream);
+                _logger.LogInformation("Uploading CV completed");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                _logger.LogInformation("Uploading CV failed");
+                return null;
+            }
+            finally
+            {
+                _logger.LogInformation("Completed operation: Uploading CV");
+            }
 
             var containerArchive = blobClientArchive.GetContainerReference("cvstoragearchieve");
             var blobArchive = containerArchive.GetBlockBlobReference(cvId);
@@ -90,7 +123,7 @@ namespace Recruiter.Services
             }
             finally
             {
-                _logger.LogInformation("Completed Copy to archieve operation");
+                _logger.LogInformation("Completed operation: Copy to archieve");
             }
 
             return cvId;
