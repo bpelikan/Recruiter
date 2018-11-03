@@ -25,11 +25,13 @@ namespace Recruiter.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly ICvStorageService _cvStorageService;
+        private readonly IApplicationStageService _applicationStageService;
 
-        public ApplicationStageController(IMapper mapper, ICvStorageService cvStorageService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ApplicationStageController(IMapper mapper, ICvStorageService cvStorageService, IApplicationStageService applicationStageService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
             _cvStorageService = cvStorageService;
+            _applicationStageService = applicationStageService;
             _context = context;
             _userManager = userManager;
         }
@@ -208,22 +210,24 @@ namespace Recruiter.Controllers
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            var application = await _context.Applications
-                                                .Include(x => x.ApplicationStages)
-                                                .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
-            if(application == null)
-                throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+            await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
-            if (application.ApplicationStages.Count() != 0)
-            {
-                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
-                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-                if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
-                {
-                    nextStage.State = ApplicationStageState.InProgress;
-                    await _context.SaveChangesAsync();
-                }
-            }
+            //var application = await _context.Applications
+            //                                    .Include(x => x.ApplicationStages)
+            //                                    .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
+            //if(application == null)
+            //    throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+
+            //if (application.ApplicationStages.Count() != 0)
+            //{
+            //    var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
+            //    var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
+            //    if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
+            //    {
+            //        nextStage.State = ApplicationStageState.InProgress;
+            //        await _context.SaveChangesAsync();
+            //    }
+            //}
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
@@ -282,23 +286,25 @@ namespace Recruiter.Controllers
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            var application = await _context.Applications
-                                                 .Include(x => x.ApplicationStages)
-                                                 .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
+            await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
-            if (application == null)
-                throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+            //var application = await _context.Applications
+            //                                     .Include(x => x.ApplicationStages)
+            //                                     .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
 
-            if (application.ApplicationStages.Count() != 0)
-            {
-                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
-                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-                if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
-                {
-                    nextStage.State = ApplicationStageState.InProgress;
-                    await _context.SaveChangesAsync();
-                }
-            }
+            //if (application == null)
+            //    throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+
+            //if (application.ApplicationStages.Count() != 0)
+            //{
+            //    var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
+            //    var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
+            //    if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
+            //    {
+            //        nextStage.State = ApplicationStageState.InProgress;
+            //        await _context.SaveChangesAsync();
+            //    }
+            //}
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
