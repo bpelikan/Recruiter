@@ -35,7 +35,7 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
@@ -50,56 +50,74 @@ namespace Recruiter.Controllers
                 stagesSortedByName.Add(new StagesViewModel()
                 {
                     Name = t.Name,
-                    Quantity = _context.Applications
-                                            .Include(x => x.JobPosition)
-                                            .Include(x => x.User)
-                                            .Include(x => x.ApplicationStages)
-                                            .Where(x =>
-                                                        x.ApplicationStages
-                                                            .OrderBy(y => y.Level)
-                                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                                                            .Take(1)
-                                                            .Any(y => x.Id == y.ApplicationId &&
-                                                                        (y.GetType().Name == t.Name) &&
-                                                                        y.State != ApplicationStageState.Finished &&
-                                                                        y.ResponsibleUserId == myId)
+                    Quantity = _context.ApplicationStages
+                                            .AsNoTracking()
+                                            .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                        x.ResponsibleUserId == myId &&
+                                                        x.GetType().Name == t.Name).Count(),
+                    //Quantity = _context.Applications
+                    //                        .Include(x => x.JobPosition)
+                    //                        .Include(x => x.User)
+                    //                        .Include(x => x.ApplicationStages)
+                    //                        .Where(x =>
+                    //                                    x.ApplicationStages
+                    //                                        .OrderBy(y => y.Level)
+                    //                                        .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
+                    //                                        .Take(1)
+                    //                                        .Any(y => x.Id == y.ApplicationId &&
+                    //                                                    (y.GetType().Name == t.Name) &&
+                    //                                                    y.State != ApplicationStageState.Finished &&
+                    //                                                    y.ResponsibleUserId == myId)
 
-                                            )
-                                            .Count(),
+                    //                        )
+                    //                        .Count(),
                 });
             }
 
-            var applications = _context.Applications
-                                            .Include(x => x.JobPosition)
-                                            .Include(x => x.User)
-                                            .Include(x => x.ApplicationStages)
-                                            .Where(x =>
-                                                        x.ApplicationStages
-                                                            .OrderBy(y => y.Level)
-                                                            .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                                                            .Take(1)
-                                                            .Any(y => x.Id == y.ApplicationId &&
-                                                                        (y.GetType().Name == stageName || stageName == "") &&
-                                                                        y.State != ApplicationStageState.Finished &&
-                                                                        y.ResponsibleUserId == myId)
-                                            );
+            //var applications = _context.Applications
+            //                                .Include(x => x.JobPosition)
+            //                                .Include(x => x.User)
+            //                                .Include(x => x.ApplicationStages)
+            //                                .Where(x =>
+            //                                            x.ApplicationStages
+            //                                                .OrderBy(y => y.Level)
+            //                                                .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
+            //                                                .Take(1)
+            //                                                .Any(y => x.Id == y.ApplicationId &&
+            //                                                            (y.GetType().Name == stageName || stageName == "") &&
+            //                                                            y.State != ApplicationStageState.Finished &&
+            //                                                            y.ResponsibleUserId == myId)
+            //                                );
+
+            var stages = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                    x.ResponsibleUserId == myId &&
+                                                    (x.GetType().Name == stageName || stageName == ""));
 
             var vm = new ApplicationsStagesToReviewViewModel()
             {
-                Stages = stagesSortedByName,
+                StageSortedByName = stagesSortedByName,
             };
-            vm.Applications = new List<ApplicationViewModel>();
-            foreach (var app in applications)
+            vm.AsignedStages = new List<AsignedStagesViewModel>();
+            foreach (var stage in stages)
             {
-                vm.Applications.Add(new ApplicationViewModel()
+                vm.AsignedStages.Add(new AsignedStagesViewModel()
                 {
-                    Id = app.Id,
-                    CreatedAt = app.CreatedAt.ToLocalTime(),
-                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(app.User),
-                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(app.JobPosition),
+                    Application = new ApplicationViewModel() {
+                        Id = stage.Application.Id,
+                        CreatedAt = stage.Application.CreatedAt,
+                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                    },
+                    CurrentStage = _mapper.Map<ApplicationStageBase, ApplicationStageViewModel>(stage),
                 });
             }
-
+            vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
             return View(vm);
         }
 
@@ -153,6 +171,32 @@ namespace Recruiter.Controllers
             throw new Exception($"ApplicationStage with id {addResponsibleUserToStageViewModel.StageId} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
         }
 
+        public async Task<IActionResult> ProcessStage(string stageId)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
+
+            switch (stage.GetType().Name) {
+                case "ApplicationApproval":
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId = stage.Id });
+                    //break;
+                case "PhoneCall":
+
+                    //break;
+                case "Homework":
+
+                    //break;
+                case "Interview":
+
+                    //break;
+                default:
+
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                    //break;
+            }
+
+            //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+        }
+
         public async Task<IActionResult> ProcessApplicationApproval(string stageId)
         {
             var stage = await _context.ApplicationStages
@@ -175,8 +219,9 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
                 },
-                ApplicationStages = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-                StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage)
+                ApplicationStagesFinished = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage),
+                ApplicationStagesWaiting = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
             };
 
             return View(vm);

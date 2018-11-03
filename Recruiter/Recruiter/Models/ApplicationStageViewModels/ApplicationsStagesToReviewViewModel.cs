@@ -8,22 +8,16 @@ namespace Recruiter.Models.ApplicationStageViewModels
 {
     public class ApplicationsStagesToReviewViewModel
     {
-        public List<ApplicationViewModel> Applications { get; set; }
+        public List<AsignedStagesViewModel> AsignedStages { get; set; }
 
-        public IEnumerable<StagesViewModel> Stages { get; set; }
+        public IEnumerable<StagesViewModel> StageSortedByName { get; set; }
     }
 
-    //public class ApplicationViewModel
-    //{
-    //    public string Id { get; set; }
-
-    //    [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
-    //    public DateTime CreatedAt { get; set; }
-
-    //    public virtual JobPositionViewModel JobPosition { get; set; }
-
-    //    public virtual UserDetailsViewModel User { get; set; }
-    //}
+    public class AsignedStagesViewModel
+    {
+        public ApplicationViewModel Application { get; set; }
+        public ApplicationStageViewModel CurrentStage { get; set; }
+    }
 
     public class StagesViewModel
     {

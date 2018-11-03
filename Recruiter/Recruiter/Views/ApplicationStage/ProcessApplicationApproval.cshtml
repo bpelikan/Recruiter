@@ -38,7 +38,7 @@
 
 <h3>Stages</h3>
 <div class="row panel-body">
-    @if (Model.ApplicationStages.Count() != 0)
+    @if (Model.ApplicationStagesFinished.Count() != 0)
     {
         <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
             <thead>
@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var applicationStage in Model.ApplicationStages)
+                @foreach (var applicationStage in Model.ApplicationStagesFinished)
                 {
                     //if (applicationStage.GetType().Name != "ApplicationApproval" && applicationStage.State == ApplicationStageState.Finished)
                     if (applicationStage.GetType().Name != "ApplicationApproval")
@@ -70,7 +70,7 @@
     }
     else
     {
-        @:Applications View History not found.
+        @:Finished Applications Stages not found.
     }
 </div>
 
@@ -115,6 +115,17 @@
         </div>
     </div>
 </form>
+
+@if (Model.ApplicationStagesWaiting.Count() != 0)
+{
+    @:Waiting stages count:
+    @Model.ApplicationStagesWaiting.Count()
+}
+else
+{
+    @:No other stages
+}
+
 
 @*<div class="form-group">
         <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>

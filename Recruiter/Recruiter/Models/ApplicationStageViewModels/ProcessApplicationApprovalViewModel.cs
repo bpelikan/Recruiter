@@ -8,9 +8,10 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class ProcessApplicationApprovalViewModel
     {
         public ApplicationViewModel Application { get; set; }
-        public virtual ICollection<ApplicationStageBase> ApplicationStages { get; set; }
 
+        public virtual ICollection<ApplicationStageBase> ApplicationStagesFinished { get; set; }
         public ApplicationApprovalViewModel StageToProcess { get; set; }
+        public virtual ICollection<ApplicationStageBase> ApplicationStagesWaiting { get; set; }
     }
 
     public class ApplicationApprovalViewModel
