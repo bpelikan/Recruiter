@@ -41,10 +41,8 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
-            
             var myId = _userManager.GetUserId(HttpContext.User);
 
             List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
@@ -93,8 +91,6 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
         {
             var stage = await _context.ApplicationStages.Include(x => x.Application).FirstOrDefaultAsync(x => x.Id == stageId);
@@ -117,7 +113,6 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> AssingUserToApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel)
         {
             if (!ModelState.IsValid)
@@ -212,23 +207,6 @@ namespace Recruiter.Controllers
 
             await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
-            //var application = await _context.Applications
-            //                                    .Include(x => x.ApplicationStages)
-            //                                    .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
-            //if(application == null)
-            //    throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
-
-            //if (application.ApplicationStages.Count() != 0)
-            //{
-            //    var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
-            //    var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-            //    if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
-            //    {
-            //        nextStage.State = ApplicationStageState.InProgress;
-            //        await _context.SaveChangesAsync();
-            //    }
-            //}
-
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
 
@@ -287,24 +265,6 @@ namespace Recruiter.Controllers
             await _context.SaveChangesAsync();
 
             await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
-
-            //var application = await _context.Applications
-            //                                     .Include(x => x.ApplicationStages)
-            //                                     .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
-
-            //if (application == null)
-            //    throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
-
-            //if (application.ApplicationStages.Count() != 0)
-            //{
-            //    var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
-            //    var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-            //    if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
-            //    {
-            //        nextStage.State = ApplicationStageState.InProgress;
-            //        await _context.SaveChangesAsync();
-            //    }
-            //}
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }

@@ -108,7 +108,7 @@ namespace Recruiter.Controllers
                 var viewHistories = await _context.ApplicationsViewHistories
                                                     .Where(x => x.ApplicationId == application.Id)
                                                     .OrderByDescending(x => x.ViewTime)
-                                                    .Take(20)
+                                                    .Take(10)
                                                     .ToListAsync();
                 foreach (var viewHistory in viewHistories)
                     viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
