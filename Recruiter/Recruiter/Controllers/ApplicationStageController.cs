@@ -149,7 +149,7 @@ namespace Recruiter.Controllers
                 case "ApplicationApproval":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId = stage.Id });
                 case "PhoneCall":
-
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId = stage.Id });
                 case "Homework":
 
                 case "Interview":
@@ -217,7 +217,8 @@ namespace Recruiter.Controllers
             if (application.ApplicationStages.Count() != 0)
             {
                 var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
-                if (nextStage.State != ApplicationStageState.Finished)
+                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
+                if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
                 {
                     nextStage.State = ApplicationStageState.InProgress;
                     await _context.SaveChangesAsync();
@@ -225,6 +226,81 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
+        }
+
+        public async Task<IActionResult> ProcessPhoneCall(string stageId)
+        {
+            var stage = await _context.ApplicationStages
+                                    //.Include(x => x.Application)
+                                    //    .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessPhoneCallViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, PhoneCallViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessPhoneCall(ProcessPhoneCallViewModel phoneCallViewModel)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == phoneCallViewModel.StageToProcess.Id);
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {phoneCallViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+            if (stage.ResponsibleUserId != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {phoneCallViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+
+            stage.Note = phoneCallViewModel.StageToProcess.Note;
+            stage.Rate = phoneCallViewModel.StageToProcess.Rate;
+            stage.Accepted = phoneCallViewModel.StageToProcess.Accepted;
+            stage.AcceptedById = myId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            var application = await _context.Applications
+                                                 .Include(x => x.ApplicationStages)
+                                                 .FirstOrDefaultAsync(x => x.Id == stage.ApplicationId);
+
+            if (application == null)
+                throw new Exception($"Application with id {stage.Application.Id} not found. (UserID: {myId})");
+
+            if (application.ApplicationStages.Count() != 0)
+            {
+                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
+                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
+                if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
+                {
+                    nextStage.State = ApplicationStageState.InProgress;
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
     }
 }
