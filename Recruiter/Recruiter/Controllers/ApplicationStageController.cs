@@ -55,39 +55,8 @@ namespace Recruiter.Controllers
                                             .Where(x => x.State == ApplicationStageState.InProgress &&
                                                         x.ResponsibleUserId == myId &&
                                                         x.GetType().Name == t.Name).Count(),
-                    //Quantity = _context.Applications
-                    //                        .Include(x => x.JobPosition)
-                    //                        .Include(x => x.User)
-                    //                        .Include(x => x.ApplicationStages)
-                    //                        .Where(x =>
-                    //                                    x.ApplicationStages
-                    //                                        .OrderBy(y => y.Level)
-                    //                                        .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-                    //                                        .Take(1)
-                    //                                        .Any(y => x.Id == y.ApplicationId &&
-                    //                                                    (y.GetType().Name == t.Name) &&
-                    //                                                    y.State != ApplicationStageState.Finished &&
-                    //                                                    y.ResponsibleUserId == myId)
-
-                    //                        )
-                    //                        .Count(),
                 });
             }
-
-            //var applications = _context.Applications
-            //                                .Include(x => x.JobPosition)
-            //                                .Include(x => x.User)
-            //                                .Include(x => x.ApplicationStages)
-            //                                .Where(x =>
-            //                                            x.ApplicationStages
-            //                                                .OrderBy(y => y.Level)
-            //                                                .Skip(x.ApplicationStages.Where(y => y.State == ApplicationStageState.Finished).Count())
-            //                                                .Take(1)
-            //                                                .Any(y => x.Id == y.ApplicationId &&
-            //                                                            (y.GetType().Name == stageName || stageName == "") &&
-            //                                                            y.State != ApplicationStageState.Finished &&
-            //                                                            y.ResponsibleUserId == myId)
-            //                                );
 
             var stages = _context.ApplicationStages
                                     .Include(x => x.Application)
@@ -178,23 +147,16 @@ namespace Recruiter.Controllers
             switch (stage.GetType().Name) {
                 case "ApplicationApproval":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId = stage.Id });
-                    //break;
                 case "PhoneCall":
 
-                    //break;
                 case "Homework":
 
-                    //break;
                 case "Interview":
 
-                    //break;
                 default:
 
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
-                    //break;
             }
-
-            //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         public async Task<IActionResult> ProcessApplicationApproval(string stageId)

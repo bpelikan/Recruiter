@@ -60,7 +60,6 @@ else
                     @Html.DisplayFor(model => stage.Application.User.FirstName)
                     @Html.DisplayFor(model => stage.Application.User.LastName)
                     (@Html.DisplayFor(model => stage.Application.User.Email))
-                    @*@stage.Application.User.FirstName @stage.Application.User.LastName (@stage.Application.User.Email)*@
                 </td>
                 <td>
                     <a asp-controller="JobPosition" asp-action="Details" asp-route-id="@stage.Application.JobPosition.Id" asp-route-returnurl="@Context.Request.Path">@Html.DisplayFor(model => stage.Application.JobPosition.Name)</a>
@@ -75,5 +74,3 @@ else
         }
     </table>
 }
-
-<a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="32434e86-6960-4230-989f-43086369db1d" asp-route-returnurl="@Context.Request.Path">test</a>
