@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Recruiter.Models.ApplicationViewModels
+namespace Recruiter.Models.MyApplicationViewModels.Shared
 {
     public class UserDetailsViewModel
     {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Recruiter.Models.MyApplicationViewModels
+namespace Recruiter.Models.ApplicationViewModels.Shared
 {
     public class JobPositionViewModel
     {

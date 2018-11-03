@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationViewModels;
+using Recruiter.Models.ApplicationViewModels.Shared;
 using Recruiter.Services;
 using Recruiter.Shared;
 
