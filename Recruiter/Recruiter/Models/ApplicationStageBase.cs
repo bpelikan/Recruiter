@@ -57,11 +57,10 @@ namespace Recruiter.Models
         public HomeworkState HomeworkState { get; set; }
 
         public string Description { get; set; }
-
         public int Duration { get; set; }
+
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-
         public string Url { get; set; }
         public DateTime? SendingTime { get; set; }
     }

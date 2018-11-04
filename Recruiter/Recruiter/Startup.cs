@@ -56,7 +56,7 @@ namespace Recruiter
                 {
                     var supportedCultures = new List<CultureInfo>
                     {
-                        new CultureInfo("en-US")
+                        new CultureInfo("en-US"),
                         //new CultureInfo("pl-PL"),
                     };
 
