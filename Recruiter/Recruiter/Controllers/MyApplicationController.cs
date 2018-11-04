@@ -170,7 +170,7 @@ namespace Recruiter.Controllers
                 }
 
                 if (await _context.Applications
-                    .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
+                                    .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
                 {
                     ModelState.AddModelError("", "You have already sent application to this offer.");
                     return View(applyApplicationViewModel);

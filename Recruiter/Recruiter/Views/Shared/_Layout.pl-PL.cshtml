@@ -38,11 +38,16 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">O stronie</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Kontakt</a></li>
-                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole("Administrator")">@await Component.InvokeAsync("AdminMenu")</li>
-                    <li condition="@SignInManager.IsSignedIn(User) && !@User.IsInRole("Administrator")"><a asp-area="" asp-controller="Cv" asp-action="Index">Upload CV</a></li>
+                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+
+                    <li><a asp-area="" asp-controller="Offer" asp-action="Index">Offers</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruiter)"><a asp-area="" asp-controller="ApplicationStage" asp-action="ApplicationsStagesToReview">Stages to review</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruit)"><a asp-area="" asp-controller="MyApplication" asp-action="MyApplications">My applications</a></li>
+                    <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruiter) || @User.IsInRole(RoleCollection.Administrator))">@await Component.InvokeAsync("HRMenu")</li>
+                    <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Administrator)">@await Component.InvokeAsync("AdminMenu")</li>
+
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -52,10 +57,9 @@
         @RenderBody()
         <hr />
         <footer>
-            @*<p>&copy; 2018 - Recruiter</p>*@
             <div class="row">
                 <div class="col-sm-6">
-                    <p>&copy; 2018 - Recruiter</p>
+                    <p>&copy; @DateTime.Now.Year - Recruiter</p>
                 </div>
                 <div class="col-sm-6 text-right">
                     @await Html.PartialAsync("_SelectLanguagePartial")
@@ -63,7 +67,6 @@
             </div>
         </footer>
     </div>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
