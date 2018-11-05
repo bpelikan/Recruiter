@@ -213,7 +213,8 @@ namespace Recruiter.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         ApplicationId = application.Id,
-                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId
+                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId,
+                        HomeworkState = HomeworkState.WaitingForSpecification
                     });
                 }
                 if (applicationStagesRequirements.IsInterviewRequired)
@@ -225,6 +226,9 @@ namespace Recruiter.Controllers
                         ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForInterviewId
                     });
                 }
+
+                if (applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
+                    applicationStages.OrderBy(x => x.Level).First().State = ApplicationStageState.InProgress;
 
                 await _context.ApplicationStages.AddRangeAsync(applicationStages);
                 await _context.SaveChangesAsync();

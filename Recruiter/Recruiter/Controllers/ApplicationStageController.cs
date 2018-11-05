@@ -130,8 +130,14 @@ namespace Recruiter.Controllers
 
             if (stage != null)
             {
+                var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
+
                 stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
+                if (stage.Id == firstStageInThisApplicationId)
+                    stage.State = ApplicationStageState.InProgress;
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
             }
 
