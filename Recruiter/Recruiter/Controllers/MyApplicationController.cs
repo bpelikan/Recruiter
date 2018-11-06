@@ -203,6 +203,34 @@ namespace Recruiter.Controllers
             return View(applyApplicationViewModel);
         }
 
+        public async Task<IActionResult> ProcessMyHomework(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            if (stage.Application.User.Id != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            switch (stage.HomeworkState)
+            {
+                case HomeworkState.WaitingForRead:
+                    return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id });
+                case HomeworkState.WaitingForSendHomework:
+                    return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
+                case HomeworkState.Completed:
+                    return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id });
+                default:
+                    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+            }
+        }
+
         public async Task<IActionResult> BeforeReadMyHomework(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -226,17 +254,17 @@ namespace Recruiter.Controllers
                 ApplicationId = stage.ApplicationId,
             };
 
-            if(stage.HomeworkState == HomeworkState.WaitingForSendHomework)
-                return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
-            else 
+            if(stage.HomeworkState == HomeworkState.WaitingForRead)
                 return View(vm);
+            else
+                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
         }
 
         [HttpPost]
         public async Task<IActionResult> BeforeReadMyHomework(Homework homework)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages    //sprawdzić z id == null
+            var stage = await _context.ApplicationStages
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.User)
                                     .Include(x => x.Application)
@@ -247,13 +275,15 @@ namespace Recruiter.Controllers
             if (stage.Application.User.Id != myId)
                 throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
 
-            stage.StartTime = DateTime.UtcNow;
-            stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
-            stage.HomeworkState = HomeworkState.WaitingForSendHomework;
-            await _context.SaveChangesAsync();
+            if (stage.HomeworkState == HomeworkState.WaitingForRead)
+            {
+                stage.StartTime = DateTime.UtcNow;
+                stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
+                stage.HomeworkState = HomeworkState.WaitingForSendHomework;
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
-            //return View(stage);
         }
 
         public async Task<IActionResult> ReadMyHomework(string stageId)
@@ -274,7 +304,10 @@ namespace Recruiter.Controllers
             stage.StartTime = stage.StartTime?.ToLocalTime();
             stage.EndTime = stage.EndTime?.ToLocalTime();
 
-            return View(stage);
+            if(stage.HomeworkState == HomeworkState.WaitingForSendHomework)
+                return View(stage);
+            else
+                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
         }
 
         [HttpPost]
@@ -292,12 +325,15 @@ namespace Recruiter.Controllers
             if (stage.Application.User.Id != myId)
                 throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
 
-            stage.SendingTime = DateTime.UtcNow;
-            stage.Url = homework.Url;
-            stage.HomeworkState = HomeworkState.Completed;
-            await _context.SaveChangesAsync();
+            if (stage.HomeworkState == HomeworkState.WaitingForSendHomework)
+            {
+                stage.SendingTime = DateTime.UtcNow;
+                stage.Url = homework.Url;
+                stage.HomeworkState = HomeworkState.Completed;
+                await _context.SaveChangesAsync();
+            }
 
-            return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+            return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id });
         }
 
         public async Task<IActionResult> ShowMyHomework(string stageId)
@@ -315,11 +351,30 @@ namespace Recruiter.Controllers
             if (stage.Application.User.Id != myId)
                 throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
+            if (stage.HomeworkState != HomeworkState.Completed)
+                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+
             stage.StartTime = stage.StartTime?.ToLocalTime();
             stage.EndTime = stage.EndTime?.ToLocalTime();
             stage.SendingTime = stage.SendingTime?.ToLocalTime();
 
-            return View(stage);
+            if(stage.HomeworkState == HomeworkState.Completed)
+                return View(stage);
+            else
+                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
         }
     }
 }
+
+
+//switch (stage.HomeworkState)
+//{
+//    case HomeworkState.WaitingForRead:
+//        return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id });
+//    case HomeworkState.WaitingForSendHomework:
+//        return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
+//    case HomeworkState.Completed:
+//        return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id });
+//    default:
+//        return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+//}

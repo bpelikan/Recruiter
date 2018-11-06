@@ -63,19 +63,19 @@
                         }
                         else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForRead)
                         {
-                            <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
                                 <b>(@Html.DisplayFor(model => stage.State)) - Read homework</b>
                             </a>
                         }
                         else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSendHomework)
                         {
-                            <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
                                 <b>(@Html.DisplayFor(model => stage.State)) - Send homework</b>
                             </a>
                         }
                         else if ((stage as Homework).HomeworkState == HomeworkState.Completed)
                         {
-                            <a asp-controller="MyApplication" asp-action="ShowMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
                                 <b>(@Html.DisplayFor(model => stage.State)) - Show my homework</b>
                             </a>
                         }
