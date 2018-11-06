@@ -43,6 +43,9 @@ namespace Recruiter.Controllers
 
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
+            if (stageName == "Homework")
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReviewHomework), new { stageName = "Homework"});
+
             var myId = _userManager.GetUserId(HttpContext.User);
 
             List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
@@ -84,12 +87,70 @@ namespace Recruiter.Controllers
                         User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
                         JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
                     },
-                    CurrentStage = _mapper.Map<ApplicationStageBase, ApplicationStageViewModel>(stage),
+                    CurrentStage = stage,
                 });
             }
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
+            
             return View(vm);
         }
+
+        public IActionResult ApplicationsStagesToReviewHomework(string stageName = "Homework")
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            {
+                stagesSortedByName.Add(new StagesViewModel()
+                {
+                    Name = t.Name,
+                    Quantity = _context.ApplicationStages
+                                            .AsNoTracking()
+                                            .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                        x.ResponsibleUserId == myId &&
+                                                        x.GetType().Name == t.Name).Count(),
+                });
+            }
+
+            var stages = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                    x.ResponsibleUserId == myId &&
+                                                    (x.GetType().Name == stageName || stageName == ""));
+
+            var vm = new ApplicationsStagesToReviewViewModel()
+            {
+                StageSortedByName = stagesSortedByName,
+            };
+            vm.AsignedStages = new List<AsignedStagesViewModel>();
+            foreach (Homework stage in stages)
+            {
+                stage.StartTime = stage.StartTime?.ToLocalTime();
+                stage.EndTime = stage.EndTime?.ToLocalTime();
+                stage.SendingTime = stage.SendingTime?.ToLocalTime();
+
+                vm.AsignedStages.Add(new AsignedStagesViewModel()
+                {
+                    Application = new ApplicationViewModel()
+                    {
+                        Id = stage.Application.Id,
+                        CreatedAt = stage.Application.CreatedAt,
+                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                    },
+                    CurrentStage = stage,
+                });
+            }
+
+            vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
+            return View(vm);
+        }
+
 
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
         {
@@ -154,7 +215,7 @@ namespace Recruiter.Controllers
                 case "PhoneCall":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId = stage.Id });
                 case "Homework":
-
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId = stage.Id });
                 case "Interview":
 
                 default:
@@ -165,6 +226,7 @@ namespace Recruiter.Controllers
 
         public async Task<IActionResult> ProcessApplicationApproval(string stageId)
         {
+            var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _context.ApplicationStages
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.ApplicationStages)
@@ -174,6 +236,8 @@ namespace Recruiter.Controllers
                                         .ThenInclude(x => x.JobPosition)
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -218,6 +282,7 @@ namespace Recruiter.Controllers
 
         public async Task<IActionResult> ProcessPhoneCall(string stageId)
         {
+            var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _context.ApplicationStages
                                     //.Include(x => x.Application)
                                     //    .ThenInclude(x => x.ApplicationStages)
@@ -227,6 +292,8 @@ namespace Recruiter.Controllers
                                         .ThenInclude(x => x.JobPosition)
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -273,6 +340,98 @@ namespace Recruiter.Controllers
             await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+        }
+
+        public async Task<IActionResult> ProcessHomework(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            switch (stage.HomeworkState) {
+                case HomeworkState.WaitingForSpecification:
+                    return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId = stage.Id });
+                    //break;
+                case HomeworkState.WaitingForRead:
+
+                    break;
+                case HomeworkState.WaitingForSendHomework:
+
+                    break;
+                case HomeworkState.Completed:
+
+                    break;
+                default:
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                    //break;
+            }
+
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+        }
+
+        public async Task<IActionResult> AddHomeworkSpecification(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new AddHomeworkSpecificationViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkSpecificationViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == addHomeworkSpecificationViewModel.StageToProcess.Id) as Homework;
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {addHomeworkSpecificationViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+            if (stage.ResponsibleUserId != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {addHomeworkSpecificationViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+
+            stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
+            stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
+            stage.HomeworkState = HomeworkState.WaitingForRead;
+            await _context.SaveChangesAsync();
+
+            //await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
+
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class AsignedStagesViewModel
     {
         public ApplicationViewModel Application { get; set; }
-        public ApplicationStageViewModel CurrentStage { get; set; }
+        public ApplicationStageBase CurrentStage { get; set; }
     }
 
     public class StagesViewModel

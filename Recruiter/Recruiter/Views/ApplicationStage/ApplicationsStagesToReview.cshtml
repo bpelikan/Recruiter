@@ -47,7 +47,7 @@ else
 {
     <table class="table table-condensed table-bordered" header header-content="My applications">
         <tr>
-            <th>User</th>
+            <th>Application</th>
             <th>Job Position</th>
             <th>Stage</th>
             <th>Apply time</th>
@@ -57,9 +57,11 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(model => stage.Application.User.FirstName)
-                    @Html.DisplayFor(model => stage.Application.User.LastName)
-                    (@Html.DisplayFor(model => stage.Application.User.Email))
+                    <a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@stage.Application.Id" asp-route-returnurl="@Context.Request.Path">
+                        @Html.DisplayFor(model => stage.Application.User.FirstName)
+                        @Html.DisplayFor(model => stage.Application.User.LastName)
+                        (@Html.DisplayFor(model => stage.Application.User.Email))
+                    </a>
                 </td>
                 <td>
                     <a asp-controller="JobPosition" asp-action="Details" asp-route-id="@stage.Application.JobPosition.Id" asp-route-returnurl="@Context.Request.Path">@Html.DisplayFor(model => stage.Application.JobPosition.Name)</a>
