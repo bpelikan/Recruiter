@@ -50,21 +50,37 @@
                 {
 
                     @Html.DisplayFor(model => stage.GetType().Name)
-                    <b Condition="!stage.Accepted">
+                    <b Condition="!stage.Accepted && stage.State != ApplicationStageState.InProgress">
                         (@Html.DisplayFor(model => stage.State))
                     </b>
                     <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
 
-                    if ((stage as Homework).HomeworkState == HomeworkState.WaitingForRead)
+                    if (stage.State == ApplicationStageState.InProgress)
                     {
-
-                        <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">Read homework</a>
-                        <br />
+                        if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSpecification)
+                        {
+                            @:(@Html.DisplayFor(model => stage.State)) - Waiting for specification
+                        }
+                        else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForRead)
+                        {
+                            <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                                <b>(@Html.DisplayFor(model => stage.State)) - Read homework</b>
+                            </a>
+                        }
+                        else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSendHomework)
+                        {
+                            <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                                <b>(@Html.DisplayFor(model => stage.State)) - Send homework</b>
+                            </a>
+                        }
+                        else if ((stage as Homework).HomeworkState == HomeworkState.Completed)
+                        {
+                            <a asp-controller="MyApplication" asp-action="ShowMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">
+                                <b>(@Html.DisplayFor(model => stage.State)) - Show my homework</b>
+                            </a>
+                        }
                     }
-                    else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSendHomework)
-                    {
-                        @:Wyślij zadanie
-                    }
+                    <br />
                 }
                 else
                 {

@@ -99,7 +99,7 @@ else
                                 </b>
                                 break;
                             case HomeworkState.Completed:
-                                <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Waiting for specification</a>
+                                <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Waiting for accept</a>
                                 break;
                         }
                     }

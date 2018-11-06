@@ -274,5 +274,27 @@ namespace Recruiter.Controllers
             return View(stage);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SendMyHomework(Homework homework)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefaultAsync(x => x.Id == homework.Id) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {homework.Id} not found. (UserID: {myId})");
+            if (stage.Application.User.Id != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
+
+            stage.SendingTime = DateTime.UtcNow;
+            stage.Url = homework.Url;
+            stage.HomeworkState = HomeworkState.Completed;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+        }
     }
 }
