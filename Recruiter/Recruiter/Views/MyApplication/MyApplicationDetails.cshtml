@@ -46,13 +46,36 @@
         <dd>
             @foreach (var stage in Model.ApplicationStages)
             {
+                @if (stage.GetType().Name == "Homework")
+                {
 
-            @Html.DisplayFor(model => stage.GetType().Name)
-            <b Condition="!stage.Accepted">
-                (@Html.DisplayFor(model => stage.State))
-            </b>
-            <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
-            <br />
+                    @Html.DisplayFor(model => stage.GetType().Name)
+                    <b Condition="!stage.Accepted">
+                        (@Html.DisplayFor(model => stage.State))
+                    </b>
+                    <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
+
+                    if ((stage as Homework).HomeworkState == HomeworkState.WaitingForRead)
+                    {
+
+                        <a asp-controller="MyApplication" asp-action="BeforeReadMyHomework" asp-route-stageId="@stage.Id" asp-route-returnurl="@Context.Request.Path">Read homework</a>
+                        <br />
+                    }
+                    else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSendHomework)
+                    {
+                        @:Wyślij zadanie
+                    }
+                }
+                else
+                {
+                    @Html.DisplayFor(model => stage.GetType().Name)
+                    <b Condition="!stage.Accepted">
+                        (@Html.DisplayFor(model => stage.State))
+                    </b>
+                    <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
+                    <br />
+                }
+
             }
 
         </dd>

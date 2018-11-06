@@ -202,5 +202,77 @@ namespace Recruiter.Controllers
             ModelState.AddModelError("", "CV file not found.");
             return View(applyApplicationViewModel);
         }
+
+        public async Task<IActionResult> BeforeReadMyHomework(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            if (stage.Application.User.Id != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            var vm = new Homework()
+            {
+                Id = stage.Id,
+                Duration = stage.Duration,
+                Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
+                ApplicationId = stage.ApplicationId,
+            };
+
+            if(stage.HomeworkState == HomeworkState.WaitingForSendHomework)
+                return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
+            else 
+                return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BeforeReadMyHomework(Homework homework)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages    //sprawdzić z id == null
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefaultAsync(x => x.Id == homework.Id) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {homework.Id} not found. (UserID: {myId})");
+            if (stage.Application.User.Id != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
+
+            stage.StartTime = DateTime.UtcNow;
+            stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
+            stage.HomeworkState = HomeworkState.WaitingForSendHomework;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
+            //return View(stage);
+        }
+
+        public async Task<IActionResult> ReadMyHomework(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            if (stage.Application.User.Id != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            return View(stage);
+        }
+
     }
 }
