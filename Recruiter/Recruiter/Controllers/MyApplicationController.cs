@@ -23,13 +23,20 @@ namespace Recruiter.Controllers
     {
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
+        private readonly IApplicationStageService _applicationStageService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public MyApplicationController(ICvStorageService cvStorageService, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public MyApplicationController(
+            ICvStorageService cvStorageService, 
+            IMapper mapper,
+            IApplicationStageService applicationStageService,
+            UserManager<ApplicationUser> userManager, 
+            ApplicationDbContext context)
         {
             _cvStorageService = cvStorageService;
             _mapper = mapper;
+            _applicationStageService = applicationStageService;
             _userManager = userManager;
             _context = context;
         }
@@ -185,53 +192,9 @@ namespace Recruiter.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
                 await _context.Applications.AddAsync(application);
-                //await _context.SaveChangesAsync();
-
-                var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
-                List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
-                if (applicationStagesRequirements.IsApplicationApprovalRequired)
-                {
-                    applicationStages.Add(new ApplicationApproval()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id,
-                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForApplicatioApprovalId
-                    });
-                }
-                if (applicationStagesRequirements.IsPhoneCallRequired)
-                {
-                    applicationStages.Add(new PhoneCall()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id,
-                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForPhoneCallId
-                    });
-                }
-                if (applicationStagesRequirements.IsHomeworkRequired)
-                {
-                    applicationStages.Add(new Homework()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id,
-                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId,
-                        HomeworkState = HomeworkState.WaitingForSpecification
-                    });
-                }
-                if (applicationStagesRequirements.IsInterviewRequired)
-                {
-                    applicationStages.Add(new Interview()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ApplicationId = application.Id,
-                        ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForInterviewId
-                    });
-                }
-
-                if (applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
-                    applicationStages.OrderBy(x => x.Level).First().State = ApplicationStageState.InProgress;
-
-                await _context.ApplicationStages.AddRangeAsync(applicationStages);
                 await _context.SaveChangesAsync();
+
+                await _applicationStageService.AddRequiredStagesToApplication(application.Id);
 
                 return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = application.Id });
             }

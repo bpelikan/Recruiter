@@ -8,5 +8,6 @@ namespace Recruiter.Services
     public interface IApplicationStageService
     {
         Task<bool> UpdateNextApplicationStageState(string applicationId);
+        Task<bool> AddRequiredStagesToApplication(string applicationId);
     }
 }
