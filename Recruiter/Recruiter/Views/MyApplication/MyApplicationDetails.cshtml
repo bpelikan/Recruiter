@@ -46,52 +46,49 @@
         <dd>
             @foreach (var stage in Model.ApplicationStages)
             {
+                <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
+                <span condition="!stage.Accepted && stage.State == ApplicationStageState.Finished" class="glyphicon glyphicon-remove"></span>
+                @Html.DisplayFor(model => stage.GetType().Name)
+                @*<b Condition='!stage.Accepted || (stage.GetType().Name == "Homework" && stage.State != ApplicationStageState.InProgress)'>*@
+                <b Condition='!stage.Accepted && (stage.GetType().Name != "Homework")'>
+                @*<b Condition="!stage.Accepted && ">*@
+                    (@Html.DisplayFor(model => stage.State))
+                </b>
+
                 @if (stage.GetType().Name == "Homework")
                 {
-
-                    @Html.DisplayFor(model => stage.GetType().Name)
-                    <b Condition="!stage.Accepted && stage.State != ApplicationStageState.InProgress">
-                        (@Html.DisplayFor(model => stage.State))
-                    </b>
-                    <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
-
                     if (stage.State == ApplicationStageState.InProgress)
                     {
-                        if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSpecification)
+                        switch ((stage as Homework).HomeworkState)
                         {
-                            @:(@Html.DisplayFor(model => stage.State)) - Waiting for specification
-                        }
-                        else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForRead)
-                        {
-                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
-                                <b>(@Html.DisplayFor(model => stage.State)) - Read homework</b>
-                            </a>
-                        }
-                        else if ((stage as Homework).HomeworkState == HomeworkState.WaitingForSendHomework)
-                        {
-                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
-                                <b>(@Html.DisplayFor(model => stage.State)) - Send homework</b>
-                            </a>
-                        }
-                        else if ((stage as Homework).HomeworkState == HomeworkState.Completed)
-                        {
-                            <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
-                                <b>(@Html.DisplayFor(model => stage.State)) - Show my homework</b>
-                            </a>
+                            case HomeworkState.WaitingForSpecification:
+                                @:(@Html.DisplayFor(model => stage.State)) - Waiting for specification
+                                break;
+                            case HomeworkState.WaitingForRead:
+                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
+                                    <b>(@Html.DisplayFor(model => stage.State)) - Read homework</b>
+                                </a>
+                                break;
+                            case HomeworkState.WaitingForSendHomework:
+                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
+                                    <b>(@Html.DisplayFor(model => stage.State)) - Send homework</b>
+                                </a>
+                                break;
+                            case HomeworkState.Completed:
+                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
+                                    <b>(@Html.DisplayFor(model => stage.State)) - Show my homework</b>
+                                </a>
+                                break;
                         }
                     }
-                    <br />
+                    else if (stage.State == ApplicationStageState.Finished)
+                    {
+                        <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
+                            <b> - Show my homework</b>
+                        </a>
+                    }
                 }
-                else
-                {
-                    @Html.DisplayFor(model => stage.GetType().Name)
-                    <b Condition="!stage.Accepted">
-                        (@Html.DisplayFor(model => stage.State))
-                    </b>
-                    <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
-                    <br />
-                }
-
+                <br />
             }
 
         </dd>
@@ -106,5 +103,3 @@
     <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
     <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Back</a>
 </form>
-
-
