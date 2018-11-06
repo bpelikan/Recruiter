@@ -49,7 +49,9 @@
                 <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
                 <span condition="!stage.Accepted && stage.State == ApplicationStageState.Finished" class="glyphicon glyphicon-remove"></span>
                 @Html.DisplayFor(model => stage.GetType().Name)
-                <b Condition='!stage.Accepted && stage.GetType().Name != "Homework"'>
+                <b Condition='!stage.Accepted && 
+                                    (stage.GetType().Name != "Homework" || 
+                                        (stage.GetType().Name == "Homework" && stage.State == ApplicationStageState.Waiting))'>
                     (@Html.DisplayFor(model => stage.State))
                 </b>
 
