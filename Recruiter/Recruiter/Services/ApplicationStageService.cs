@@ -32,9 +32,9 @@ namespace Recruiter.Services
 
             if (application.ApplicationStages.Count() != 0)
             {
-                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).First();
+                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).FirstOrDefault();
                 var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-                if (nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
+                if (nextStage != null && nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
                 {
                     nextStage.State = ApplicationStageState.InProgress;
                     await _context.SaveChangesAsync();

@@ -217,7 +217,7 @@ namespace Recruiter.Controllers
                 case "Homework":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId = stage.Id });
                 case "Interview":
-
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = stage.Id });
                 default:
 
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
@@ -481,6 +481,68 @@ namespace Recruiter.Controllers
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
             stage.Accepted = processHomeworkStageViewModel.StageToProcess.Accepted;
+            stage.AcceptedById = myId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
+
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+        }
+        #endregion
+
+        #region ApplicationApproval
+        public async Task<IActionResult> ProcessInterview(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessInterviewViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, InterviewViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == interviewViewModel.StageToProcess.Id);
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {interviewViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+            if (stage.ResponsibleUserId != myId)
+                throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {interviewViewModel.StageToProcess.Id} not found. (UserID: {myId})");
+
+            stage.Note = interviewViewModel.StageToProcess.Note;
+            stage.Rate = interviewViewModel.StageToProcess.Rate;
+            stage.Accepted = interviewViewModel.StageToProcess.Accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
