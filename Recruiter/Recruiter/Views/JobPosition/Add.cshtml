@@ -19,13 +19,21 @@
         </div>
     </div>
 
+    
     <div class="form-group">
         <label asp-for="Description" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="Description" class="form-control" />
+            <textarea id="summernote" name="Description"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
+    @*<div class="form-group">
+            <label asp-for="Description" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+        </div>*@
 
     <div class="form-group">
         <label asp-for="StartDate" class="col-md-2 control-label"></label>
@@ -43,7 +51,7 @@
         </div>
     </div>
 
-    <table class="table table-condensed table-bordered" header header-content="Application Stages Requirement" >
+    <table class="table table-condensed table-bordered" header header-content="Application Stages Requirement">
         <tr>
             <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
             <th>Required</th>
@@ -88,39 +96,39 @@
         </tr>
     </table>
     @*<div class="form-group">
-        <div class="checkbox">
-            <label>
-                <input asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)
-            </label>
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)
+                </label>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class="control-label"></label>
-        <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class ="form-control" asp-items="ViewBag.DefaultResponsibleForApplicatioApprovalId">
-            <option selected value="">--- SELECT ---</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <div class="checkbox">
-            <label>
-                <input asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)
-            </label>
+        <div class="form-group">
+            <label asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class="control-label"></label>
+            <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class ="form-control" asp-items="ViewBag.DefaultResponsibleForApplicatioApprovalId">
+                <option selected value="">--- SELECT ---</option>
+            </select>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="checkbox">
-            <label>
-                <input asp-for="ApplicationStagesRequirement.IsHomeworkRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)
-            </label>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)
+                </label>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="checkbox">
-            <label>
-                <input asp-for="ApplicationStagesRequirement.IsInterviewRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)
-            </label>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsHomeworkRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)
+                </label>
+            </div>
         </div>
-    </div>*@
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsInterviewRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)
+                </label>
+            </div>
+        </div>*@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
@@ -131,12 +139,7 @@
 </form>
 
 @section Scripts {
+    
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
-
-@*@{
-        ViewData["Title"] = "Add";
-    }
-
-    <h2>Add</h2>*@
 

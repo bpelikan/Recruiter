@@ -219,7 +219,6 @@ namespace Recruiter.Controllers
                 case "Interview":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = stage.Id });
                 default:
-
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
         }

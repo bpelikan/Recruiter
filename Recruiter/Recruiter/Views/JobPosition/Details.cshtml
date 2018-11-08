@@ -26,7 +26,7 @@
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.Raw(@Model.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.StartDate)
