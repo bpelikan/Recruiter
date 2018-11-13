@@ -41,6 +41,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
+        #region ApplicationsStagesToReview()
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
             if (stageName == "Homework")
@@ -150,8 +151,9 @@ namespace Recruiter.Controllers
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
             return View(vm);
         }
+        #endregion
 
-
+        #region AssingUserToApplicationStage()
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
         {
             var stage = await _context.ApplicationStages.Include(x => x.Application).FirstOrDefaultAsync(x => x.Id == stageId);
@@ -204,7 +206,9 @@ namespace Recruiter.Controllers
 
             throw new Exception($"ApplicationStage with id {addResponsibleUserToStageViewModel.StageId} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
         }
+        #endregion
 
+        #region ProcessStage()
         public async Task<IActionResult> ProcessStage(string stageId)
         {
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
@@ -222,6 +226,7 @@ namespace Recruiter.Controllers
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
         }
+        #endregion
 
         #region ApplicationApproval
         public async Task<IActionResult> ProcessApplicationApproval(string stageId)
