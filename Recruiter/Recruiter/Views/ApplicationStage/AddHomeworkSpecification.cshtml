@@ -109,7 +109,13 @@
                 {
                     <tr>
                         <td>
-                            @applicationStage.GetType().Name
+                            @*@applicationStage.GetType().Name*@
+                            <a asp-action="ShowApplicationStageDetails"
+                               asp-controller="ApplicationStage"
+                               asp-route-stageId="@applicationStage.Id"
+                               asp-route-returnurl="@Context.Request.Path">
+                                @applicationStage.GetType().Name
+                            </a>
                             <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
                         </td>
                         <td>@Html.DisplayFor(model => applicationStage.Note)</td>
