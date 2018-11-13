@@ -38,13 +38,14 @@
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.Raw(@Model.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Url)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Url)
+            @*@Html.DisplayFor(model => model.Url)*@
+            <a href="@Model.Url" target="_blank">@Html.DisplayFor(model => model.Url)</a>
         </dd>
     </dl>
 </div>
