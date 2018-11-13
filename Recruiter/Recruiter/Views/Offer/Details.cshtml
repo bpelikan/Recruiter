@@ -8,24 +8,25 @@
     ViewData["Title"] = "Job Position Details";
 }
 
-<h2>Offer Details</h2>
+<h1>@Html.DisplayFor(model => model.Name)</h1>
 
 <div>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.Raw(@Model.Description)
-        </dd>
-    </dl>
+    @Html.Raw(@Model.Description)
+    @*<dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.Raw(@Model.Description)
+            </dd>
+        </dl>*@
 </div>
 <div>
     <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
