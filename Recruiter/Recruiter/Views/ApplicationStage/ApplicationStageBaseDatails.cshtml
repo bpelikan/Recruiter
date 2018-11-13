@@ -1,0 +1,97 @@
+﻿@model Recruiter.Models.ApplicationStageBase
+
+@{
+    ViewData["Title"] = "Application Stage Datails";
+}
+
+<h2>Application Stage Datails - @Model.GetType().Name</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Application.User.FirstName) @Html.DisplayFor(model => model.Application.User.LastName)
+            <b Condition="Model.Application.User != null">
+                (@Html.DisplayFor(model => model.Application.User.Email))
+            </b>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Application.JobPosition)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Application.JobPosition.Name)
+        </dd>
+
+        <hr />
+        @*<h3>Stage Details</h3>*@
+        @*<dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Level)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Level)
+        </dd>*@
+        <dt>
+            Stage
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GetType().Name)
+            
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.State)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.State)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ResponsibleUser)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ResponsibleUser.FirstName) @Html.DisplayFor(model => model.ResponsibleUser.LastName)
+            <b Condition="Model.ResponsibleUser != null">
+                (@Html.DisplayFor(model => model.ResponsibleUser.Email))
+            </b>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Accepted)
+        </dt>
+        <dd>
+            <span condition="@Model.Accepted" class="glyphicon glyphicon-ok"></span>
+            <span condition="!@Model.Accepted && Model.State == ApplicationStageState.Finished" class="glyphicon glyphicon-remove"></span>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AcceptedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AcceptedBy.FirstName) @Html.DisplayFor(model => model.AcceptedBy.LastName)
+            <b Condition="Model.AcceptedBy != null">
+                (@Html.DisplayFor(model => model.AcceptedBy.Email))
+            </b>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Rate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Rate)
+        </dd>
+
+    </dl>
+</div>
+
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Back</a>
