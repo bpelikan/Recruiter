@@ -5,7 +5,12 @@
     ViewData["Title"] = "Job Positions";
 }
 
-<h2>Job Positions</h2>
+<h2>Job Positions
+    <a class="btn btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">
+        <span class="glyphicon glyphicon-plus">
+        </span>
+    </a>
+</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <div>
@@ -27,7 +32,7 @@
         {
             if (@ViewContext.HttpContext.Request.Query["jobPositionActivity"] == activity)
             {
-                <li class="nav-item active">
+                <li class="nav-item active ">
                     <a asp-action="Index" asp-route-jobPositionActivity="@activity">
                         @activity
                     </a>
@@ -43,9 +48,16 @@
             }
         }
 
-        <li class="nav-item navbar-right">
+        @*<li class="nav-item navbar-right">
             <a class="btn btn-success" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add Job Position</a>
-        </li>
+            <a class="btn btn-success" asp-action="Add" asp-route-returnurl="@Context.Request.Path">
+                New
+                <span class="glyphicon glyphicon-plus">
+
+                </span>
+            </a>
+            <span  class="glyphicon glyphicon-plus"></span>
+        </li>*@
     </ul>
 </div>
 
