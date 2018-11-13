@@ -44,7 +44,7 @@
             @Html.DisplayNameFor(model => model.StageToProcess.Description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.StageToProcess.Description)
+            @Html.Raw(@Model.StageToProcess.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.StageToProcess.Url)
