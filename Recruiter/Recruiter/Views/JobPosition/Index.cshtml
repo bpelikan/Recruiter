@@ -8,9 +8,50 @@
 <h2>Job Positions</h2>
 <div asp-validation-summary="All" class="text-danger"></div>
 
+<div>
+    <ul class="nav nav-tabs">
+        @if (!JobPositionActivity.Activities.Contains(@ViewContext.HttpContext.Request.Query["jobPositionActivity"]))
+        {
+            <li class="nav-item active">
+                <a asp-action="Index" asp-route-jobPositionActivity="">All</a>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item ">
+                <a asp-action="Index" asp-route-jobPositionActivity="">All</a>
+            </li>
+        }
+
+        @foreach (var activity in JobPositionActivity.Activities)
+        {
+            if (@ViewContext.HttpContext.Request.Query["jobPositionActivity"] == activity)
+            {
+                <li class="nav-item active">
+                    <a asp-action="Index" asp-route-jobPositionActivity="@activity">
+                        @activity
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a asp-action="Index" asp-route-jobPositionActivity="@activity">
+                        @activity
+                    </a>
+                </li>
+            }
+        }
+
+        <li class="nav-item navbar-right nav-stacked ">
+            <a class="btn btn-success" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add Job Position</a>
+        </li>
+    </ul>
+</div>
+
 @if (Model.Any())
 {
-    <a class="btn btn-sm btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add</a>
+    @*<a class="btn btn-sm btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">Add</a>
     <br />
 
     @if (!JobPositionActivity.Activities.Contains(@ViewContext.HttpContext.Request.Query["jobPositionActivity"]))
@@ -38,56 +79,62 @@
                 @activity
             </a> @:|
         }
-    }
+    }*@
+    
 
     @*<a asp-action="Applications" asp-route-stage="PhoneCall">All</a> |
     <a asp-action="Applications" asp-route-stage="PhoneCall">PhoneCall</a> |
     <a asp-action="Applications" asp-route-stage="PhoneCall">Active</a> |
     <a asp-action="Applications" asp-route-stage="PhoneCall">NotActive</a> |*@
     
-    <br />
+    @*<br />*@
     
     <table class="table table-condensed table-bordered" header header-content="Job position management">
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Actions</th>
-        </tr>
-
-        @foreach (JobPositionViewModel jobPosition in Model)
-        {
-            @if ((jobPosition.EndDate >= DateTime.UtcNow.ToLocalTime() || jobPosition.EndDate == null) && jobPosition.StartDate <= DateTime.UtcNow.ToLocalTime())
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            @foreach (JobPositionViewModel jobPosition in Model)
             {
-                @:<tr style="background-color: lightyellow;">
+                @if ((jobPosition.EndDate >= DateTime.UtcNow.ToLocalTime() || jobPosition.EndDate == null) && jobPosition.StartDate <= DateTime.UtcNow.ToLocalTime())
+                {
+                    @:<tr style="background-color: lightyellow;">
+                }
+                else
+                {
+                    @:<tr>
+                }
+                    <td>@jobPosition.Id</td>
+                    <td>@jobPosition.Name</td>
+                    <td>@Html.DisplayFor(model => jobPosition.StartDate)</td>
+                    <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
+                    <td>
+                        <form asp-action="DeleteFromIndex" asp-route-id="@jobPosition.Id" method="post">
+                            <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
+                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
+                            <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                @:</tr>
             }
-            else
-            {
-                @:<tr>
-            }
-                <td>@jobPosition.Id</td>
-                <td>@jobPosition.Name</td>
-                <td>@Html.DisplayFor(model => jobPosition.StartDate)</td>
-                <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
-                <td>
-                    <form asp-action="DeleteFromIndex" asp-route-id="@jobPosition.Id" method="post">
-                        <a class="btn btn-sm btn-default" asp-action="Details" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
-                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
-                        <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
-                            Delete
-                        </button>
-                    </form>
-                </td>
-            @:</tr>
-        }
+        </tbody>
     </table>
 }
 else
 {
-    @:Any job position not found, 
-        <b>
+    <br />
+    @:Any job position not found.
+        @*<b>
             <a asp-action="Add" asp-route-returnurl="@Context.Request.Path">click here</a>
         </b>
-    @:to add first job position.
+    @:to add first job position.*@
 }
