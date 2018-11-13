@@ -556,5 +556,53 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
         #endregion
+
+        #region ShowApplicationStageDetails()
+        public async Task<IActionResult> ShowApplicationStageDetails(string stageId, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            switch (stage.GetType().Name)
+            {
+                case "ApplicationApproval":
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                case "PhoneCall":
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                case "Homework":
+                //return RedirectToAction(nameof(ApplicationStageController.HomeworkStageDetails), new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                case "Interview":
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                default:
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+            }
+        }
+
+        public async Task<IActionResult> ApplicationStageBaseDatails(string stageId, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .Include(x => x.AcceptedBy)
+                                    .Include(x => x.ResponsibleUser)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            return View(stage);
+        }
+
+        #endregion
+
     }
 }
