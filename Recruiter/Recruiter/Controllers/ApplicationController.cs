@@ -73,26 +73,55 @@ namespace Recruiter.Controllers
                 });
             }
 
+            stagesSortedByName.Add(new StagesViewModel()
+            {
+                Name = "Finished",
+                Quantity = _context.Applications
+                            .Include(x => x.ApplicationStages)
+                            .Where(x => x.ApplicationStages
+                                            .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
+                            .Count(),
+            });
+
             var vm = new ApplicationsGroupedByStagesViewModel()
             {
                 ApplicationStagesGroupedByName = stagesSortedByName,
             };
-
             vm.Applications = new List<ApplicationsViewModel>();
             foreach (var application in applications)
             {
                 var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
-                if (stageName == "" || stageName == currentStage.GetType().Name)
+                if (currentStage == null && application.ApplicationStages
+                                                                    .Where(x => x.State == ApplicationStageState.Finished)
+                                                                    .Count() == application.ApplicationStages.Count())
                 {
-                    vm.Applications.Add(new ApplicationsViewModel()
+                    if (stageName == "" || stageName == "Finished")
                     {
-                        Id = application.Id,
-                        CreatedAt = application.CreatedAt.ToLocalTime(),
-                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                        CurrentStage = currentStage?.GetType().Name,
-                        CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
-                    });
+                        vm.Applications.Add(new ApplicationsViewModel()
+                        {
+                            Id = application.Id,
+                            CreatedAt = application.CreatedAt.ToLocalTime(),
+                            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                            CurrentStage = "Finished",
+                            CurrentStageIsAssigned = true
+                        });
+                    }
+                }
+                else
+                {
+                    if (stageName == "" || stageName == currentStage.GetType().Name)
+                    {
+                        vm.Applications.Add(new ApplicationsViewModel()
+                        {
+                            Id = application.Id,
+                            CreatedAt = application.CreatedAt.ToLocalTime(),
+                            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                            CurrentStage = currentStage?.GetType().Name,
+                            CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
+                        });
+                    }
                 }
             }
 
