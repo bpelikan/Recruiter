@@ -53,30 +53,71 @@ namespace Recruiter.Controllers
         //}
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public IActionResult Applications()
+        public IActionResult Applications(string stageName = "")
         {
-            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
-            var vm = new List<ApplicationsViewModel>();
+            var applications = _context.Applications
+                                        .Include(x => x.JobPosition)
+                                        .Include(x => x.User)
+                                        .Include(x => x.ApplicationStages);
 
+            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            {
+                stagesSortedByName.Add(new StagesViewModel()
+                {
+                    Name = t.Name,
+                    Quantity = _context.ApplicationStages
+                                            .AsNoTracking()
+                                            .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                        x.GetType().Name == t.Name).Count(),
+                });
+            }
+
+            var vm = new ApplicationsGroupedByStagesViewModel()
+            {
+                ApplicationStagesGroupedByName = stagesSortedByName,
+            };
+
+            vm.Applications = new List<ApplicationsViewModel>();
             foreach (var application in applications)
             {
                 var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
-                vm.Add(new ApplicationsViewModel()
+                if (stageName == "" || stageName == currentStage.GetType().Name)
                 {
-                    Id = application.Id,
-                    CreatedAt = application.CreatedAt.ToLocalTime(),
-                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                    CurrentStage = currentStage?.GetType().Name,
-                    CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
-                });
+                    vm.Applications.Add(new ApplicationsViewModel()
+                    {
+                        Id = application.Id,
+                        CreatedAt = application.CreatedAt.ToLocalTime(),
+                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                        CurrentStage = currentStage?.GetType().Name,
+                        CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
+                    });
+                }
             }
+
+            return View(vm);
+
+            //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
+            //var vm = new List<ApplicationsViewModel>();
+
+            //foreach (var application in applications)
+            //{
+            //    var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
+            //    vm.Add(new ApplicationsViewModel()
+            //    {
+            //        Id = application.Id,
+            //        CreatedAt = application.CreatedAt.ToLocalTime(),
+            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+            //        CurrentStage = currentStage?.GetType().Name,
+            //        CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
+            //    });
+            //}
 
             //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
             //foreach (var application in vm)
             //    application.CreatedAt = application.CreatedAt.ToLocalTime();
-
-            return View(vm);
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]

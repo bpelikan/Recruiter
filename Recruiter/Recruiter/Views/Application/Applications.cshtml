@@ -1,5 +1,5 @@
 ﻿@using Recruiter.Models.ApplicationViewModels
-@model IEnumerable<ApplicationsViewModel>
+@model ApplicationsGroupedByStagesViewModel
 
 @{
     ViewData["Title"] = "Applications";
@@ -7,7 +7,52 @@
 
 <h2>Applications</h2>
 
-@if (!Model.Any())
+<div>
+    <ul class="nav nav-tabs">
+        @if (Model.ApplicationStagesGroupedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
+        {
+            <li class="nav-item active">
+                <a asp-action="Applications" asp-route-stageName="">All</a>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item ">
+                <a asp-action="Applications" asp-route-stageName="">All</a>
+            </li>
+        }
+
+        @foreach (var stage in Model.ApplicationStagesGroupedByName)
+        {
+            if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+            {
+                <li class="nav-item active ">
+                    <a asp-action="Applications" asp-route-stageName="@stage.Name">
+                        @Html.DisplayFor(x => stage.Name)
+                        (@Html.DisplayFor(x => stage.Quantity))
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li Condition="stage.Quantity!=0" class="nav-item">
+                    <a asp-action="Applications" asp-route-stageName="@stage.Name">
+                        @Html.DisplayFor(x => stage.Name)
+                        (@Html.DisplayFor(x => stage.Quantity))
+                    </a>
+                </li>
+                <li Condition="stage.Quantity==0" class="nav-item disabled">
+                    <a>
+                        @Html.DisplayFor(x => stage.Name)
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+
+@if (!Model.Applications.Any())
 {
     <tr><td colspan="3" class="text-center">No applications</td></tr>
 }
@@ -21,7 +66,7 @@ else
             <th>Apply time</th>
         </tr>
 
-        @foreach (ApplicationsViewModel application in Model)
+        @foreach (ApplicationsViewModel application in Model.Applications)
         {
             <tr>
                 <td>
