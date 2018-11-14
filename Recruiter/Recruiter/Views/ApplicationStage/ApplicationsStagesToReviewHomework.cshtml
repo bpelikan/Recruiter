@@ -26,7 +26,7 @@
         {
             if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
             {
-                <li class="nav-item active ">
+                <li class="nav-item active">
                     <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
                         @Html.DisplayFor(x => stage.Name)
                         (@Html.DisplayFor(x => stage.Quantity))
@@ -35,10 +35,15 @@
             }
             else
             {
-                <li class="nav-item">
+                <li Condition="stage.Quantity!=0" class="nav-item">
                     <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
                         @Html.DisplayFor(x => stage.Name)
                         (@Html.DisplayFor(x => stage.Quantity))
+                    </a>
+                </li>
+                <li Condition="stage.Quantity==0" class="nav-item disabled">
+                    <a >
+                        @Html.DisplayFor(x => stage.Name)
                     </a>
                 </li>
             }
