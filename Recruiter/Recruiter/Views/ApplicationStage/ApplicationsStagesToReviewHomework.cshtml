@@ -6,39 +6,48 @@
 }
 
 <h2>Applications to review</h2>
-@if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
-{
-    <b>
-        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> |
-    </b>
-}
-else
-{
-    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> @:|
-}
 
-@foreach (var stage in Model.StageSortedByName)
-{
-    if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
-    {
-        <b>
-            <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-                @Html.DisplayFor(x => stage.Name)
-                (@Html.DisplayFor(x => stage.Quantity))
-            </a> |
-        </b>
+<div>
+    <ul class="nav nav-tabs">
+        @if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
+        {
+            <li class="nav-item active">
+                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item ">
+                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a>
+            </li>
+        }
 
-    }
-    else
-    {
-        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-            @Html.DisplayFor(x => stage.Name)
-            (@Html.DisplayFor(x => stage.Quantity))
-        </a> @:|
-    }
-}
+        @foreach (var stage in Model.StageSortedByName)
+        {
+            if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+            {
+                <li class="nav-item active ">
+                    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+                        @Html.DisplayFor(x => stage.Name)
+                        (@Html.DisplayFor(x => stage.Quantity))
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+                        @Html.DisplayFor(x => stage.Name)
+                        (@Html.DisplayFor(x => stage.Quantity))
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</div>
 
 <br />
+
 @if (!Model.AsignedStages.Any())
 {
     <tr><td colspan="3" class="text-center">No applications</td></tr>
@@ -111,3 +120,36 @@ else
         }
     </table>
 }
+
+
+@*@if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
+{
+    <b>
+        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> |
+    </b>
+}
+else
+{
+    <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a> @:|
+}
+
+@foreach (var stage in Model.StageSortedByName)
+{
+    if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+    {
+        <b>
+            <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+                @Html.DisplayFor(x => stage.Name)
+                (@Html.DisplayFor(x => stage.Quantity))
+            </a> |
+        </b>
+
+    }
+    else
+    {
+        <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
+            @Html.DisplayFor(x => stage.Name)
+            (@Html.DisplayFor(x => stage.Quantity))
+        </a> @:|
+    }
+}*@
