@@ -34,9 +34,21 @@ namespace Recruiter.Services
             {
                 var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).FirstOrDefault();
                 var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
-                if (nextStage != null && nextStage.State == ApplicationStageState.Waiting && prevStage.Accepted)
+
+                if (nextStage != null && nextStage.State == ApplicationStageState.Waiting)
                 {
-                    nextStage.State = ApplicationStageState.InProgress;
+                    if (prevStage.Accepted)
+                    {
+                        nextStage.State = ApplicationStageState.InProgress;
+                    }
+                    else
+                    {
+                        foreach (var stage in application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished))
+                        {
+                            stage.Accepted = false;
+                            stage.State = ApplicationStageState.Finished;
+                        }
+                    }
                     await _context.SaveChangesAsync();
                 }
             }

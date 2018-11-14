@@ -65,7 +65,11 @@
                                asp-route-returnurl="@Context.Request.Path">
                                 @applicationStage.GetType().Name
                             </a>
-                            <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
+                            <span condition="applicationStage.State == ApplicationStageState.Finished">
+                                <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
+                                <span condition="!applicationStage.Accepted" class="glyphicon glyphicon-remove"></span>
+                            </span>
+                            
                         </td>
                         <td>@Html.DisplayFor(model => applicationStage.State)</td>
                         <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
