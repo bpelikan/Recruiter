@@ -20,6 +20,10 @@ namespace Recruiter.Services
         Task<AddHomeworkSpecificationViewModel> GetViewModelForAddHomeworkSpecification(string stageId, string userId);
         Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId);
         Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId);
-
+        Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
+        Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId);
+        Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId);
+        Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId);
+        Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
     }
 }

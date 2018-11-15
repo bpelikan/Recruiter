@@ -312,5 +312,71 @@ namespace Recruiter.Services
                                                 .AsNoTracking();
             return applicationStages;
         }
+
+        public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
+        {
+            var stage = await GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, userId);
+
+            stage.Note = applicationApprovalViewModel.StageToProcess.Note;
+            stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
+            stage.Accepted = accepted;
+            stage.AcceptedById = userId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
+
+        public async Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId)
+        {
+            var stage = await GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, userId);
+
+            stage.Note = phoneCallViewModel.StageToProcess.Note;
+            stage.Rate = phoneCallViewModel.StageToProcess.Rate;
+            stage.Accepted = accepted;
+            stage.AcceptedById = userId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
+
+        public async Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId)
+        {
+            var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
+
+            stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
+            stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
+            stage.HomeworkState = HomeworkState.WaitingForRead;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId)
+        {
+            var stage = await GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, userId);
+
+            stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
+            stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
+            stage.Accepted = accepted;
+            stage.AcceptedById = userId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
+
+        public async Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId)
+        {
+            var stage = await GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, userId);
+
+            stage.Note = interviewViewModel.StageToProcess.Note;
+            stage.Rate = interviewViewModel.StageToProcess.Rate;
+            stage.Accepted = accepted;
+            stage.AcceptedById = userId;
+            stage.State = ApplicationStageState.Finished;
+            await _context.SaveChangesAsync();
+
+            await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
     }
 }
