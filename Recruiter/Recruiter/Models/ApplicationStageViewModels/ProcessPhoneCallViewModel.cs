@@ -18,7 +18,6 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class PhoneCallViewModel
     {
         public string Id { get; set; }
-        //public bool Accepted { get; set; }
         public string Note { get; set; }
         public int Rate { get; set; }
     }

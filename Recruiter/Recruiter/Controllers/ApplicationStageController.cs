@@ -270,7 +270,6 @@ namespace Recruiter.Controllers
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
             stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
-            //stage.Accepted = applicationApprovalViewModel.StageToProcess.Accepted;
             stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
@@ -325,7 +324,6 @@ namespace Recruiter.Controllers
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
             stage.Rate = phoneCallViewModel.StageToProcess.Rate;
-            //stage.Accepted = phoneCallViewModel.StageToProcess.Accepted;
             stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
@@ -447,7 +445,6 @@ namespace Recruiter.Controllers
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
-            //stage.Accepted = processHomeworkStageViewModel.StageToProcess.Accepted;
             stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
@@ -502,7 +499,6 @@ namespace Recruiter.Controllers
 
             stage.Note = interviewViewModel.StageToProcess.Note;
             stage.Rate = interviewViewModel.StageToProcess.Rate;
-            //stage.Accepted = interviewViewModel.StageToProcess.Accepted;
             stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
