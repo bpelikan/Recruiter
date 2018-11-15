@@ -242,17 +242,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, myId);
-
-            //stage.Note = applicationApprovalViewModel.StageToProcess.Note;
-            //stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
-            //stage.Accepted = accepted;
-            //stage.AcceptedById = myId;
-            //stage.State = ApplicationStageState.Finished;
-            //await _context.SaveChangesAsync();
-            
-            //await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
@@ -272,16 +261,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, myId);
-
-            //stage.Note = phoneCallViewModel.StageToProcess.Note;
-            //stage.Rate = phoneCallViewModel.StageToProcess.Rate;
-            //stage.Accepted = accepted;
-            //stage.AcceptedById = myId;
-            //stage.State = ApplicationStageState.Finished;
-            //await _context.SaveChangesAsync();
-
-            //await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
@@ -320,12 +299,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, myId) as Homework;
-
-            //stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
-            //stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
-            //stage.HomeworkState = HomeworkState.WaitingForRead;
-            //await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
@@ -343,16 +316,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, myId);
-
-            //stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
-            //stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
-            //stage.Accepted = accepted;
-            //stage.AcceptedById = myId;
-            //stage.State = ApplicationStageState.Finished;
-            //await _context.SaveChangesAsync();
-
-            //await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
@@ -372,16 +335,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, myId);
-
-            //stage.Note = interviewViewModel.StageToProcess.Note;
-            //stage.Rate = interviewViewModel.StageToProcess.Rate;
-            //stage.Accepted = accepted;
-            //stage.AcceptedById = myId;
-            //stage.State = ApplicationStageState.Finished;
-            //await _context.SaveChangesAsync();
-
-            //await _applicationStageService.UpdateNextApplicationStageState(stage.ApplicationId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
