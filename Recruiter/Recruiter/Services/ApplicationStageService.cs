@@ -47,11 +47,11 @@ namespace Recruiter.Services
 
                 if (nextStage != null && nextStage.State == ApplicationStageState.Waiting)
                 {
-                    if (prevStage.Accepted)
+                    if (prevStage.Accepted && nextStage.ResponsibleUserId != null)
                     {
                         nextStage.State = ApplicationStageState.InProgress;
                     }
-                    else
+                    else if (!prevStage.Accepted)
                     {
                         foreach (var stage in application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished))
                         {
@@ -189,6 +189,8 @@ namespace Recruiter.Services
             return stage;
         }
 
+
+        
 
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
@@ -409,5 +411,6 @@ namespace Recruiter.Services
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
 
+        
     }
 }
