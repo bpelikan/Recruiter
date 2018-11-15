@@ -366,6 +366,8 @@ namespace Recruiter.Services
             var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
             if (stage.State != ApplicationStageState.InProgress)
                 throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
+                throw new Exception($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
             stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
@@ -408,7 +410,6 @@ namespace Recruiter.Services
 
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
-
 
 
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
