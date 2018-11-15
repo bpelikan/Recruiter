@@ -213,7 +213,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
 
             switch (stage.GetType().Name) {
                 case "ApplicationApproval":
