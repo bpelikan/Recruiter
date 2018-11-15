@@ -172,7 +172,6 @@ namespace Recruiter.Controllers
                 return View(addResponsibleUserToStageViewModel);
 
             var myId = _userManager.GetUserId(HttpContext.User);
-
             await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
 
             return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
