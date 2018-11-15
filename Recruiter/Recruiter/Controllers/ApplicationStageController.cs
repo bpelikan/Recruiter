@@ -163,33 +163,6 @@ namespace Recruiter.Controllers
             if (users.Count() != 0)
                 ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
             return View(vm);
-
-            //var stage = await _context.ApplicationStages.Include(x => x.Application).FirstOrDefaultAsync(x => x.Id == stageId);
-
-            //var vm = new AssingUserToStageViewModel()
-            //{
-            //    ApplicationId = stage.ApplicationId,
-            //    StageId = stage.Id,
-            //};
-            /////////////
-
-            //var stage = await _context.ApplicationStages.Include(x => x.Application).FirstOrDefaultAsync(x => x.Id == stageId);
-
-            //if (stage != null)
-            //{
-            //    var vm = new AssingUserToStageViewModel()
-            //    {
-            //        ApplicationId = stage.ApplicationId,
-            //        StageId = stage.Id,
-            //    };
-
-            //    var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-            //    if(users.Count() != 0)
-            //        ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
-            //    return View(vm);
-            //}
-
-            //throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
         }
 
         [HttpPost]
@@ -201,50 +174,8 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
 
             await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
-            
-            //var stage = await _applicationStageService.GetApplicationStageBase(addResponsibleUserToStageViewModel.StageId, myId);
-
-            //if (stage.State == ApplicationStageState.InProgress)
-            //{
-            //    throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {addResponsibleUserToStageViewModel.StageId} that is InProgress state. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            //}
-
-            //var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
-
-            //stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
-            //if (stage.Id == firstStageInThisApplicationId)
-            //    stage.State = ApplicationStageState.InProgress;
-
-            //await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
-
-
-            ////////////////////////////////////////
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == addResponsibleUserToStageViewModel.StageId);
-
-            //if (stage.State == ApplicationStageState.InProgress)
-            //{
-            //    throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {addResponsibleUserToStageViewModel.StageId} that is InProgress state. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-
-            //    //ModelState.AddModelError("", "You can't change responsible user in application state that is in progress.");
-            //    //return View(addResponsibleUserToStageViewModel);
-            //}
-
-            //if (stage != null)
-            //{
-            //    var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
-
-            //    stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
-            //    if (stage.Id == firstStageInThisApplicationId)
-            //        stage.State = ApplicationStageState.InProgress;
-
-            //    await _context.SaveChangesAsync();
-
-            //    return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
-            //}
-
-            //throw new Exception($"ApplicationStage with id {addResponsibleUserToStageViewModel.StageId} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
         }
         #endregion
 

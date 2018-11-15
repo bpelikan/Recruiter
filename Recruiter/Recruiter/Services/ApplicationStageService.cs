@@ -444,23 +444,12 @@ namespace Recruiter.Services
 
         public async Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId)
         {
-            //var stage = await GetApplicationStageBase(addResponsibleUserToStageViewModel.StageId, userId);
             var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
 
             if (stage.State != ApplicationStageState.Waiting)
                 throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
 
-            //var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
-
             stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
-
-            //var firstWaitingStageInThisApplicationId = stage.Application.ApplicationStages
-            //                                                                .Where(x => x.State == ApplicationStageState.Waiting)
-            //                                                                .OrderBy(x => x.Level)
-            //                                                                .First().Id;
-            //if (stage.Id == firstWaitingStageInThisApplicationId)
-            //    stage.State = ApplicationStageState.InProgress;
-
             await _context.SaveChangesAsync();
 
             await UpdateNextApplicationStageState(stage.ApplicationId);
