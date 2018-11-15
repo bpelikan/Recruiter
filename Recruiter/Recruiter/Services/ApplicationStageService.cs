@@ -138,6 +138,17 @@ namespace Recruiter.Services
             return stage;
         }
 
+        public async Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetApplicationStageBaseToProcessStage with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBase(stageId, userId);
+            if (stage.ResponsibleUserId != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to process ApplicationStage with ID: {stage.Id} not found. (UserID: {userId})");
+
+            return stage;
+        }
+
         public async Task<ApplicationStageBase> GetApplicationStageBaseWithInclude(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetApplicationStageBaseWithInclude with stageId={stageId}. (UserID: {userId})");
@@ -174,19 +185,6 @@ namespace Recruiter.Services
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
             if (stage.ResponsibleUserId != userId)
                 throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
-
-            return stage;
-        }
-
-        public async Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId)
-        {
-            _logger.LogInformation($"Executing GetApplicationStageBaseToProcessStage with stageId={stageId}. (UserID: {userId})");
-
-            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-            if (stage.ResponsibleUserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to process ApplicationStage with ID: {stage.Id} not found. (UserID: {userId})");
 
             return stage;
         }
