@@ -18,7 +18,7 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class HomeworkViewModel
     {
         public string Id { get; set; }
-        public bool Accepted { get; set; }
+        //public bool Accepted { get; set; }
         public string Note { get; set; }
         public int Rate { get; set; }
 

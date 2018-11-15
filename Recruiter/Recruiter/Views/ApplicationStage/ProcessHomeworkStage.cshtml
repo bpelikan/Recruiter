@@ -104,20 +104,23 @@
                 <span asp-validation-for="StageToProcess.Rate" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <label asp-for="StageToProcess.Accepted" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="StageToProcess.Accepted" class="form-control" />
                 <span asp-validation-for="StageToProcess.Accepted" class="text-danger"></span>
             </div>
-        </div>
+        </div>*@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-primary" value="Save" />
-                <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-                <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+                <input type="submit" class="btn btn-success" value="Accept" asp-route-accepted="@true" />
+                <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" />
+                @*<input type="submit" class="btn btn-primary" value="Save" />*@
+
             </div>
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
         </div>
     </form>
 </div>

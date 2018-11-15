@@ -258,7 +258,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessApplicationApproval(ProcessApplicationApprovalViewModel applicationApprovalViewModel)
+        public async Task<IActionResult> ProcessApplicationApproval(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted = false)
         {
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == applicationApprovalViewModel.StageToProcess.Id);
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -270,7 +270,8 @@ namespace Recruiter.Controllers
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
             stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
-            stage.Accepted = applicationApprovalViewModel.StageToProcess.Accepted;
+            //stage.Accepted = applicationApprovalViewModel.StageToProcess.Accepted;
+            stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
@@ -312,7 +313,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPhoneCall(ProcessPhoneCallViewModel phoneCallViewModel)
+        public async Task<IActionResult> ProcessPhoneCall(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false)
         {
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == phoneCallViewModel.StageToProcess.Id);
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -324,7 +325,8 @@ namespace Recruiter.Controllers
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
             stage.Rate = phoneCallViewModel.StageToProcess.Rate;
-            stage.Accepted = phoneCallViewModel.StageToProcess.Accepted;
+            //stage.Accepted = phoneCallViewModel.StageToProcess.Accepted;
+            stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
@@ -433,7 +435,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel)
+        public async Task<IActionResult> ProcessHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted = false)
         {
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == processHomeworkStageViewModel.StageToProcess.Id);
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -445,7 +447,8 @@ namespace Recruiter.Controllers
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
-            stage.Accepted = processHomeworkStageViewModel.StageToProcess.Accepted;
+            //stage.Accepted = processHomeworkStageViewModel.StageToProcess.Accepted;
+            stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
@@ -487,7 +490,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel)
+        public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel, bool accepted = false)
         {
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == interviewViewModel.StageToProcess.Id);
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -499,7 +502,8 @@ namespace Recruiter.Controllers
 
             stage.Note = interviewViewModel.StageToProcess.Note;
             stage.Rate = interviewViewModel.StageToProcess.Rate;
-            stage.Accepted = interviewViewModel.StageToProcess.Accepted;
+            //stage.Accepted = interviewViewModel.StageToProcess.Accepted;
+            stage.Accepted = accepted;
             stage.AcceptedById = myId;
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
