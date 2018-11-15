@@ -440,18 +440,7 @@ namespace Recruiter.Controllers
 
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseWithInclude(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .Include(x => x.AcceptedBy)
-            //                        .Include(x => x.ResponsibleUser)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-
+            
             return View(stage);
         }
 
@@ -461,18 +450,7 @@ namespace Recruiter.Controllers
 
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseWithInclude(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .Include(x => x.AcceptedBy)
-            //                        .Include(x => x.ResponsibleUser)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-
+            
             return View(stage);
         }
 
