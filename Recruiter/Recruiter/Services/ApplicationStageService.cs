@@ -148,10 +148,11 @@ namespace Recruiter.Services
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId);
+            //var applicationStages = _context.ApplicationStages
+            //                                    .Include(x => x.AcceptedBy)
+            //                                    .Include(x => x.ResponsibleUser)
+            //                                    .Where(x => x.ApplicationId == );
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -175,10 +176,11 @@ namespace Recruiter.Services
         public async Task<ProcessPhoneCallViewModel> GetViewModelForProcessPhoneCall(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId);
+            //var applicationStages = _context.ApplicationStages
+            //                                    .Include(x => x.AcceptedBy)
+            //                                    .Include(x => x.ResponsibleUser)
+            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
 
             var vm = new ProcessPhoneCallViewModel()
             {
@@ -202,11 +204,11 @@ namespace Recruiter.Services
         public async Task<AddHomeworkSpecificationViewModel> GetViewModelForAddHomeworkSpecification(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId);
+            //var applicationStages = _context.ApplicationStages
+            //                                    .Include(x => x.AcceptedBy)
+            //                                    .Include(x => x.ResponsibleUser)
+            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
 
             var vm = new AddHomeworkSpecificationViewModel()
             {
@@ -230,11 +232,11 @@ namespace Recruiter.Services
         public async Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId);
+            //var applicationStages = _context.ApplicationStages
+            //                                    .Include(x => x.AcceptedBy)
+            //                                    .Include(x => x.ResponsibleUser)
+            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
 
             var vm = new ProcessHomeworkStageViewModel()
             {
@@ -258,11 +260,11 @@ namespace Recruiter.Services
         public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId);
+            //var applicationStages = _context.ApplicationStages
+            //                                    .Include(x => x.AcceptedBy)
+            //                                    .Include(x => x.ResponsibleUser)
+            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
 
             var vm = new ProcessInterviewViewModel()
             {
@@ -281,6 +283,16 @@ namespace Recruiter.Services
             };
 
             return vm;
+        }
+
+        private IQueryable<ApplicationStageBase> GetStagesFromApplicationId(string applicationId)
+        {
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == applicationId)
+                                                .AsNoTracking();
+            return applicationStages;
         }
     }
 }
