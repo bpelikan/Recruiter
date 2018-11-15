@@ -233,17 +233,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        //.Include(x => x.Application)
-            //                        //    .ThenInclude(x => x.ApplicationStages)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -297,17 +286,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        //.Include(x => x.Application)
-            //                        //    .ThenInclude(x => x.ApplicationStages)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -362,15 +340,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId) as Homework;
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             switch (stage.HomeworkState) {
                 case HomeworkState.WaitingForSpecification:
@@ -390,15 +359,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -447,15 +407,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -510,15 +461,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
