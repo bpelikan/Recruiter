@@ -115,5 +115,24 @@ namespace Recruiter.Services
 
             return true;
         }
+
+        public async Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId)
+        {
+            var stage = await _context.ApplicationStages
+                                    //.Include(x => x.Application)
+                                    //    .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.ResponsibleUserId != userId)
+                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+
+            return stage;
+        }
     }
 }

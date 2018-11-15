@@ -232,17 +232,23 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessApplicationApproval(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.ApplicationStages)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
+            //var stage = await _context.ApplicationStages
+            //                        //.Include(x => x.Application)
+            //                        //    .ThenInclude(x => x.ApplicationStages)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -254,9 +260,9 @@ namespace Recruiter.Controllers
                     User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
                 },
-                ApplicationStagesFinished = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
                 StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage),
-                ApplicationStagesWaiting = stage.Application.ApplicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
             };
 
             return View(vm);
@@ -290,17 +296,18 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessPhoneCall(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    //.Include(x => x.Application)
-                                    //    .ThenInclude(x => x.ApplicationStages)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
+            //var stage = await _context.ApplicationStages
+            //                        //.Include(x => x.Application)
+            //                        //    .ThenInclude(x => x.ApplicationStages)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -354,15 +361,16 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessHomework(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId) as Homework;
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             switch (stage.HomeworkState) {
                 case HomeworkState.WaitingForSpecification:
@@ -381,15 +389,16 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> AddHomeworkSpecification(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -437,15 +446,16 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessHomeworkStage(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
@@ -499,15 +509,16 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId);
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
 
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
