@@ -242,11 +242,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == applicationApprovalViewModel.StageToProcess.Id);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {applicationApprovalViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-            //if(stage.ResponsibleUserId != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {applicationApprovalViewModel.StageToProcess.Id} not found. (UserID: {myId})");
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
             stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
@@ -275,12 +270,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == phoneCallViewModel.StageToProcess.Id);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {phoneCallViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-            //if (stage.ResponsibleUserId != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {phoneCallViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
             stage.Rate = phoneCallViewModel.StageToProcess.Rate;
@@ -328,11 +317,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, myId) as Homework;
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == addHomeworkSpecificationViewModel.StageToProcess.Id) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {addHomeworkSpecificationViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-            //if (stage.ResponsibleUserId != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {addHomeworkSpecificationViewModel.StageToProcess.Id} not found. (UserID: {myId})");
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
             stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
@@ -355,11 +339,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == processHomeworkStageViewModel.StageToProcess.Id);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {processHomeworkStageViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-            //if (stage.ResponsibleUserId != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {processHomeworkStageViewModel.StageToProcess.Id} not found. (UserID: {myId})");
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
@@ -388,11 +367,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == interviewViewModel.StageToProcess.Id);
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {interviewViewModel.StageToProcess.Id} not found. (UserID: {myId})");
-            //if (stage.ResponsibleUserId != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to process ApplicationStage with ID: {interviewViewModel.StageToProcess.Id} not found. (UserID: {myId})");
 
             stage.Note = interviewViewModel.StageToProcess.Note;
             stage.Rate = interviewViewModel.StageToProcess.Rate;
