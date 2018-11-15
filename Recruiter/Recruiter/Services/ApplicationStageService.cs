@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Recruiter.Data;
 using Recruiter.Models;
+using Recruiter.Models.ApplicationStageViewModels;
+using Recruiter.Models.ApplicationStageViewModels.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +15,19 @@ namespace Recruiter.Services
     public class ApplicationStageService : IApplicationStageService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly ICvStorageService _cvStorageService;
 
-        public ApplicationStageService(ApplicationDbContext context, ILogger<ApplicationStageService> logger)
+        public ApplicationStageService(ApplicationDbContext context, 
+                                        IMapper mapper, 
+                                        ILogger<ApplicationStageService> logger, 
+                                        ICvStorageService cvStorageService)
         {
             _context = context;
+            _mapper = mapper;
             _logger = logger;
+            _cvStorageService = cvStorageService;
         }
 
         public async Task<bool> UpdateNextApplicationStageState(string applicationId)
@@ -133,6 +143,144 @@ namespace Recruiter.Services
                 throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
 
             return stage;
+        }
+
+        public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessApplicationApprovalViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return vm;
+        }
+
+        public async Task<ProcessPhoneCallViewModel> GetViewModelForProcessPhoneCall(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessPhoneCallViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, PhoneCallViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return vm;
+        }
+
+        public async Task<AddHomeworkSpecificationViewModel> GetViewModelForAddHomeworkSpecification(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new AddHomeworkSpecificationViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkSpecificationViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return vm;
+        }
+
+        public async Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessHomeworkStageViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return vm;
+        }
+
+        public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == stage.ApplicationId);
+
+            var vm = new ProcessInterviewViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, InterviewViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            return vm;
         }
     }
 }
