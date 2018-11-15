@@ -234,30 +234,6 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
 
-            //var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-
-            ////var test = _applicationStageService.GetViewModelProcessStage
-
-            //var applicationStages = _context.ApplicationStages
-            //                                    .Include(x => x.AcceptedBy)
-            //                                    .Include(x => x.ResponsibleUser)
-            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
-
-            //var vm = new ProcessApplicationApprovalViewModel()
-            //{
-            //    Application = new ApplicationViewModel() {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, ApplicationApprovalViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
-
             return View(vm);
         }
 
@@ -290,29 +266,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
-
-            //var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-
-            //var applicationStages = _context.ApplicationStages
-            //                                    .Include(x => x.AcceptedBy)
-            //                                    .Include(x => x.ResponsibleUser)
-            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
-
-            //var vm = new ProcessPhoneCallViewModel()
-            //{
-            //    Application = new ApplicationViewModel()
-            //    {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, PhoneCallViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
 
             return View(vm);
         }
@@ -365,28 +318,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-
-            //var applicationStages = _context.ApplicationStages
-            //                                    .Include(x => x.AcceptedBy)
-            //                                    .Include(x => x.ResponsibleUser)
-            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
-
-            //var vm = new AddHomeworkSpecificationViewModel()
-            //{
-            //    Application = new ApplicationViewModel()
-            //    {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkSpecificationViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
 
             return View(vm);
         }
@@ -414,28 +345,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForProcessHomeworkStage(stageId, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-
-            //var applicationStages = _context.ApplicationStages
-            //                                    .Include(x => x.AcceptedBy)
-            //                                    .Include(x => x.ResponsibleUser)
-            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
-
-            //var vm = new ProcessHomeworkStageViewModel()
-            //{
-            //    Application = new ApplicationViewModel()
-            //    {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
 
             return View(vm);
         }
@@ -469,28 +378,6 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForProcessInterview(stageId, myId);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToShowInProcessStage(stageId, myId);
-
-            //var applicationStages = _context.ApplicationStages
-            //                                    .Include(x => x.AcceptedBy)
-            //                                    .Include(x => x.ResponsibleUser)
-            //                                    .Where(x => x.ApplicationId == stage.ApplicationId);
-
-            //var vm = new ProcessInterviewViewModel()
-            //{
-            //    Application = new ApplicationViewModel()
-            //    {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, InterviewViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
 
             return View(vm);
         }
