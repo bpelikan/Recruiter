@@ -171,6 +171,17 @@ namespace Recruiter.Services
             return stage;
         }
 
+        public async Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId)
+        {
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.ResponsibleUserId != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to process ApplicationStage with ID: {stage.Id} not found. (UserID: {userId})");
+
+            return stage;
+        }
+
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
@@ -291,6 +302,7 @@ namespace Recruiter.Services
             return vm;
         }
 
+
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
         {
             var applicationStages = _context.ApplicationStages
@@ -300,7 +312,5 @@ namespace Recruiter.Services
                                                 .AsNoTracking();
             return applicationStages;
         }
-
-        
     }
 }
