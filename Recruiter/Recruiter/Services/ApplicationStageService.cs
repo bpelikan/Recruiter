@@ -162,8 +162,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessStage with stageId={stageId}. (UserID: {userId})");
 
             var stage = await _context.ApplicationStages
-                                    //.Include(x => x.Application)
-                                    //    .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.ApplicationStages)
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.User)
                                     .Include(x => x.Application)
@@ -197,7 +197,7 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessApplicationApproval with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
+            var applicationStages = stage.Application.ApplicationStages;
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -223,7 +223,7 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessPhoneCall with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
+            var applicationStages = stage.Application.ApplicationStages;
 
             var vm = new ProcessPhoneCallViewModel()
             {
@@ -249,7 +249,7 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForAddHomeworkSpecification with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
+            var applicationStages = stage.Application.ApplicationStages;
 
             var vm = new AddHomeworkSpecificationViewModel()
             {
@@ -275,7 +275,7 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessHomeworkStage with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
+            var applicationStages = stage.Application.ApplicationStages;
 
             var vm = new ProcessHomeworkStageViewModel()
             {
@@ -301,7 +301,7 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
+            var applicationStages = stage.Application.ApplicationStages;
 
             var vm = new ProcessInterviewViewModel()
             {
@@ -411,17 +411,5 @@ namespace Recruiter.Services
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
 
-
-        private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
-        {
-            _logger.LogInformation($"Executing GetStagesFromApplicationWithId with applicationId={applicationId}.");
-
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == applicationId)
-                                                .AsNoTracking();
-            return applicationStages;
-        }
     }
 }
