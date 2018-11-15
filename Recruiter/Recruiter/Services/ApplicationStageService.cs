@@ -190,7 +190,18 @@ namespace Recruiter.Services
         }
 
 
-        
+        public async Task<AssingUserToStageViewModel> GetViewModelForAssingUserToStage(string stageId, string userId)
+        {
+            var stage = await GetApplicationStageBaseWithInclude(stageId, userId);
+
+            var vm = new AssingUserToStageViewModel()
+            {
+                ApplicationId = stage.ApplicationId,
+                StageId = stage.Id,
+            };
+
+            return vm;
+        }
 
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
