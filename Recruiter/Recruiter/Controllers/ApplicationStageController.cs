@@ -199,26 +199,28 @@ namespace Recruiter.Controllers
                 return View(addResponsibleUserToStageViewModel);
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBase(addResponsibleUserToStageViewModel.StageId, myId);
 
-            if (stage.State == ApplicationStageState.InProgress)
-            {
-                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {addResponsibleUserToStageViewModel.StageId} that is InProgress state. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            }
+            await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
+            
+            //var stage = await _applicationStageService.GetApplicationStageBase(addResponsibleUserToStageViewModel.StageId, myId);
 
-            var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
+            //if (stage.State == ApplicationStageState.InProgress)
+            //{
+            //    throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {addResponsibleUserToStageViewModel.StageId} that is InProgress state. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            //}
 
-            stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
-            if (stage.Id == firstStageInThisApplicationId)
-                stage.State = ApplicationStageState.InProgress;
+            //var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
 
-            await _context.SaveChangesAsync();
+            //stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
+            //if (stage.Id == firstStageInThisApplicationId)
+            //    stage.State = ApplicationStageState.InProgress;
+
+            //await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
 
 
-
-
+            ////////////////////////////////////////
             //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == addResponsibleUserToStageViewModel.StageId);
 
             //if (stage.State == ApplicationStageState.InProgress)
@@ -412,7 +414,7 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseWithInclude(stageId, myId);
+            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
             
             return View(stage);
         }
@@ -422,7 +424,7 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseWithInclude(stageId, myId) as Homework;
+            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
             
             return View(stage);
         }

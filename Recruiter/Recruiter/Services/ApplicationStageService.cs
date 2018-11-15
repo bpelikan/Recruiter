@@ -43,15 +43,15 @@ namespace Recruiter.Services
             if (application.ApplicationStages.Count() != 0)
             {
                 var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).FirstOrDefault();
-                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).Last();
+                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).LastOrDefault();
 
                 if (nextStage != null && nextStage.State == ApplicationStageState.Waiting)
                 {
-                    if (prevStage.Accepted && nextStage.ResponsibleUserId != null)
+                    if ((prevStage == null || prevStage.Accepted) && nextStage.ResponsibleUserId != null)
                     {
                         nextStage.State = ApplicationStageState.InProgress;
                     }
-                    else if (!prevStage.Accepted)
+                    else if (prevStage != null && !prevStage.Accepted)
                     {
                         foreach (var stage in application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished))
                         {
@@ -149,7 +149,7 @@ namespace Recruiter.Services
             return stage;
         }
 
-        public async Task<ApplicationStageBase> GetApplicationStageBaseWithInclude(string stageId, string userId)
+        public async Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeNoTracking(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetApplicationStageBaseWithInclude with stageId={stageId}. (UserID: {userId})");
 
@@ -161,6 +161,26 @@ namespace Recruiter.Services
                                     .Include(x => x.AcceptedBy)
                                     .Include(x => x.ResponsibleUser)
                                     .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+
+            return stage;
+        }
+
+        public async Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeOtherStages(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetApplicationStageBaseWithInclude with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .Include(x => x.AcceptedBy)
+                                    .Include(x => x.ResponsibleUser)
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
@@ -192,7 +212,7 @@ namespace Recruiter.Services
 
         public async Task<AssingUserToStageViewModel> GetViewModelForAssingUserToStage(string stageId, string userId)
         {
-            var stage = await GetApplicationStageBaseWithInclude(stageId, userId);
+            var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId);
 
             var vm = new AssingUserToStageViewModel()
             {
@@ -422,6 +442,28 @@ namespace Recruiter.Services
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
 
-        
+        public async Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId)
+        {
+            //var stage = await GetApplicationStageBase(addResponsibleUserToStageViewModel.StageId, userId);
+            var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
+
+            if (stage.State != ApplicationStageState.Waiting)
+                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
+
+            //var firstStageInThisApplicationId = _context.ApplicationStages.Where(x => x.ApplicationId == stage.ApplicationId).OrderBy(x => x.Level).First().Id;
+
+            stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
+
+            //var firstWaitingStageInThisApplicationId = stage.Application.ApplicationStages
+            //                                                                .Where(x => x.State == ApplicationStageState.Waiting)
+            //                                                                .OrderBy(x => x.Level)
+            //                                                                .First().Id;
+            //if (stage.Id == firstWaitingStageInThisApplicationId)
+            //    stage.State = ApplicationStageState.InProgress;
+
+            await _context.SaveChangesAsync();
+
+            await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
     }
 }

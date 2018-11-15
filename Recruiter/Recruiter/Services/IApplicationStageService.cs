@@ -14,7 +14,8 @@ namespace Recruiter.Services
 
         Task<ApplicationStageBase> GetApplicationStageBase(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId);
-        Task<ApplicationStageBase> GetApplicationStageBaseWithInclude(string stageId, string userId);
+        Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeNoTracking(string stageId, string userId);
+        Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeOtherStages(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId);
 
         Task<AssingUserToStageViewModel> GetViewModelForAssingUserToStage(string stageId, string userId);
@@ -29,5 +30,6 @@ namespace Recruiter.Services
         Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId);
         Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId);
         Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
+        Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
     }
 }
