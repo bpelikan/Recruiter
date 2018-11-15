@@ -68,7 +68,7 @@ namespace Recruiter.Services
 
         public async Task<bool> AddRequiredStagesToApplication(string applicationId)
         {
-            _logger.LogInformation($"Executing AddStagesToApplication with applicationId={applicationId}");
+            _logger.LogInformation($"Executing AddRequiredStagesToApplication with applicationId={applicationId}");
 
             var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
             if (application == null)
@@ -128,6 +128,8 @@ namespace Recruiter.Services
 
         public async Task<ApplicationStageBase> GetApplicationStageBase(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetApplicationStageBase with stageId={stageId}. (UserID: {userId})");
+
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
@@ -137,6 +139,8 @@ namespace Recruiter.Services
 
         public async Task<ApplicationStageBase> GetApplicationStageBaseWithInclude(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetApplicationStageBaseWithInclude with stageId={stageId}. (UserID: {userId})");
+
             var stage = await _context.ApplicationStages
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.User)
@@ -154,6 +158,8 @@ namespace Recruiter.Services
 
         public async Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessStage with stageId={stageId}. (UserID: {userId})");
+
             var stage = await _context.ApplicationStages
                                     //.Include(x => x.Application)
                                     //    .ThenInclude(x => x.ApplicationStages)
@@ -173,6 +179,8 @@ namespace Recruiter.Services
 
         public async Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetApplicationStageBaseToProcessStage with stageId={stageId}. (UserID: {userId})");
+
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
@@ -184,6 +192,8 @@ namespace Recruiter.Services
 
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForProcessApplicationApproval with stageId={stageId}. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
 
@@ -208,6 +218,8 @@ namespace Recruiter.Services
 
         public async Task<ProcessPhoneCallViewModel> GetViewModelForProcessPhoneCall(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForProcessPhoneCall with stageId={stageId}. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
 
@@ -232,6 +244,8 @@ namespace Recruiter.Services
 
         public async Task<AddHomeworkSpecificationViewModel> GetViewModelForAddHomeworkSpecification(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForAddHomeworkSpecification with stageId={stageId}. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
 
@@ -256,6 +270,8 @@ namespace Recruiter.Services
 
         public async Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForProcessHomeworkStage with stageId={stageId}. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
 
@@ -280,6 +296,8 @@ namespace Recruiter.Services
 
         public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationWithId(stage.ApplicationId);
 
@@ -305,6 +323,8 @@ namespace Recruiter.Services
 
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
         {
+            _logger.LogInformation($"Executing GetStagesFromApplicationWithId with applicationId={applicationId}.");
+
             var applicationStages = _context.ApplicationStages
                                                 .Include(x => x.AcceptedBy)
                                                 .Include(x => x.ResponsibleUser)
@@ -315,6 +335,8 @@ namespace Recruiter.Services
 
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
         {
+            _logger.LogInformation($"Executing UpdateApplicationApprovalStage. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, userId);
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
@@ -329,6 +351,8 @@ namespace Recruiter.Services
 
         public async Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId)
         {
+            _logger.LogInformation($"Executing UpdatePhoneCallStage. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, userId);
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
@@ -343,6 +367,8 @@ namespace Recruiter.Services
 
         public async Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId)
         {
+            _logger.LogInformation($"Executing UpdateHomeworkSpecification. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
@@ -353,6 +379,8 @@ namespace Recruiter.Services
 
         public async Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId)
         {
+            _logger.LogInformation($"Executing UpdateHomeworkStage. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, userId);
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
@@ -367,6 +395,8 @@ namespace Recruiter.Services
 
         public async Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId)
         {
+            _logger.LogInformation($"Executing UpdateInterview. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, userId);
 
             stage.Note = interviewViewModel.StageToProcess.Note;
