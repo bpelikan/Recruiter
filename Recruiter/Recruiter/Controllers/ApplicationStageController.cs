@@ -211,7 +211,9 @@ namespace Recruiter.Controllers
         #region ProcessStage()
         public async Task<IActionResult> ProcessStage(string stageId)
         {
-            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
+            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
 
             switch (stage.GetType().Name) {
                 case "ApplicationApproval":
