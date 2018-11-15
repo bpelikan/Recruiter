@@ -126,6 +126,7 @@ namespace Recruiter.Services
             return true;
         }
 
+
         public async Task<ApplicationStageBase> GetApplicationStageBase(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetApplicationStageBase with stageId={stageId}. (UserID: {userId})");
@@ -189,6 +190,7 @@ namespace Recruiter.Services
 
             return stage;
         }
+
 
         public async Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId)
         {
@@ -321,23 +323,13 @@ namespace Recruiter.Services
         }
 
 
-        private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
-        {
-            _logger.LogInformation($"Executing GetStagesFromApplicationWithId with applicationId={applicationId}.");
-
-            var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == applicationId)
-                                                .AsNoTracking();
-            return applicationStages;
-        }
-
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing UpdateApplicationApprovalStage. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, userId);
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
             stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
@@ -354,6 +346,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing UpdatePhoneCallStage. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, userId);
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
             stage.Rate = phoneCallViewModel.StageToProcess.Rate;
@@ -370,6 +364,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing UpdateHomeworkSpecification. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
             stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
@@ -382,6 +378,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing UpdateHomeworkStage. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, userId);
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;
@@ -398,6 +396,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing UpdateInterview. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, userId);
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
 
             stage.Note = interviewViewModel.StageToProcess.Note;
             stage.Rate = interviewViewModel.StageToProcess.Rate;
@@ -407,6 +407,20 @@ namespace Recruiter.Services
             await _context.SaveChangesAsync();
 
             await UpdateNextApplicationStageState(stage.ApplicationId);
+        }
+
+
+
+        private IQueryable<ApplicationStageBase> GetStagesFromApplicationWithId(string applicationId)
+        {
+            _logger.LogInformation($"Executing GetStagesFromApplicationWithId with applicationId={applicationId}.");
+
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == applicationId)
+                                                .AsNoTracking();
+            return applicationStages;
         }
     }
 }
