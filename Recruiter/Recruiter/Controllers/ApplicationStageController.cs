@@ -48,108 +48,112 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReviewHomework), new { stageName = "Homework"});
             
             var myId = _userManager.GetUserId(HttpContext.User);
-
-            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            {
-                stagesSortedByName.Add(new StagesViewModel()
-                {
-                    Name = t.Name,
-                    Quantity = _context.ApplicationStages
-                                            .AsNoTracking()
-                                            .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                        x.ResponsibleUserId == myId &&
-                                                        x.GetType().Name == t.Name).Count(),
-                });
-            }
-
-            var stages = _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                    x.ResponsibleUserId == myId &&
-                                                    (x.GetType().Name == stageName || stageName == ""));
-
-            var vm = new ApplicationsStagesToReviewViewModel()
-            {
-                StageSortedByName = stagesSortedByName,
-            };
-            vm.AsignedStages = new List<AsignedStagesViewModel>();
-            foreach (var stage in stages)
-            {
-                vm.AsignedStages.Add(new AsignedStagesViewModel()
-                {
-                    Application = new ApplicationViewModel() {
-                        Id = stage.Application.Id,
-                        CreatedAt = stage.Application.CreatedAt,
-                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-                    },
-                    CurrentStage = stage,
-                });
-            }
+            var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
-            
+
             return View(vm);
+            #region reg1
+            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    stagesSortedByName.Add(new StagesViewModel()
+            //    {
+            //        Name = t.Name,
+            //        Quantity = _context.ApplicationStages
+            //                                .AsNoTracking()
+            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                            x.ResponsibleUserId == myId &&
+            //                                            x.GetType().Name == t.Name).Count(),
+            //    });
+            //}
+
+            //var stages = _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                        x.ResponsibleUserId == myId &&
+            //                                        (x.GetType().Name == stageName || stageName == ""));
+
+            //var vm = new ApplicationsStagesToReviewViewModel()
+            //{
+            //    StageSortedByName = stagesSortedByName,
+            //};
+            //vm.AsignedStages = new List<AsignedStagesViewModel>();
+            //foreach (var stage in stages)
+            //{
+            //    vm.AsignedStages.Add(new AsignedStagesViewModel()
+            //    {
+            //        Application = new ApplicationViewModel() {
+            //            Id = stage.Application.Id,
+            //            CreatedAt = stage.Application.CreatedAt,
+            //            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+            //            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+            //        },
+            //        CurrentStage = stage,
+            //    });
+            //}
+            #endregion
         }
 
         public IActionResult ApplicationsStagesToReviewHomework(string stageName = "Homework")
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-
-            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            {
-                stagesSortedByName.Add(new StagesViewModel()
-                {
-                    Name = t.Name,
-                    Quantity = _context.ApplicationStages
-                                            .AsNoTracking()
-                                            .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                        x.ResponsibleUserId == myId &&
-                                                        x.GetType().Name == t.Name).Count(),
-                });
-            }
-
-            var stages = _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                    x.ResponsibleUserId == myId &&
-                                                    (x.GetType().Name == stageName || stageName == ""));
-
-            var vm = new ApplicationsStagesToReviewViewModel()
-            {
-                StageSortedByName = stagesSortedByName,
-            };
-            vm.AsignedStages = new List<AsignedStagesViewModel>();
-            foreach (Homework stage in stages)
-            {
-                stage.StartTime = stage.StartTime?.ToLocalTime();
-                stage.EndTime = stage.EndTime?.ToLocalTime();
-                stage.SendingTime = stage.SendingTime?.ToLocalTime();
-
-                vm.AsignedStages.Add(new AsignedStagesViewModel()
-                {
-                    Application = new ApplicationViewModel()
-                    {
-                        Id = stage.Application.Id,
-                        CreatedAt = stage.Application.CreatedAt,
-                        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-                        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-                    },
-                    CurrentStage = stage,
-                });
-            }
-
+            var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
+
             return View(vm);
+            #region reg2
+            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    stagesSortedByName.Add(new StagesViewModel()
+            //    {
+            //        Name = t.Name,
+            //        Quantity = _context.ApplicationStages
+            //                                .AsNoTracking()
+            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                            x.ResponsibleUserId == myId &&
+            //                                            x.GetType().Name == t.Name).Count(),
+            //    });
+            //}
+
+            //var stages = _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                        x.ResponsibleUserId == myId &&
+            //                                        (x.GetType().Name == stageName || stageName == ""));
+
+            //var vm = new ApplicationsStagesToReviewViewModel()
+            //{
+            //    StageSortedByName = stagesSortedByName,
+            //};
+            //vm.AsignedStages = new List<AsignedStagesViewModel>();
+            //foreach (Homework stage in stages)
+            //{
+            //    stage.StartTime = stage.StartTime?.ToLocalTime();
+            //    stage.EndTime = stage.EndTime?.ToLocalTime();
+            //    stage.SendingTime = stage.SendingTime?.ToLocalTime();
+
+            //    vm.AsignedStages.Add(new AsignedStagesViewModel()
+            //    {
+            //        Application = new ApplicationViewModel()
+            //        {
+            //            Id = stage.Application.Id,
+            //            CreatedAt = stage.Application.CreatedAt,
+            //            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+            //            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+            //        },
+            //        CurrentStage = stage,
+            //    });
+            //}
+            #endregion
         }
         #endregion
 

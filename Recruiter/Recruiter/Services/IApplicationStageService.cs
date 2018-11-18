@@ -18,6 +18,8 @@ namespace Recruiter.Services
         Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeOtherStages(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId);
 
+        ApplicationsStagesToReviewViewModel GetViewModelForApplicationsStagesToReview(string stageName, string userId);
+        //ApplicationsStagesToReviewViewModel GetViewModelForApplicationsStagesToReviewHomework(string stageName, string userId);
         Task<AssingUserToStageViewModel> GetViewModelForAssingUserToStage(string stageId, string userId);
         Task<ProcessApplicationApprovalViewModel> GetViewModelForProcessApplicationApproval(string stageId, string userId);
         Task<ProcessPhoneCallViewModel> GetViewModelForProcessPhoneCall(string stageId, string userId);
