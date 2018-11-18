@@ -231,7 +231,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessApplicationApproval with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = stage.Application.ApplicationStages;
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+                //stage.Application.ApplicationStages;
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -257,7 +258,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessPhoneCall with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = stage.Application.ApplicationStages;
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+                //stage.Application.ApplicationStages;
 
             var vm = new ProcessPhoneCallViewModel()
             {
@@ -283,7 +285,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForAddHomeworkSpecification with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = stage.Application.ApplicationStages;
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+                //stage.Application.ApplicationStages;
 
             var vm = new AddHomeworkSpecificationViewModel()
             {
@@ -309,7 +312,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessHomeworkStage with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = stage.Application.ApplicationStages;
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+                //stage.Application.ApplicationStages;
 
             var vm = new ProcessHomeworkStageViewModel()
             {
@@ -335,7 +339,9 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = stage.Application.ApplicationStages;
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+                //stage.Application.ApplicationStages;
+                //stage.Application.ApplicationStages;
 
             var vm = new ProcessInterviewViewModel()
             {
@@ -633,8 +639,21 @@ namespace Recruiter.Services
         //}
 
 
+        private IQueryable<ApplicationStageBase> GetStagesFromApplicationId(string applicationId, string userId)
+        {
+            _logger.LogInformation($"Executing GetStagesFromApplicationId with applicationId={applicationId}. (UserID: {userId})");
+            var applicationStages = _context.ApplicationStages
+                                                .Include(x => x.AcceptedBy)
+                                                .Include(x => x.ResponsibleUser)
+                                                .Where(x => x.ApplicationId == applicationId)
+                                                .AsNoTracking();
+            return applicationStages;
+        }
+
         private List<StagesViewModel> GetAssignedStagesCountSortedByName(string userId)
         {
+            _logger.LogInformation($"Executing GetAssignedStagesCountSortedByName with userId={userId}. (UserID: {userId})");
+
             List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
             foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
             {
