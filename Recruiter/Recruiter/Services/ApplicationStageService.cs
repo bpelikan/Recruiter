@@ -293,7 +293,6 @@ namespace Recruiter.Services
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-                //stage.Application.ApplicationStages;
 
             var vm = new ProcessApplicationApprovalViewModel()
             {
@@ -320,7 +319,6 @@ namespace Recruiter.Services
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-                //stage.Application.ApplicationStages;
 
             var vm = new ProcessPhoneCallViewModel()
             {
@@ -347,7 +345,6 @@ namespace Recruiter.Services
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-                //stage.Application.ApplicationStages;
 
             var vm = new AddHomeworkSpecificationViewModel()
             {
@@ -374,7 +371,6 @@ namespace Recruiter.Services
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-                //stage.Application.ApplicationStages;
 
             var vm = new ProcessHomeworkStageViewModel()
             {
@@ -401,8 +397,6 @@ namespace Recruiter.Services
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-                //stage.Application.ApplicationStages;
-                //stage.Application.ApplicationStages;
 
             var vm = new ProcessInterviewViewModel()
             {
@@ -526,8 +520,6 @@ namespace Recruiter.Services
         }
 
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
 
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationId(string applicationId, string userId)
         {
