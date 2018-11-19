@@ -174,36 +174,40 @@ namespace Recruiter.Services
         {
             _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessMyHomework with stageId={stageId}. (UserID: {userId})");
 
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-            if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
-
+            var stage = await GetHomeworkStageToShow(stageId, userId);
             return stage;
+
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            //if (stage.Application.User.Id != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            //return stage;
         }
 
         public async Task<Homework> GetViewModelForBeforeReadMyHomework(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForBeforeReadMyHomework with stageId={stageId}. (UserID: {userId})");
 
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-            if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            var stage = await GetHomeworkStageToShow(stageId, userId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            //if (stage.Application.User.Id != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
@@ -247,17 +251,18 @@ namespace Recruiter.Services
         {
             _logger.LogInformation($"Executing GetViewModelForReadMyHomework with stageId={stageId}. (UserID: {userId})");
 
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-            if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            var stage = await GetHomeworkStageToShow(stageId, userId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            //if (stage.Application.User.Id != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForSendHomework state. (UserID: {userId})");
@@ -296,17 +301,18 @@ namespace Recruiter.Services
         {
             _logger.LogInformation($"Executing GetViewModelForShowMyHomework with stageId={stageId}. (UserID: {userId})");
 
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-            if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            var stage = await GetHomeworkStageToShow(stageId, userId);
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            //if (stage.Application.User.Id != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
             if (stage.HomeworkState != HomeworkState.Completed)
                 throw new Exception($"Homework stage with ID: {stageId} is not in Completed state. (UserID: {userId})");
@@ -317,6 +323,27 @@ namespace Recruiter.Services
 
             return stage;
         }
+
+        private async Task<Homework> GetHomeworkStageToShow(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetHomeworkStageToShow with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            return stage;
+        }
+
     }
 }
 
