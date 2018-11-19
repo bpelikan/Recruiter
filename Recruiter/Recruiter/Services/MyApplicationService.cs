@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Recruiter.Data;
@@ -17,17 +19,20 @@ namespace Recruiter.Services
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
+        private readonly IApplicationStageService _applicationStageService;
         private readonly ApplicationDbContext _context;
 
         public MyApplicationService(
                         IMapper mapper, 
                         ILogger<MyApplicationService> logger, 
-                        ICvStorageService cvStorageService, 
+                        ICvStorageService cvStorageService,
+                        IApplicationStageService applicationStageService,
                         ApplicationDbContext context)
         {
             _mapper = mapper;
             _logger = logger;
             _cvStorageService = cvStorageService;
+            _applicationStageService = applicationStageService;
             _context = context;
         }
 
@@ -109,6 +114,80 @@ namespace Recruiter.Services
 
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ApplyApplicationViewModel> GetApplyApplicationViewModel(string jobPositionId, string userId)
+        {
+            _logger.LogInformation($"Executing GetApplyApplicationViewModel with jobPositionId={jobPositionId}. (UserID: {userId})");
+
+            var offer = await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == jobPositionId);
+            if (offer == null)
+                throw new Exception($"JobPosition with id: {jobPositionId} doesn't exist. (UserID: {userId})");
+
+            var vm = new ApplyApplicationViewModel()
+            {
+                JobPositionId = offer.Id,
+                JobPositionName = offer.Name,
+            };
+
+            return vm;
+            //throw new NotImplementedException();
+        }
+
+        public async Task<Application> ApplyMyApplication(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel, string userId)
+        {
+            _logger.LogInformation($"Executing Apply. (UserID: {userId})");
+
+            if (cv == null)
+                throw new ApplicationException($"CV file not found.");
+
+            //ModelState.AddModelError("", "CV file not found.");
+            //return View(applyApplicationViewModel);
+
+            //var userId = _userManager.GetUserId(HttpContext.User);
+            using (var stream = cv.OpenReadStream())
+            {
+                var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId, cv.FileName);
+                applyApplicationViewModel.CvFileName = CvFileName;
+            }
+
+            if (Path.GetExtension(cv.FileName) != ".pdf")
+            {
+                throw new ApplicationException($"CV must have .pdf extension.");
+                //ModelState.AddModelError("", "CV must have .pdf extension.");
+                //return View(applyApplicationViewModel);
+            }
+            if (applyApplicationViewModel.CvFileName == null)
+            {
+                throw new ApplicationException($"Something went wrong during uploading CV, try again or contact with admin.");
+                //ModelState.AddModelError("", "Something went wrong during uploading CV, try again or contact with admin.");
+                //return View(applyApplicationViewModel);
+            }
+
+            if (await _context.Applications
+                                .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
+            {
+                throw new ApplicationException($"You have already sent application to this offer.");
+                //ModelState.AddModelError("", "You have already sent application to this offer.");
+                //return View(applyApplicationViewModel);
+            }
+
+            var application = new Application()
+            {
+                Id = Guid.NewGuid().ToString(),
+                CvFileName = applyApplicationViewModel.CvFileName,
+                JobPositionId = applyApplicationViewModel.JobPositionId,
+                UserId = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _context.Applications.AddAsync(application);
+            await _context.SaveChangesAsync();
+
+            await _applicationStageService.AddRequiredStagesToApplication(application.Id);
+
+            return application;
+
+            //throw new NotImplementedException();
         }
     }
 }
