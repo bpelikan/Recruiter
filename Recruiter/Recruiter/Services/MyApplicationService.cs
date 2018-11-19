@@ -189,6 +189,43 @@ namespace Recruiter.Services
             return stage;
             //throw new NotImplementedException();
         }
+
+        public async Task<Homework> GetViewModelForBeforeReadMyHomework(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForBeforeReadMyHomework with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            if (stage.HomeworkState != HomeworkState.WaitingForRead)
+                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
+
+            var vm = new Homework()
+            {
+                Id = stage.Id,
+                Duration = stage.Duration,
+                Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
+                ApplicationId = stage.ApplicationId,
+            };
+
+            return vm;
+
+            //if (stage.HomeworkState == HomeworkState.WaitingForRead)
+            //    return View(vm);
+            //else
+            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+
+            //throw new NotImplementedException();
+        }
     }
 }
 

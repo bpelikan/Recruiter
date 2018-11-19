@@ -150,30 +150,34 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> BeforeReadMyHomework(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            if (stage.Application.User.Id != myId)
-                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            var vm = await _myApplicationService.GetViewModelForBeforeReadMyHomework(stageId, myId);
 
-            var vm = new Homework()
-            {
-                Id = stage.Id,
-                Duration = stage.Duration,
-                Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
-                ApplicationId = stage.ApplicationId,
-            };
+            return View(vm);
 
-            if(stage.HomeworkState == HomeworkState.WaitingForRead)
-                return View(vm);
-            else
-                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            //if (stage.Application.User.Id != myId)
+            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            //var vm = new Homework()
+            //{
+            //    Id = stage.Id,
+            //    Duration = stage.Duration,
+            //    Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
+            //    ApplicationId = stage.ApplicationId,
+            //};
+
+            //if(stage.HomeworkState == HomeworkState.WaitingForRead)
+            //    return View(vm);
+            //else
+            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
         }
 
         [HttpPost]
