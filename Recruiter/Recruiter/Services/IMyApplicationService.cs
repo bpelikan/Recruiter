@@ -9,5 +9,6 @@ namespace Recruiter.Services
     public interface IMyApplicationService
     {
         IEnumerable<MyApplicationsViewModel> GetViewModelForMyApplications(string userId);
+        Task<MyApplicationDetailsViewModel> GetViewModelForMyApplicationDetails(string applicationId, string userId);
     }
 }
