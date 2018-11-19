@@ -122,20 +122,6 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _myApplicationService.GetHomeworkStageToShowInProcessMyHomework(stageId, myId);
 
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
-            #endregion
-
             switch (stage.HomeworkState)
             {
                 case HomeworkState.WaitingForRead:
@@ -155,33 +141,6 @@ namespace Recruiter.Controllers
             var vm = await _myApplicationService.GetViewModelForBeforeReadMyHomework(stageId, myId);
 
             return View(vm);
-
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
-
-            //var vm = new Homework()
-            //{
-            //    Id = stage.Id,
-            //    Duration = stage.Duration,
-            //    Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
-            //    ApplicationId = stage.ApplicationId,
-            //};
-
-            //if(stage.HomeworkState == HomeworkState.WaitingForRead)
-            //    return View(vm);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-            #endregion
         }
 
         [HttpPost]
@@ -191,29 +150,6 @@ namespace Recruiter.Controllers
             await _myApplicationService.UpdateMyHomeworkAsReaded(homework.Id, myId);
 
             return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = homework.Id });
-
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .FirstOrDefaultAsync(x => x.Id == homework.Id) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {homework.Id} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
-
-            //if (stage.HomeworkState == HomeworkState.WaitingForRead)
-            //{
-            //    stage.StartTime = DateTime.UtcNow;
-            //    stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
-            //    stage.HomeworkState = HomeworkState.WaitingForSendHomework;
-            //    await _context.SaveChangesAsync();
-            //}
-
-            //return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
-            #endregion
         }
 
         public async Task<IActionResult> ReadMyHomework(string stageId)
@@ -222,28 +158,6 @@ namespace Recruiter.Controllers
             var stage = await _myApplicationService.GetViewModelForReadMyHomework(stageId, myId);
 
             return View(stage);
-
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
-
-            //stage.StartTime = stage.StartTime?.ToLocalTime();
-            //stage.EndTime = stage.EndTime?.ToLocalTime();
-
-            //if(stage.HomeworkState == HomeworkState.WaitingForSendHomework)
-            //    return View(stage);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-            #endregion
         }
 
         [HttpPost]
@@ -253,29 +167,6 @@ namespace Recruiter.Controllers
             await _myApplicationService.SendMyHomework(homework, myId);
 
             return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id });
-
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .FirstOrDefaultAsync(x => x.Id == homework.Id) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {homework.Id} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
-
-            //if (stage.HomeworkState == HomeworkState.WaitingForSendHomework)
-            //{
-            //    stage.SendingTime = DateTime.UtcNow;
-            //    stage.Url = homework.Url;
-            //    stage.HomeworkState = HomeworkState.Completed;
-            //    await _context.SaveChangesAsync();
-            //}
-
-            //return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id });
-            #endregion
         }
 
         public async Task<IActionResult> ShowMyHomework(string stageId)
@@ -284,45 +175,6 @@ namespace Recruiter.Controllers
             var stage = await _myApplicationService.GetViewModelForShowMyHomework(stageId, myId);
 
             return View(stage);
-
-            #region del
-            //var stage = await _context.ApplicationStages
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.User)
-            //                        .Include(x => x.Application)
-            //                            .ThenInclude(x => x.JobPosition)
-            //                        .AsNoTracking()
-            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            //if (stage == null)
-            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            //if (stage.Application.User.Id != myId)
-            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
-
-            //if (stage.HomeworkState != HomeworkState.Completed)
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-
-            //stage.StartTime = stage.StartTime?.ToLocalTime();
-            //stage.EndTime = stage.EndTime?.ToLocalTime();
-            //stage.SendingTime = stage.SendingTime?.ToLocalTime();
-
-            //if(stage.HomeworkState == HomeworkState.Completed)
-            //    return View(stage);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-            #endregion
         }
     }
 }
-
-
-//switch (stage.HomeworkState)
-//{
-//    case HomeworkState.WaitingForRead:
-//        return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id });
-//    case HomeworkState.WaitingForSendHomework:
-//        return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id });
-//    case HomeworkState.Completed:
-//        return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id });
-//    default:
-//        return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-//}
