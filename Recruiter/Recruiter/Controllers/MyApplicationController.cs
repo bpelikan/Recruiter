@@ -54,7 +54,7 @@ namespace Recruiter.Controllers
         public IActionResult MyApplications()
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = _myApplicationService.GetViewModelForMyApplications(userId);
+            var vm = _myApplicationService.GetMyApplications(userId);
 
             return View(vm);
         }
@@ -65,7 +65,7 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _myApplicationService.GetViewModelForMyApplicationDetails(id, userId);
+            var vm = await _myApplicationService.GetMyApplicationDetails(id, userId);
 
             return View(vm);
         }
@@ -75,27 +75,31 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> DeleteMyApplication(string id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
-
-            if (application == null)
-            {
-                throw new Exception($"Application with id: {id} doesn't exist.");
-            }
-            if (application.UserId != userId)
-            {
-                throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
-            }
-
-            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            if (!delete)
-            {
-                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
-            }
-
-            _context.Applications.Remove(application);
-            await _context.SaveChangesAsync();
+            await _myApplicationService.DeleteMyApplication(id, userId);
 
             return RedirectToAction(nameof(MyApplicationController.MyApplications));
+
+
+            //var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
+
+            //if (application == null)
+            //{
+            //    throw new Exception($"Application with id: {id} doesn't exist.");
+            //}
+            //if (application.UserId != userId)
+            //{
+            //    throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}.");
+            //}
+
+            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            //if (!delete)
+            //{
+            //    throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
+            //}
+
+            //_context.Applications.Remove(application);
+            //await _context.SaveChangesAsync();
+
         }
 
         //[Authorize(Roles = RoleCollection.Recruit)]

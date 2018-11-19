@@ -8,7 +8,8 @@ namespace Recruiter.Services
 {
     public interface IMyApplicationService
     {
-        IEnumerable<MyApplicationsViewModel> GetViewModelForMyApplications(string userId);
-        Task<MyApplicationDetailsViewModel> GetViewModelForMyApplicationDetails(string applicationId, string userId);
+        IEnumerable<MyApplicationsViewModel> GetMyApplications(string userId);
+        Task<MyApplicationDetailsViewModel> GetMyApplicationDetails(string applicationId, string userId);
+        Task DeleteMyApplication(string applicationId, string userId);
     }
 }

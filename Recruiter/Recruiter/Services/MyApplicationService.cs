@@ -31,7 +31,7 @@ namespace Recruiter.Services
             _context = context;
         }
 
-        public IEnumerable<MyApplicationsViewModel> GetViewModelForMyApplications(string userId)
+        public IEnumerable<MyApplicationsViewModel> GetMyApplications(string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForMyApplications. (UserID: {userId})");
 
@@ -47,7 +47,7 @@ namespace Recruiter.Services
             return vm;
         }
 
-        public async Task<MyApplicationDetailsViewModel> GetViewModelForMyApplicationDetails(string applicationId, string userId)
+        public async Task<MyApplicationDetailsViewModel> GetMyApplicationDetails(string applicationId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
 
@@ -60,7 +60,7 @@ namespace Recruiter.Services
             if (application == null)
                 throw new Exception($"Application with id {applicationId} not found. (UserID: {userId})");
             if (userId != application.UserId)
-                throw new Exception($"User with id {userId} is not owner of Application with id {applicationId}. (UserID: {userId})");
+                throw new Exception($"User with id {userId} aren't owner of application with id {applicationId}. (UserID: {userId})");
 
             await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
             {
@@ -92,6 +92,25 @@ namespace Recruiter.Services
             return vm;
         }
 
-        
+        public async Task DeleteMyApplication(string applicationId, string userId)
+        {
+            _logger.LogInformation($"Executing DeleteMyApplication with applicationId={applicationId}. (UserID: {userId})");
+
+            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == applicationId);
+
+            if (application == null)
+                throw new Exception($"Application with id: {applicationId} doesn't exist. (UserID: {userId})");
+            if (application.UserId != userId)
+                throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}. (UserID: {userId})");
+
+            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            if (!delete)
+                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}. (UserID: {userId})");
+
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+        }
     }
 }
+
+//_logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
