@@ -222,8 +222,8 @@ namespace Recruiter.Services
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForSendHomework state. (UserID: {userId})");
 
-            stage.StartTime = stage.StartTime?.ToLocalTime();
-            stage.EndTime = stage.EndTime?.ToLocalTime();
+            //stage.StartTime = stage.StartTime?.ToLocalTime();
+            //stage.EndTime = stage.EndTime?.ToLocalTime();
 
             return stage;
         }
@@ -252,9 +252,9 @@ namespace Recruiter.Services
             if (stage.HomeworkState != HomeworkState.Completed)
                 throw new Exception($"Homework stage with ID: {stageId} is not in Completed state. (UserID: {userId})");
 
-            stage.StartTime = stage.StartTime?.ToLocalTime();
-            stage.EndTime = stage.EndTime?.ToLocalTime();
-            stage.SendingTime = stage.SendingTime?.ToLocalTime();
+            //stage.StartTime = stage.StartTime?.ToLocalTime();
+            //stage.EndTime = stage.EndTime?.ToLocalTime();
+            //stage.SendingTime = stage.SendingTime?.ToLocalTime();
 
             return stage;
         }
@@ -275,6 +275,10 @@ namespace Recruiter.Services
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
             if (stage.Application.User.Id != userId)
                 throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            stage.StartTime = stage.StartTime?.ToLocalTime();
+            stage.EndTime = stage.EndTime?.ToLocalTime();
+            stage.SendingTime = stage.SendingTime?.ToLocalTime();
 
             return stage;
         }
@@ -300,5 +304,3 @@ namespace Recruiter.Services
 
     }
 }
-
-//_logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
