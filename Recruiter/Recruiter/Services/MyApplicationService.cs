@@ -38,7 +38,7 @@ namespace Recruiter.Services
 
         public IEnumerable<MyApplicationsViewModel> GetMyApplications(string userId)
         {
-            _logger.LogInformation($"Executing GetViewModelForMyApplications. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetMyApplications. (UserID: {userId})");
 
             var applications = _context.Applications
                                         .Include(x => x.JobPosition)
@@ -54,7 +54,7 @@ namespace Recruiter.Services
 
         public async Task<MyApplicationDetailsViewModel> GetMyApplicationDetails(string applicationId, string userId)
         {
-            _logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
 
             var application = _context.Applications
                                         .Include(x => x.JobPosition)
@@ -172,7 +172,7 @@ namespace Recruiter.Services
 
         public async Task<Homework> GetHomeworkStageToShowInProcessMyHomework(string stageId, string userId)
         {
-            _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessMyHomework with stageId={stageId}. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetHomeworkStageToShowInProcessMyHomework with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
             return stage;
@@ -183,7 +183,6 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForBeforeReadMyHomework with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
-
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
 
@@ -203,13 +202,13 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing UpdateMyHomeworkAsReaded with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToProcess(stageId, userId);
-
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
 
             stage.StartTime = DateTime.UtcNow;
             stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
             stage.HomeworkState = HomeworkState.WaitingForSendHomework;
+
             await _context.SaveChangesAsync();
         }
 
@@ -218,12 +217,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForReadMyHomework with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
-
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
                 throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForSendHomework state. (UserID: {userId})");
-
-            //stage.StartTime = stage.StartTime?.ToLocalTime();
-            //stage.EndTime = stage.EndTime?.ToLocalTime();
 
             return stage;
         }
@@ -233,7 +228,6 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing SendMyHomework. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToProcess(homework.Id, userId);
-
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
                 throw new Exception($"Homework stage with ID: {homework.Id} is not in WaitingForSendHomework state. (UserID: {userId})");
 
@@ -248,13 +242,8 @@ namespace Recruiter.Services
             _logger.LogInformation($"Executing GetViewModelForShowMyHomework with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
-
             if (stage.HomeworkState != HomeworkState.Completed)
                 throw new Exception($"Homework stage with ID: {stageId} is not in Completed state. (UserID: {userId})");
-
-            //stage.StartTime = stage.StartTime?.ToLocalTime();
-            //stage.EndTime = stage.EndTime?.ToLocalTime();
-            //stage.SendingTime = stage.SendingTime?.ToLocalTime();
 
             return stage;
         }
@@ -270,7 +259,6 @@ namespace Recruiter.Services
                                         .ThenInclude(x => x.JobPosition)
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-
             if (stage == null)
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
             if (stage.Application.User.Id != userId)
@@ -293,7 +281,6 @@ namespace Recruiter.Services
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.JobPosition)
                                     .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-
             if (stage == null)
                 throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
             if (stage.Application.User.Id != userId)
