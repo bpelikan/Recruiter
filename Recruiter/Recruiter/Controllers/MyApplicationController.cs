@@ -120,17 +120,19 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessMyHomework(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
-            if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
-            if (stage.Application.User.Id != myId)
-                throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            var stage = await _myApplicationService.GetHomeworkStageToShowInProcessMyHomework(stageId, myId);
+
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {myId})");
+            //if (stage.Application.User.Id != myId)
+            //    throw new Exception($"User with ID: {myId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
             switch (stage.HomeworkState)
             {

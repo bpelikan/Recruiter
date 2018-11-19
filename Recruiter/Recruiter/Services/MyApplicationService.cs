@@ -169,6 +169,26 @@ namespace Recruiter.Services
 
             return application;
         }
+
+        public async Task<Homework> GetHomeworkStageToShowInProcessMyHomework(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessMyHomework with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            return stage;
+            //throw new NotImplementedException();
+        }
     }
 }
 
