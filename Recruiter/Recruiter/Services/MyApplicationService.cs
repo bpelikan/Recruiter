@@ -131,20 +131,15 @@ namespace Recruiter.Services
             };
 
             return vm;
-            //throw new NotImplementedException();
         }
 
         public async Task<Application> ApplyMyApplication(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel, string userId)
         {
-            _logger.LogInformation($"Executing Apply. (UserID: {userId})");
+            _logger.LogInformation($"Executing ApplyMyApplication. (UserID: {userId})");
 
             if (cv == null)
                 throw new ApplicationException($"CV file not found.");
 
-            //ModelState.AddModelError("", "CV file not found.");
-            //return View(applyApplicationViewModel);
-
-            //var userId = _userManager.GetUserId(HttpContext.User);
             using (var stream = cv.OpenReadStream())
             {
                 var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId, cv.FileName);
@@ -152,25 +147,12 @@ namespace Recruiter.Services
             }
 
             if (Path.GetExtension(cv.FileName) != ".pdf")
-            {
                 throw new ApplicationException($"CV must have .pdf extension.");
-                //ModelState.AddModelError("", "CV must have .pdf extension.");
-                //return View(applyApplicationViewModel);
-            }
             if (applyApplicationViewModel.CvFileName == null)
-            {
                 throw new ApplicationException($"Something went wrong during uploading CV, try again or contact with admin.");
-                //ModelState.AddModelError("", "Something went wrong during uploading CV, try again or contact with admin.");
-                //return View(applyApplicationViewModel);
-            }
-
             if (await _context.Applications
                                 .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
-            {
                 throw new ApplicationException($"You have already sent application to this offer.");
-                //ModelState.AddModelError("", "You have already sent application to this offer.");
-                //return View(applyApplicationViewModel);
-            }
 
             var application = new Application()
             {
@@ -186,8 +168,6 @@ namespace Recruiter.Services
             await _applicationStageService.AddRequiredStagesToApplication(application.Id);
 
             return application;
-
-            //throw new NotImplementedException();
         }
     }
 }

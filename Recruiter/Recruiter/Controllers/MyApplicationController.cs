@@ -89,16 +89,6 @@ namespace Recruiter.Controllers
             var vm = await _myApplicationService.GetApplyApplicationViewModel(id, userId);
 
             return View(vm);
-
-            //var offer = await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == id);
-            //if (offer == null)
-            //    return RedirectToAction(nameof(OfferController.Index));
-
-            //var vm = new ApplyApplicationViewModel()
-            //{
-            //    JobPositionId = offer.Id,
-            //    JobPositionName = offer.Name,
-            //};
         }
 
         [HttpPost]
@@ -125,52 +115,6 @@ namespace Recruiter.Controllers
             }
 
             return View(applyApplicationViewModel);
-
-
-            //if (cv == null)
-            //{
-            //    ModelState.AddModelError("", "CV file not found.");
-            //    return View(applyApplicationViewModel);
-            //}
-
-
-            //var userId = _userManager.GetUserId(HttpContext.User);
-            //using (var stream = cv.OpenReadStream())
-            //{
-            //    var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId, cv.FileName);
-            //    applyApplicationViewModel.CvFileName = CvFileName;
-            //}
-
-            //if (Path.GetExtension(cv.FileName) != ".pdf")
-            //{
-            //    ModelState.AddModelError("", "CV must have .pdf extension.");
-            //    return View(applyApplicationViewModel);
-            //}
-            //if (applyApplicationViewModel.CvFileName == null)
-            //{
-            //    ModelState.AddModelError("", "Something went wrong during uploading CV, try again or contact with admin.");
-            //    return View(applyApplicationViewModel);
-            //}
-
-            //if (await _context.Applications
-            //                    .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
-            //{
-            //    ModelState.AddModelError("", "You have already sent application to this offer.");
-            //    return View(applyApplicationViewModel);
-            //}
-
-            //var application = new Application()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    CvFileName = applyApplicationViewModel.CvFileName,
-            //    JobPositionId = applyApplicationViewModel.JobPositionId,
-            //    UserId = userId,
-            //    CreatedAt = DateTime.UtcNow
-            //};
-            //await _context.Applications.AddAsync(application);
-            //await _context.SaveChangesAsync();
-
-            //await _applicationStageService.AddRequiredStagesToApplication(application.Id);
         }
 
         public async Task<IActionResult> ProcessMyHomework(string stageId)
