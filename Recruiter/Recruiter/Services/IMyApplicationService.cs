@@ -17,5 +17,6 @@ namespace Recruiter.Services
         Task<Application> ApplyMyApplication(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel, string userId);
         Task<Homework> GetHomeworkStageToShowInProcessMyHomework(string stageId, string userId);
         Task<Homework> GetViewModelForBeforeReadMyHomework(string stageId, string userId);
+        Task UpdateMyHomeworkAsReaded(string stageId, string userId);
     }
 }

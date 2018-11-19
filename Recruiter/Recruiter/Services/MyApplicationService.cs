@@ -226,7 +226,35 @@ namespace Recruiter.Services
 
             //throw new NotImplementedException();
         }
+
+        public async Task UpdateMyHomeworkAsReaded(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing UpdateMyHomeworkAsReaded with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            if (stage.HomeworkState != HomeworkState.WaitingForRead)
+                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
+
+            stage.StartTime = DateTime.UtcNow;
+            stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
+            stage.HomeworkState = HomeworkState.WaitingForSendHomework;
+            await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
+        }
     }
+
+
 }
 
 //_logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
