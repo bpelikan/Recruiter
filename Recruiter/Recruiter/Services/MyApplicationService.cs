@@ -252,6 +252,38 @@ namespace Recruiter.Services
 
             //throw new NotImplementedException();
         }
+
+        public async Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing UpdateMyHomeworkAsReaded with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
+                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForSendHomework state. (UserID: {userId})");
+
+            stage.StartTime = stage.StartTime?.ToLocalTime();
+            stage.EndTime = stage.EndTime?.ToLocalTime();
+
+            return stage;
+
+            //if (stage.HomeworkState == HomeworkState.WaitingForSendHomework)
+            //    return View(stage);
+            //else
+            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
+
+            //throw new NotImplementedException();
+        }
     }
 
 
