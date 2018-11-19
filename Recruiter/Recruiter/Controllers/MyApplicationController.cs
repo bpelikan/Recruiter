@@ -21,6 +21,7 @@ namespace Recruiter.Controllers
     [Authorize(Roles = RoleCollection.Recruit)]
     public class MyApplicationController : Controller
     {
+        private readonly IMyApplicationService _myApplicationService;
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
         private readonly IApplicationStageService _applicationStageService;
@@ -28,12 +29,14 @@ namespace Recruiter.Controllers
         private readonly ApplicationDbContext _context;
 
         public MyApplicationController(
+            IMyApplicationService myApplicationService,
             ICvStorageService cvStorageService, 
             IMapper mapper,
             IApplicationStageService applicationStageService,
             UserManager<ApplicationUser> userManager, 
             ApplicationDbContext context)
         {
+            _myApplicationService = myApplicationService;
             _cvStorageService = cvStorageService;
             _mapper = mapper;
             _applicationStageService = applicationStageService;
@@ -51,11 +54,12 @@ namespace Recruiter.Controllers
         public IActionResult MyApplications()
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Where(x => x.UserId == userId);
+            var vm = _myApplicationService.GetViewModelForMyApplications(userId);
+            //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Where(x => x.UserId == userId);
 
-            var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<MyApplicationsViewModel>>(applications);
-            foreach (var application in vm)
-                application.CreatedAt = application.CreatedAt.ToLocalTime();
+            //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<MyApplicationsViewModel>>(applications);
+            //foreach (var application in vm)
+            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
 
             return View(vm);
         }
