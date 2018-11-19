@@ -57,14 +57,6 @@ namespace Recruiter.Controllers
             var vm = _myApplicationService.GetViewModelForMyApplications(userId);
 
             return View(vm);
-
-            #region del
-            //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Where(x => x.UserId == userId);
-
-            //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<MyApplicationsViewModel>>(applications);
-            //foreach (var application in vm)
-            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
-            #endregion
         }
 
         //[Authorize(Roles = RoleCollection.Recruit)]
@@ -76,45 +68,6 @@ namespace Recruiter.Controllers
             var vm = await _myApplicationService.GetViewModelForMyApplicationDetails(id, userId);
 
             return View(vm);
-
-            #region del
-            //var application = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages).FirstOrDefault(x => x.Id == id);
-
-            //if (application != null && userId == application.UserId)
-            //{
-            //    await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            //    {
-            //        Id = Guid.NewGuid().ToString(),
-            //        ViewTime = DateTime.UtcNow,
-            //        ApplicationId = application.Id,
-            //        UserId = _userManager.GetUserId(HttpContext.User)
-            //    });
-            //    await _context.SaveChangesAsync();
-
-            //    var vm = new MyApplicationDetailsViewModel()
-            //    {
-            //        Id = application.Id,
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-            //        CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-            //        CreatedAt = application.CreatedAt.ToLocalTime(),
-            //        ApplicationViews = await _context.ApplicationsViewHistories
-            //                                        .Where(x => x.ApplicationId == application.Id && x.UserId != userId)
-            //                                        .CountAsync(),
-            //        ApplicationViewsAll = await _context.ApplicationsViewHistories
-            //                                        .Where(x => x.ApplicationId == application.Id)
-            //                                        .CountAsync(),
-            //        ApplicationStages = application.ApplicationStages
-            //                                        .OrderBy(x => x.Level).ToList()
-            //    };
-
-            //    return View(vm);
-            //}
-
-            //Add error: It's not yours application/cv 
-            //redirect to my application list
-            //return RedirectToAction(nameof(OfferController.Index));
-            #endregion
         }
 
         [HttpPost]
