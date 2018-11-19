@@ -284,6 +284,32 @@ namespace Recruiter.Services
 
             //throw new NotImplementedException();
         }
+
+        public async Task SendMyHomework(Homework homework, string userId)
+        {
+            _logger.LogInformation($"Executing SendMyHomework. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefaultAsync(x => x.Id == homework.Id) as Homework;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {homework.Id} not found. (UserID: {userId})");
+            if (stage.Application.User.Id != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {homework.Id}.");
+
+            if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
+                throw new Exception($"Homework stage with ID: {homework.Id} is not in WaitingForSendHomework state. (UserID: {userId})");
+
+            stage.SendingTime = DateTime.UtcNow;
+            stage.Url = homework.Url;
+            stage.HomeworkState = HomeworkState.Completed;
+            await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
+        }
     }
 
 
