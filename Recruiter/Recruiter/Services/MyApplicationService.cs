@@ -187,7 +187,6 @@ namespace Recruiter.Services
                 throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
 
             return stage;
-            //throw new NotImplementedException();
         }
 
         public async Task<Homework> GetViewModelForBeforeReadMyHomework(string stageId, string userId)
@@ -218,13 +217,6 @@ namespace Recruiter.Services
             };
 
             return vm;
-
-            //if (stage.HomeworkState == HomeworkState.WaitingForRead)
-            //    return View(vm);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-
-            //throw new NotImplementedException();
         }
 
         public async Task UpdateMyHomeworkAsReaded(string stageId, string userId)
@@ -249,8 +241,6 @@ namespace Recruiter.Services
             stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
             stage.HomeworkState = HomeworkState.WaitingForSendHomework;
             await _context.SaveChangesAsync();
-
-            //throw new NotImplementedException();
         }
 
         public async Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId)
@@ -276,13 +266,6 @@ namespace Recruiter.Services
             stage.EndTime = stage.EndTime?.ToLocalTime();
 
             return stage;
-
-            //if (stage.HomeworkState == HomeworkState.WaitingForSendHomework)
-            //    return View(stage);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-
-            //throw new NotImplementedException();
         }
 
         public async Task SendMyHomework(Homework homework, string userId)
@@ -307,8 +290,6 @@ namespace Recruiter.Services
             stage.Url = homework.Url;
             stage.HomeworkState = HomeworkState.Completed;
             await _context.SaveChangesAsync();
-
-            //throw new NotImplementedException();
         }
 
         public async Task<Homework> GetViewModelForShowMyHomework(string stageId, string userId)
@@ -335,17 +316,8 @@ namespace Recruiter.Services
             stage.SendingTime = stage.SendingTime?.ToLocalTime();
 
             return stage;
-
-            //if (stage.HomeworkState == HomeworkState.Completed)
-            //    return View(stage);
-            //else
-            //    return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = stage.ApplicationId });
-
-            //throw new NotImplementedException();
         }
     }
-
-
 }
 
 //_logger.LogInformation($"Executing GetViewModelForMyApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
