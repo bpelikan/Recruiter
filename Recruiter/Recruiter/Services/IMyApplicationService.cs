@@ -20,5 +20,6 @@ namespace Recruiter.Services
         Task UpdateMyHomeworkAsReaded(string stageId, string userId);
         Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId);
         Task SendMyHomework(Homework homework, string userId);
+        Task<Homework> GetViewModelForShowMyHomework(string stageId, string userId);
     }
 }
