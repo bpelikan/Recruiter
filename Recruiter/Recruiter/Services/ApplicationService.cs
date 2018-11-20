@@ -111,6 +111,8 @@ namespace Recruiter.Services
 
         public async Task<ApplicationDetailsViewModel> GetViewModelForApplicationDetails(string applicationId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForApplicationDetails with applicationId={applicationId}. (UserID: {userId})");
+
             var application = _context.Applications
                                 .Include(x => x.JobPosition)
                                 .Include(x => x.User)
@@ -157,6 +159,8 @@ namespace Recruiter.Services
 
         public async Task DeleteApplication(string applicationId, string userId)
         {
+            _logger.LogInformation($"Executing DeleteApplication with applicationId={applicationId}. (UserID: {userId})");
+
             var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == applicationId);
 
             if (application == null)
@@ -176,6 +180,8 @@ namespace Recruiter.Services
 
         public async Task<IEnumerable<ApplicationsViewHistory>> GetViewModelForApplicationsViewHistory(string applicationId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForApplicationsViewHistory with applicationId={applicationId}. (UserID: {userId})");
+
             var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
 
             if (application == null)
