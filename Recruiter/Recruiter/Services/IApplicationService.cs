@@ -10,5 +10,6 @@ namespace Recruiter.Services
     {
         ApplicationsGroupedByStagesViewModel GetViewModelForApplications(string stageName, string userId);
         Task<ApplicationDetailsViewModel> GetViewModelForApplicationDetails(string applicationId, string userId);
+        Task DeleteApplication(string applicationId, string userId);
     }
 }

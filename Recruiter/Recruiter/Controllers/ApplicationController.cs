@@ -228,23 +228,30 @@ namespace Recruiter.Controllers
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> DeleteApplication(string id, string returnUrl = null)
         {
-            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
-
-            if (application == null)
-            {
-                throw new Exception($"Application with id: {id} doesn't exist.");
-            }
-
-            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            if (!delete)
-            {
-                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
-            }
-
-            _context.Applications.Remove(application);
-            await _context.SaveChangesAsync();
+            var userId = _userManager.GetUserId(HttpContext.User);
+            await _applicationService.DeleteApplication(id, userId);
 
             return RedirectToLocal(returnUrl);
+
+            #region del
+            //var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
+
+            //if (application == null)
+            //{
+            //    throw new Exception($"Application with id: {id} doesn't exist.");
+            //}
+
+            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            //if (!delete)
+            //{
+            //    throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
+            //}
+
+            //_context.Applications.Remove(application);
+            //await _context.SaveChangesAsync();
+
+            //return RedirectToLocal(returnUrl);
+            #endregion
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]

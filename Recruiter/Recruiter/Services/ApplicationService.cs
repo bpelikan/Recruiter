@@ -157,5 +157,26 @@ namespace Recruiter.Services
 
             //throw new NotImplementedException();
         }
+
+        public async Task DeleteApplication(string applicationId, string userId)
+        {
+            var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == applicationId);
+
+            if (application == null)
+            {
+                throw new Exception($"Application with id: {applicationId} doesn't exist. (UserID: {userId})");
+            }
+
+            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            if (!delete)
+            {
+                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}. (UserID: {userId})");
+            }
+
+            _context.Applications.Remove(application);
+            await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
+        }
     }
 }
