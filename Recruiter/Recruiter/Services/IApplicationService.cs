@@ -9,5 +9,6 @@ namespace Recruiter.Services
     public interface IApplicationService
     {
         ApplicationsGroupedByStagesViewModel GetViewModelForApplications(string stageName, string userId);
+        Task<ApplicationDetailsViewModel> GetViewModelForApplicationDetails(string applicationId, string userId);
     }
 }

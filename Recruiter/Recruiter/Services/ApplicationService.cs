@@ -109,5 +109,53 @@ namespace Recruiter.Services
             return vm;
             //throw new NotImplementedException();
         }
+
+        public async Task<ApplicationDetailsViewModel> GetViewModelForApplicationDetails(string applicationId, string userId)
+        {
+            var application = _context.Applications
+                                .Include(x => x.JobPosition)
+                                .Include(x => x.User)
+                                .FirstOrDefault(x => x.Id == applicationId);
+
+            if (application == null)
+                throw new Exception($"Application with ID: {applicationId} doesn't exists. (UserID: {userId})");
+           
+            await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+            {
+                Id = Guid.NewGuid().ToString(),
+                ViewTime = DateTime.UtcNow,
+                ApplicationId = application.Id,
+                UserId = userId
+            });
+            await _context.SaveChangesAsync();
+
+            var applicationStages = _context.ApplicationStages
+                                        .Include(x => x.ResponsibleUser)
+                                        .Include(x => x.AcceptedBy)
+                                        .Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
+
+            var viewHistories = await _context.ApplicationsViewHistories
+                                                .Where(x => x.ApplicationId == application.Id)
+                                                .OrderByDescending(x => x.ViewTime)
+                                                .Take(10)
+                                                .ToListAsync();
+            foreach (var viewHistory in viewHistories)
+                viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
+
+            var vm = new ApplicationDetailsViewModel()
+            {
+                Id = application.Id,
+                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+                CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
+                CreatedAt = application.CreatedAt.ToLocalTime(),
+                ApplicationsViewHistories = viewHistories,
+                ApplicationStages = applicationStages.ToList()
+            };
+
+            return vm;
+
+            //throw new NotImplementedException();
+        }
     }
 }

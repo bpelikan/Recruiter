@@ -170,51 +170,58 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var application = _context.Applications
-                                .Include(x => x.JobPosition)
-                                .Include(x => x.User)
-                                .FirstOrDefault(x => x.Id == id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _applicationService.GetViewModelForApplicationDetails(id, userId);
 
-            if (application != null)
-            {
-                await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ViewTime = DateTime.UtcNow,
-                    ApplicationId = application.Id,
-                    UserId = _userManager.GetUserId(HttpContext.User)
-                });
-                await _context.SaveChangesAsync();
+            return View(vm);
 
-                var applicationStages = _context.ApplicationStages
-                                            .Include(x => x.ResponsibleUser)
-                                            .Include(x => x.AcceptedBy)
-                                            .Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
+            #region del
+            //var application = _context.Applications
+            //                    .Include(x => x.JobPosition)
+            //                    .Include(x => x.User)
+            //                    .FirstOrDefault(x => x.Id == id);
 
-                var viewHistories = await _context.ApplicationsViewHistories
-                                                    .Where(x => x.ApplicationId == application.Id)
-                                                    .OrderByDescending(x => x.ViewTime)
-                                                    .Take(10)
-                                                    .ToListAsync();
-                foreach (var viewHistory in viewHistories)
-                    viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
-                
-                var vm = new ApplicationDetailsViewModel()
-                {
-                    Id = application.Id,
-                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                    CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-                    CreatedAt = application.CreatedAt.ToLocalTime(),
-                    ApplicationsViewHistories = viewHistories,
-                    ApplicationStages = applicationStages.ToList()
-                };
-                
-                return View(vm);
-            }
+            //if (application != null)
+            //{
+            //    await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+            //    {
+            //        Id = Guid.NewGuid().ToString(),
+            //        ViewTime = DateTime.UtcNow,
+            //        ApplicationId = application.Id,
+            //        UserId = _userManager.GetUserId(HttpContext.User)
+            //    });
+            //    await _context.SaveChangesAsync();
 
-            //Add error: loading application
-            return RedirectToAction(nameof(OfferController.Index));
+            //    var applicationStages = _context.ApplicationStages
+            //                                .Include(x => x.ResponsibleUser)
+            //                                .Include(x => x.AcceptedBy)
+            //                                .Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
+
+            //    var viewHistories = await _context.ApplicationsViewHistories
+            //                                        .Where(x => x.ApplicationId == application.Id)
+            //                                        .OrderByDescending(x => x.ViewTime)
+            //                                        .Take(10)
+            //                                        .ToListAsync();
+            //    foreach (var viewHistory in viewHistories)
+            //        viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
+
+            //    var vm = new ApplicationDetailsViewModel()
+            //    {
+            //        Id = application.Id,
+            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+            //        CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
+            //        CreatedAt = application.CreatedAt.ToLocalTime(),
+            //        ApplicationsViewHistories = viewHistories,
+            //        ApplicationStages = applicationStages.ToList()
+            //    };
+
+            //    return View(vm);
+            //}
+
+            ////Add error: loading application
+            //return RedirectToAction(nameof(OfferController.Index));
+            #endregion
         }
 
         [HttpPost]
