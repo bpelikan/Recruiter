@@ -40,23 +40,14 @@ namespace Recruiter.Services.Implementation
                 case JobPositionActivity.Active:
                     jobPositions = _context.JobPositions.Where(x => x.StartDate <= DateTime.UtcNow &&
                                                                     (x.EndDate >= DateTime.UtcNow || x.EndDate == null));
-                                                        //.OrderByDescending(x => x.EndDate == null)
-                                                        //    .ThenByDescending(x => x.EndDate)
-                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 case JobPositionActivity.Planned:
                     jobPositions = _context.JobPositions.Where(x => x.StartDate > DateTime.UtcNow);
-                                                        //.OrderByDescending(x => x.EndDate == null)
-                                                        //    .ThenByDescending(x => x.EndDate)
-                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 case JobPositionActivity.Expired:
                     jobPositions = _context.JobPositions.Where(x => x.EndDate < DateTime.UtcNow);
-                                                        //.OrderByDescending(x => x.EndDate == null)
-                                                        //    .ThenByDescending(x => x.EndDate)
-                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 default:
@@ -78,8 +69,6 @@ namespace Recruiter.Services.Implementation
             }
 
             return vm;
-
-            //throw new NotImplementedException();
         }
 
         public async Task<JobPositionViewModel> GetViewModelForJobPositionDetails(string jobPositionId, string userId)
@@ -100,7 +89,6 @@ namespace Recruiter.Services.Implementation
             }
 
             return vm;
-            //throw new NotImplementedException();
         }
 
         public AddJobPositionViewModel GetViewModelForAddJobPosition(string userId)
@@ -112,7 +100,6 @@ namespace Recruiter.Services.Implementation
             };
 
             return vm;
-            //throw new NotImplementedException();
         }
 
         public async Task<JobPosition> AddJobPosition(AddJobPositionViewModel addJobPositionViewModel, string userId)
@@ -137,13 +124,6 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
 
             return jobPositionCheck;
-
-            //if (jobPositionId == null)
-            //    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
-            //else
-            //    ModelState.AddModelError("", "Something went wrong while adding this job position.");
-
-            //throw new NotImplementedException();
         }
 
         public async Task<EditJobPositionViewModel> GetViewModelForEditJobPosition(string jobPositionId, string userId)
@@ -157,8 +137,6 @@ namespace Recruiter.Services.Implementation
             vm.EndDate = vm.EndDate?.ToLocalTime();
 
             return vm;
-
-            //throw new NotImplementedException();
         }
 
         public async Task<JobPosition> UpdateJobPosition(EditJobPositionViewModel editJobPositionViewModel, string userId)
@@ -179,22 +157,6 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
 
             return jobPositionCheck;
-
-            //if (jobPosition != null)
-            //{
-            //jobPosition.Name = editJobPositionViewModel.Name;
-            //jobPosition.Description = editJobPositionViewModel.Description;
-            //jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
-            //jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
-
-            //await _jobPositionRepository.UpdateAsync(jobPosition);
-
-            //return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
-            //}
-
-
-
-            //throw new NotImplementedException();
         }
 
         public async Task RemoveJobPosition(string jobPositionId, string userId)
@@ -207,9 +169,6 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"Job position with id {jobPositionId} has Applications. (UserID: {userId})");
 
             await _jobPositionRepository.RemoveAsync(jobPosition);
-            //return RedirectToAction(nameof(JobPositionController.Index));
-
-            //throw new NotImplementedException();
         }
 
         public async Task RemoveJobPositionFromIndexView(string jobPositionId, string userId)
@@ -221,20 +180,6 @@ namespace Recruiter.Services.Implementation
                 throw new ApplicationException($"This JobPosition has already Applications.");
 
             await _jobPositionRepository.RemoveAsync(jobPosition);
-
-            //ModelState.AddModelError("", "This JobPosition has already Applications.");
-
-            //var jobPositions = await _jobPositionRepository.GetAllAsync();
-            //jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
-            //var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
-
-            //return View(nameof(JobPositionController.Index), vm);
-
-
-            //return RedirectToAction(nameof(JobPositionController.Index));
-
-
-            //throw new NotImplementedException();
         }
     }
 }
