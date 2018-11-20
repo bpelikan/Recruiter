@@ -70,7 +70,9 @@ namespace Recruiter
             services.AddSingleton<ICvStorageService, CvStorageServiceWithArchive>();
             services.AddScoped<IJobPositionRepository, JobPositionRepository>();
             services.AddScoped<IApplicationStageService, ApplicationStageService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<IMyApplicationService, MyApplicationService>();
+
             //services.AddScoped<IJobPositionService, JobPositionService>();
         }
 
