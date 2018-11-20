@@ -91,5 +91,17 @@ namespace Recruiter.Services.Implementation
             return vm;
             //throw new NotImplementedException();
         }
+
+        public AddJobPositionViewModel GetViewModelForAddJobPosition(string userId)
+        {
+            var vm = new AddJobPositionViewModel()
+            {
+                StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
+                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
+            };
+
+            return vm;
+            //throw new NotImplementedException();
+        }
     }
 }

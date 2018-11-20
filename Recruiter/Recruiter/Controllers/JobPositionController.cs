@@ -112,11 +112,14 @@ namespace Recruiter.Controllers
 
         public async Task<IActionResult> Add()
         {
-            var vm = new AddJobPositionViewModel()
-            {
-                StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 
-                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
-            };
+            //var vm = new AddJobPositionViewModel()
+            //{
+            //    StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 
+            //                                DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
+            //};
+
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = _jobPositionService.GetViewModelForAddJobPosition(userId);
 
             var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
             ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email");
