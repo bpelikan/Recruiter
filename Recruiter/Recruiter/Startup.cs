@@ -72,6 +72,7 @@ namespace Recruiter
             services.AddScoped<IApplicationStageService, ApplicationStageService>();
             services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<IMyApplicationService, MyApplicationService>();
+            services.AddScoped<IApplicationsViewHistoriesService, ApplicationsViewHistoriesService>();
 
             //services.AddScoped<IJobPositionService, JobPositionService>();
         }
