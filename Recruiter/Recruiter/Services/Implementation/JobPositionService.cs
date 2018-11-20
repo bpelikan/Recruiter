@@ -103,5 +103,36 @@ namespace Recruiter.Services.Implementation
             return vm;
             //throw new NotImplementedException();
         }
+
+        public async Task<JobPosition> AddJobPosition(AddJobPositionViewModel addJobPositionViewModel, string userId)
+        {
+            addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
+
+            var jobPosition = new JobPosition()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = addJobPositionViewModel.Name,
+                Description = addJobPositionViewModel.Description,
+                StartDate = addJobPositionViewModel.StartDate.ToUniversalTime(),
+                EndDate = addJobPositionViewModel.EndDate?.ToUniversalTime(),
+                CreatorId = userId,
+                ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
+            };
+
+            await _jobPositionRepository.AddAsync(jobPosition);
+
+            var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
+            if (jobPositionCheck == null)
+                throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
+
+            return jobPosition;
+
+            //if (jobPositionId == null)
+            //    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
+            //else
+            //    ModelState.AddModelError("", "Something went wrong while adding this job position.");
+
+            //throw new NotImplementedException();
+        }
     }
 }

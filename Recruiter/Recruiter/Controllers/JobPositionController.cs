@@ -133,42 +133,87 @@ namespace Recruiter.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var userId = _userManager.GetUserId(HttpContext.User);
+                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+                ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
+                ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
+                ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
+                ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId);
 
-                addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
-
-                var jobPosition = new JobPosition()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = addJobPositionViewModel.Name,
-                    Description = addJobPositionViewModel.Description,
-                    StartDate = addJobPositionViewModel.StartDate.ToUniversalTime(),
-                    EndDate = addJobPositionViewModel.EndDate?.ToUniversalTime(),
-                    CreatorId = userId,
-                    ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
-                };
-
-                await _jobPositionRepository.AddAsync(jobPosition);
-                var jobPositionId = jobPosition.Id;
-
-                if (jobPositionId != null)
-                    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
-                else
-                    ModelState.AddModelError("", "Something went wrong while adding this job position.");
+                return View(addJobPositionViewModel);
             }
 
-            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-            ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
-            ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
-            ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
-            ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
 
-            return View(addJobPositionViewModel);
+            return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
+
+            #region del
+            //{
+            //var userId = _userManager.GetUserId(HttpContext.User);
+
+            //addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
+
+            //var jobPosition = new JobPosition()
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    Name = addJobPositionViewModel.Name,
+            //    Description = addJobPositionViewModel.Description,
+            //    StartDate = addJobPositionViewModel.StartDate.ToUniversalTime(),
+            //    EndDate = addJobPositionViewModel.EndDate?.ToUniversalTime(),
+            //    CreatorId = userId,
+            //    ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
+            //};
+
+            //await _jobPositionRepository.AddAsync(jobPosition);
+            //var jobPositionId = jobPosition.Id;
+
+            //if (jobPositionId != null)
+            //    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
+            //else
+            //    ModelState.AddModelError("", "Something went wrong while adding this job position.");
+            //}
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    var userId = _userManager.GetUserId(HttpContext.User);
+
+            //    addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
+
+            //    var jobPosition = new JobPosition()
+            //    {
+            //        Id = Guid.NewGuid().ToString(),
+            //        Name = addJobPositionViewModel.Name,
+            //        Description = addJobPositionViewModel.Description,
+            //        StartDate = addJobPositionViewModel.StartDate.ToUniversalTime(),
+            //        EndDate = addJobPositionViewModel.EndDate?.ToUniversalTime(),
+            //        CreatorId = userId,
+            //        ApplicationStagesRequirement = addJobPositionViewModel.ApplicationStagesRequirement
+            //    };
+
+            //    await _jobPositionRepository.AddAsync(jobPosition);
+            //    var jobPositionId = jobPosition.Id;
+
+            //    if (jobPositionId != null)
+            //        return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
+            //    else
+            //        ModelState.AddModelError("", "Something went wrong while adding this job position.");
+            //}
+
+            //var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+            //ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
+            //ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
+            //ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
+            //ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId);
+
+            //return View(addJobPositionViewModel);
 
             //throw new Exception()
             //return View(addJobPositionViewModel);
+            #endregion
         }
 
         public async Task<IActionResult> Edit(string id, string returnUrl = null)
