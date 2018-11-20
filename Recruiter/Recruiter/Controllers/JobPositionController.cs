@@ -308,31 +308,62 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteFromIndex(string id)
+        public async Task<IActionResult> DeleteFromIndex(string id) //-> DeleteFromIndexView
         {
-            //var jobPosition = await _jobPositionRepository.GetAsync(id);
-            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == id);
+            var userId = _userManager.GetUserId(HttpContext.User);
 
-            if (jobPosition.Applications.Count != 0)
+            try
             {
-                ModelState.AddModelError("", "This JobPosition has already Applications.");
+                await _jobPositionService.RemoveJobPositionFromIndexView(id, userId);
+            }
+            catch (ApplicationException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
 
-                var jobPositions = await _jobPositionRepository.GetAllAsync();
-                jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
-                var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
-
+                var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity("", userId);
                 return View(nameof(JobPositionController.Index), vm);
-            }
 
-            if (jobPosition != null)
-            {
-                await _jobPositionRepository.RemoveAsync(jobPosition);
-                return RedirectToAction(nameof(JobPositionController.Index));
+                //var jobPositions = await _jobPositionRepository.GetAllAsync();
+                //jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                //var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
+                //return View(nameof(JobPositionController.Index), vm);
             }
+            //catch (Exception ex)
+            //{
 
-            throw new Exception($"Job position with id {id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            //}
+
+
+            return RedirectToAction(nameof(JobPositionController.Index));
+
+            #region del
+            //var jobPosition = await _jobPositionRepository.GetAsync(id);
+
+            //var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == id);
+
+            //if (jobPosition.Applications.Count != 0)
+            //{
+            //    ModelState.AddModelError("", "This JobPosition has already Applications.");
+
+            //    var jobPositions = await _jobPositionRepository.GetAllAsync();
+            //    jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+            //    var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
+
+            //    return View(nameof(JobPositionController.Index), vm);
+            //}
+
+            //if (jobPosition != null)
+            //{
+            //    await _jobPositionRepository.RemoveAsync(jobPosition);
+            //    return RedirectToAction(nameof(JobPositionController.Index));
+            //}
+
+            //throw new Exception($"Job position with id {id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+
+
             //ModelState.AddModelError("", "Something went wrong while deleting this user.");
             //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
+            #endregion
         }
     }
 }

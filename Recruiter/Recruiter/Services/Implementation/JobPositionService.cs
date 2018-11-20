@@ -200,5 +200,30 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
+
+        public async Task RemoveJobPositionFromIndexView(string jobPositionId, string userId)
+        {
+            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
+            if (jobPosition == null)
+                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+            if (jobPosition.Applications.Count != 0)
+                throw new ApplicationException($"This JobPosition has already Applications.");
+
+            await _jobPositionRepository.RemoveAsync(jobPosition);
+
+            //ModelState.AddModelError("", "This JobPosition has already Applications.");
+
+            //var jobPositions = await _jobPositionRepository.GetAllAsync();
+            //jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+            //var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
+
+            //return View(nameof(JobPositionController.Index), vm);
+
+
+            //return RedirectToAction(nameof(JobPositionController.Index));
+
+
+            //throw new NotImplementedException();
+        }
     }
 }
