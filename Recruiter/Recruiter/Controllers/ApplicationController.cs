@@ -67,80 +67,6 @@ namespace Recruiter.Controllers
 
             return View(vm);
 
-            #region del
-            //var applications = _context.Applications
-            //                            .Include(x => x.JobPosition)
-            //                            .Include(x => x.User)
-            //                            .Include(x => x.ApplicationStages);
-
-            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            //{
-            //    stagesSortedByName.Add(new StagesViewModel()
-            //    {
-            //        Name = t.Name,
-            //        Quantity = _context.ApplicationStages
-            //                                .AsNoTracking()
-            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
-            //                                            x.GetType().Name == t.Name).Count(),
-            //    });
-            //}
-
-            //stagesSortedByName.Add(new StagesViewModel()
-            //{
-            //    Name = "Finished",
-            //    Quantity = _context.Applications
-            //                .Include(x => x.ApplicationStages)
-            //                .Where(x => x.ApplicationStages
-            //                                .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
-            //                .Count(),
-            //});
-
-            //var vm = new ApplicationsGroupedByStagesViewModel()
-            //{
-            //    ApplicationStagesGroupedByName = stagesSortedByName,
-            //};
-            //vm.Applications = new List<ApplicationsViewModel>();
-            //foreach (var application in applications)
-            //{
-            //    var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
-            //    if (currentStage == null && application.ApplicationStages
-            //                                                        .Where(x => x.State == ApplicationStageState.Finished)
-            //                                                        .Count() == application.ApplicationStages.Count())
-            //    {
-            //        if (stageName == "" || stageName == "Finished")
-            //        {
-            //            vm.Applications.Add(new ApplicationsViewModel()
-            //            {
-            //                Id = application.Id,
-            //                CreatedAt = application.CreatedAt.ToLocalTime(),
-            //                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-            //                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-            //                CurrentStage = "Finished",
-            //                CurrentStageIsAssigned = true
-            //            });
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (stageName == "" || stageName == currentStage.GetType().Name)
-            //        {
-            //            vm.Applications.Add(new ApplicationsViewModel()
-            //            {
-            //                Id = application.Id,
-            //                CreatedAt = application.CreatedAt.ToLocalTime(),
-            //                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-            //                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-            //                CurrentStage = currentStage?.GetType().Name,
-            //                CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
-            //            });
-            //        }
-            //    }
-            //}
-
-            //return View(vm);
-            #endregion
-
             #region
             //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
             //var vm = new List<ApplicationsViewModel>();
@@ -174,54 +100,6 @@ namespace Recruiter.Controllers
             var vm = await _applicationService.GetViewModelForApplicationDetails(id, userId);
 
             return View(vm);
-
-            #region del
-            //var application = _context.Applications
-            //                    .Include(x => x.JobPosition)
-            //                    .Include(x => x.User)
-            //                    .FirstOrDefault(x => x.Id == id);
-
-            //if (application != null)
-            //{
-            //    await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            //    {
-            //        Id = Guid.NewGuid().ToString(),
-            //        ViewTime = DateTime.UtcNow,
-            //        ApplicationId = application.Id,
-            //        UserId = _userManager.GetUserId(HttpContext.User)
-            //    });
-            //    await _context.SaveChangesAsync();
-
-            //    var applicationStages = _context.ApplicationStages
-            //                                .Include(x => x.ResponsibleUser)
-            //                                .Include(x => x.AcceptedBy)
-            //                                .Where(x => x.ApplicationId == application.Id).OrderBy(x => x.Level);
-
-            //    var viewHistories = await _context.ApplicationsViewHistories
-            //                                        .Where(x => x.ApplicationId == application.Id)
-            //                                        .OrderByDescending(x => x.ViewTime)
-            //                                        .Take(10)
-            //                                        .ToListAsync();
-            //    foreach (var viewHistory in viewHistories)
-            //        viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
-
-            //    var vm = new ApplicationDetailsViewModel()
-            //    {
-            //        Id = application.Id,
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-            //        CvFileUrl = _cvStorageService.UriFor(application.CvFileName),
-            //        CreatedAt = application.CreatedAt.ToLocalTime(),
-            //        ApplicationsViewHistories = viewHistories,
-            //        ApplicationStages = applicationStages.ToList()
-            //    };
-
-            //    return View(vm);
-            //}
-
-            ////Add error: loading application
-            //return RedirectToAction(nameof(OfferController.Index));
-            #endregion
         }
 
         [HttpPost]
@@ -232,26 +110,6 @@ namespace Recruiter.Controllers
             await _applicationService.DeleteApplication(id, userId);
 
             return RedirectToLocal(returnUrl);
-
-            #region del
-            //var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == id);
-
-            //if (application == null)
-            //{
-            //    throw new Exception($"Application with id: {id} doesn't exist.");
-            //}
-
-            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            //if (!delete)
-            //{
-            //    throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
-            //}
-
-            //_context.Applications.Remove(application);
-            //await _context.SaveChangesAsync();
-
-            //return RedirectToLocal(returnUrl);
-            #endregion
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
@@ -263,25 +121,6 @@ namespace Recruiter.Controllers
             var vm = await _applicationService.GetViewModelForApplicationsViewHistory(id, userId);
 
             return View(vm);
-
-            #region del
-            //var application = _context.Applications.FirstOrDefault(x => x.Id == id);
-
-            //if (application != null)
-            //{
-            //    var vm = await _context.ApplicationsViewHistories
-            //                                .Where(x => x.ApplicationId == application.Id)
-            //                                .OrderByDescending(x => x.ViewTime)
-            //                                .ToListAsync();
-            //    foreach (var viewHistory in vm)
-            //        viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
-
-            //    return View(vm);
-            //}
-
-            ////Add error: loading application Views
-            //return RedirectToAction(nameof(OfferController.Index));
-            #endregion
         }
 
         #region Helpers

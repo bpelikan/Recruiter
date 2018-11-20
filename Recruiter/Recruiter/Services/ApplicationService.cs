@@ -107,7 +107,6 @@ namespace Recruiter.Services
             }
 
             return vm;
-            //throw new NotImplementedException();
         }
 
         public async Task<ApplicationDetailsViewModel> GetViewModelForApplicationDetails(string applicationId, string userId)
@@ -154,8 +153,6 @@ namespace Recruiter.Services
             };
 
             return vm;
-
-            //throw new NotImplementedException();
         }
 
         public async Task DeleteApplication(string applicationId, string userId)
@@ -175,8 +172,6 @@ namespace Recruiter.Services
 
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
-
-            //throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<ApplicationsViewHistory>> GetViewModelForApplicationsViewHistory(string applicationId, string userId)
@@ -194,8 +189,6 @@ namespace Recruiter.Services
                 viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
 
             return vm;
-
-            //throw new NotImplementedException();
         }
     }
 }
