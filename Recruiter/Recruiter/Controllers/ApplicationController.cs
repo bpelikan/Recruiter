@@ -66,29 +66,6 @@ namespace Recruiter.Controllers
             var vm = _applicationService.GetViewModelForApplications(stageName, userId);
 
             return View(vm);
-
-            #region
-            //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
-            //var vm = new List<ApplicationsViewModel>();
-
-            //foreach (var application in applications)
-            //{
-            //    var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
-            //    vm.Add(new ApplicationsViewModel()
-            //    {
-            //        Id = application.Id,
-            //        CreatedAt = application.CreatedAt.ToLocalTime(),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-            //        CurrentStage = currentStage?.GetType().Name,
-            //        CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
-            //    });
-            //}
-
-            //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
-            //foreach (var application in vm)
-            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
-            #endregion
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
