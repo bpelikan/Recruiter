@@ -34,6 +34,8 @@ namespace Recruiter.Services.Implementation
 
         public IEnumerable<JobPositionViewModel> GetViewModelForIndexByJobPositionActivity(string jobPositionActivity, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForIndexByJobPositionActivity with jobPositionActivity={jobPositionActivity}. (UserID: {userId})");
+
             IEnumerable<JobPosition> jobPositions = null;
             switch (jobPositionActivity)
             {
@@ -73,6 +75,9 @@ namespace Recruiter.Services.Implementation
 
         public async Task<JobPositionViewModel> GetViewModelForJobPositionDetails(string jobPositionId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForJobPositionDetails with jobPositionId={jobPositionId}. (UserID: {userId})");
+
+
             var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
             if (jobPosition == null)
                 throw new Exception($"Application with ID: {jobPositionId} doesn't exists. (UserID: {userId})");
@@ -93,6 +98,8 @@ namespace Recruiter.Services.Implementation
 
         public AddJobPositionViewModel GetViewModelForAddJobPosition(string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForAddJobPosition. (UserID: {userId})");
+
             var vm = new AddJobPositionViewModel()
             {
                 StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
@@ -104,6 +111,8 @@ namespace Recruiter.Services.Implementation
 
         public async Task<JobPosition> AddJobPosition(AddJobPositionViewModel addJobPositionViewModel, string userId)
         {
+            _logger.LogInformation($"Executing AddJobPosition. (UserID: {userId})");
+
             addJobPositionViewModel.ApplicationStagesRequirement.RemoveDefaultResponsibleIfStageIsDisabled();
 
             var jobPosition = new JobPosition()
@@ -128,6 +137,8 @@ namespace Recruiter.Services.Implementation
 
         public async Task<EditJobPositionViewModel> GetViewModelForEditJobPosition(string jobPositionId, string userId)
         {
+            _logger.LogInformation($"Executing GetViewModelForEditJobPosition with jobPositionId={jobPositionId}. (UserID: {userId})");
+
             var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
             if (jobPosition == null)
                 throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
@@ -141,6 +152,8 @@ namespace Recruiter.Services.Implementation
 
         public async Task<JobPosition> UpdateJobPosition(EditJobPositionViewModel editJobPositionViewModel, string userId)
         {
+            _logger.LogInformation($"Executing UpdateJobPosition. (UserID: {userId})");
+
             var jobPosition = await _jobPositionRepository.GetAsync(editJobPositionViewModel.Id);
             if (jobPosition == null)
                 throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found. (UserID: {userId})");
@@ -161,6 +174,8 @@ namespace Recruiter.Services.Implementation
 
         public async Task RemoveJobPosition(string jobPositionId, string userId)
         {
+            _logger.LogInformation($"Executing RemoveJobPosition with jobPositionId={jobPositionId}. (UserID: {userId})");
+
             var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
            
             if (jobPosition == null)
@@ -173,6 +188,8 @@ namespace Recruiter.Services.Implementation
 
         public async Task RemoveJobPositionFromIndexView(string jobPositionId, string userId)
         {
+            _logger.LogInformation($"Executing RemoveJobPositionFromIndexView with jobPositionId={jobPositionId}. (UserID: {userId})");
+
             var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
             if (jobPosition == null)
                 throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
