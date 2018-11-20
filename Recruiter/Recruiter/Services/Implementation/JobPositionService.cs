@@ -185,5 +185,20 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
+
+        public async Task RemoveJobPosition(string jobPositionId, string userId)
+        {
+            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
+           
+            if (jobPosition == null)
+                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+            if (jobPosition.Applications.Count != 0)
+                throw new Exception($"Job position with id {jobPositionId} has Applications. (UserID: {userId})");
+
+            await _jobPositionRepository.RemoveAsync(jobPosition);
+            //return RedirectToAction(nameof(JobPositionController.Index));
+
+            //throw new NotImplementedException();
+        }
     }
 }
