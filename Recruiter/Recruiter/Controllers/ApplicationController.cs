@@ -43,21 +43,8 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
-            //redirect
-            //return View();
             return RedirectToAction(nameof(ApplicationController.Applications));
         }
-
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        //public IActionResult Applications()
-        //{
-        //    var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User);
-        //    var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
-        //    foreach (var application in vm)
-        //        application.CreatedAt = application.CreatedAt.ToLocalTime();
-
-        //    return View(vm);
-        //}
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public IActionResult Applications(string stageName = "")
