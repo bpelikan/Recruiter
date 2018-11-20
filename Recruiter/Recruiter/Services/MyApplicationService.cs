@@ -72,16 +72,6 @@ namespace Recruiter.Services
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
 
-            //await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    ViewTime = DateTime.UtcNow,
-            //    ApplicationId = application.Id,
-            //    UserId = userId
-            //    //UserId = _userManager.GetUserId(HttpContext.User)
-            //});
-            //await _context.SaveChangesAsync();
-
             var vm = new MyApplicationDetailsViewModel()
             {
                 Id = application.Id,

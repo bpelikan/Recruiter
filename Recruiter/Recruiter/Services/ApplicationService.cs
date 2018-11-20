@@ -105,15 +105,6 @@ namespace Recruiter.Services
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
             
-            //await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    ViewTime = DateTime.UtcNow,
-            //    ApplicationId = application.Id,
-            //    UserId = userId
-            //});
-            //await _context.SaveChangesAsync();
-
             var applicationStages = _context.ApplicationStages
                                         .Include(x => x.ResponsibleUser)
                                         .Include(x => x.AcceptedBy)
