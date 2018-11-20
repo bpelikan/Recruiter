@@ -16,17 +16,20 @@ namespace Recruiter.Services
     public class ApplicationService : IApplicationService
     {
         private readonly ICvStorageService _cvStorageService;
+        private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
 
         public ApplicationService(
                     ICvStorageService cvStorageService,
+                    IApplicationsViewHistoriesService applicationsViewHistoriesService,
                     IMapper mapper,
                     ILogger<ApplicationService> logger,
                     ApplicationDbContext context)
         {
             _cvStorageService = cvStorageService;
+            _applicationsViewHistoriesService = applicationsViewHistoriesService;
             _mapper = mapper;
             _logger = logger;
             _context = context;
@@ -99,15 +102,17 @@ namespace Recruiter.Services
 
             if (application == null)
                 throw new Exception($"Application with ID: {applicationId} doesn't exists. (UserID: {userId})");
-           
-            await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            {
-                Id = Guid.NewGuid().ToString(),
-                ViewTime = DateTime.UtcNow,
-                ApplicationId = application.Id,
-                UserId = userId
-            });
-            await _context.SaveChangesAsync();
+
+            await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
+            
+            //await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    ViewTime = DateTime.UtcNow,
+            //    ApplicationId = application.Id,
+            //    UserId = userId
+            //});
+            //await _context.SaveChangesAsync();
 
             var applicationStages = _context.ApplicationStages
                                         .Include(x => x.ResponsibleUser)

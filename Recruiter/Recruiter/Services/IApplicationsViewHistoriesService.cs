@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Services
 {
-    interface IApplicationsViewHistoriesService
+    public interface IApplicationsViewHistoriesService
     {
+        Task AddApplicationsViewHistory(string applicationId, string userId);
     }
 }

@@ -20,6 +20,7 @@ namespace Recruiter.Services
         private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
         private readonly IApplicationStageService _applicationStageService;
+        private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
         private readonly ApplicationDbContext _context;
 
         public MyApplicationService(
@@ -27,12 +28,14 @@ namespace Recruiter.Services
                         ILogger<MyApplicationService> logger, 
                         ICvStorageService cvStorageService,
                         IApplicationStageService applicationStageService,
+                        IApplicationsViewHistoriesService applicationsViewHistoriesService,
                         ApplicationDbContext context)
         {
             _mapper = mapper;
             _logger = logger;
             _cvStorageService = cvStorageService;
             _applicationStageService = applicationStageService;
+            _applicationsViewHistoriesService = applicationsViewHistoriesService;
             _context = context;
         }
 
@@ -67,15 +70,17 @@ namespace Recruiter.Services
             if (userId != application.UserId)
                 throw new Exception($"User with id {userId} aren't owner of application with id {applicationId}. (UserID: {userId})");
 
-            await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
-            {
-                Id = Guid.NewGuid().ToString(),
-                ViewTime = DateTime.UtcNow,
-                ApplicationId = application.Id,
-                UserId = userId
-                //UserId = _userManager.GetUserId(HttpContext.User)
-            });
-            await _context.SaveChangesAsync();
+            await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
+
+            //await _context.ApplicationsViewHistories.AddAsync(new ApplicationsViewHistory()
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    ViewTime = DateTime.UtcNow,
+            //    ApplicationId = application.Id,
+            //    UserId = userId
+            //    //UserId = _userManager.GetUserId(HttpContext.User)
+            //});
+            //await _context.SaveChangesAsync();
 
             var vm = new MyApplicationDetailsViewModel()
             {
