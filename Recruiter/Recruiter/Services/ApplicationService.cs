@@ -41,28 +41,30 @@ namespace Recruiter.Services
                                         .Include(x => x.User)
                                         .Include(x => x.ApplicationStages);
 
-            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            {
-                stagesSortedByName.Add(new StagesViewModel()
-                {
-                    Name = t.Name,
-                    Quantity = _context.ApplicationStages
-                                            .AsNoTracking()
-                                            .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                        x.GetType().Name == t.Name).Count(),
-                });
-            }
+            var stagesSortedByName = GetApplicationCountSortedByCurrentStagesName(userId);
 
-            stagesSortedByName.Add(new StagesViewModel()
-            {
-                Name = "Finished",
-                Quantity = _context.Applications
-                            .Include(x => x.ApplicationStages)
-                            .Where(x => x.ApplicationStages
-                                            .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
-                            .Count(),
-            });
+            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    stagesSortedByName.Add(new StagesViewModel()
+            //    {
+            //        Name = t.Name,
+            //        Quantity = _context.ApplicationStages
+            //                                .AsNoTracking()
+            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                            x.GetType().Name == t.Name).Count(),
+            //    });
+            //}
+
+            //stagesSortedByName.Add(new StagesViewModel()
+            //{
+            //    Name = "Finished",
+            //    Quantity = _context.Applications
+            //                .Include(x => x.ApplicationStages)
+            //                .Where(x => x.ApplicationStages
+            //                                .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
+            //                .Count(),
+            //});
 
             var vm = new ApplicationsGroupedByStagesViewModel()
             {
@@ -195,6 +197,52 @@ namespace Recruiter.Services
                 viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
 
             return vm;
+        }
+
+        private List<StagesViewModel> GetApplicationCountSortedByCurrentStagesName(string userId)
+        {
+            _logger.LogInformation($"Executing GetApplicationCountSortedByCurrentStagesName. (UserID: {userId})");
+
+            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            {
+                stagesSortedByName.Add(new StagesViewModel()
+                {
+                    Name = t.Name,
+                    Quantity = _context.ApplicationStages
+                                            .AsNoTracking()
+                                            .Where(x => x.State == ApplicationStageState.InProgress &&
+                                                        x.GetType().Name == t.Name).Count(),
+                });
+            }
+
+            stagesSortedByName.Add(new StagesViewModel()
+            {
+                Name = "Finished",
+                Quantity = _context.Applications
+                            .Include(x => x.ApplicationStages)
+                            .Where(x => x.ApplicationStages
+                                            .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
+                            .Count(),
+            });
+
+            return stagesSortedByName;
+
+            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    stagesSortedByName.Add(new StagesViewModel()
+            //    {
+            //        Name = t.Name,
+            //        Quantity = _context.ApplicationStages
+            //                                .AsNoTracking()
+            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                            x.ResponsibleUserId == userId &&
+            //                                            x.GetType().Name == t.Name).Count(),
+            //    });
+            //}
+
+            //return stagesSortedByName;
         }
     }
 }
