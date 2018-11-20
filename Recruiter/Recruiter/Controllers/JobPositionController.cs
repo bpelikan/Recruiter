@@ -134,7 +134,6 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivity = "") //-> DeleteFromIndexView
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            //IEnumerable<JobPositionViewModel> vm;
 
             try
             {
@@ -143,11 +142,6 @@ namespace Recruiter.Controllers
             catch (ApplicationException ex)
             {
                 ModelState.AddModelError("", ex.Message);
-
-                //var jobPositions = await _jobPositionRepository.GetAllAsync();
-                //jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
-                //var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
-                //return View(nameof(JobPositionController.Index), vm);
             }
             catch (Exception e)
             {
@@ -156,16 +150,6 @@ namespace Recruiter.Controllers
 
             var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
             return View(nameof(JobPositionController.Index), vm);
-
-
-            //catch (Exception ex)
-            //{
-
-            //}
-
-
-            //return RedirectToAction(nameof(JobPositionController.Index));
-
         }
     }
 }
