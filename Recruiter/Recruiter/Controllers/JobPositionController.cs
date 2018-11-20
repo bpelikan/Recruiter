@@ -220,20 +220,27 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var jobPosition = await _jobPositionRepository.GetAsync(id);
-
-            if (jobPosition == null)
-            {
-                throw new Exception($"Job position with id {id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-                //ModelState.AddModelError("", "Something went wrong while getting job position for editing.");
-                //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
-            }
-
-            var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
-            vm.StartDate = vm.StartDate.ToLocalTime();
-            vm.EndDate = vm.EndDate?.ToLocalTime();
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _jobPositionService.GetViewModelForEditJobPosition(id, userId);
 
             return View(vm);
+
+            #region del
+            //var jobPosition = await _jobPositionRepository.GetAsync(id);
+
+            //if (jobPosition == null)
+            //{
+            //    throw new Exception($"Job position with id {id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            //    //ModelState.AddModelError("", "Something went wrong while getting job position for editing.");
+            //    //return View(nameof(JobPositionController.Index), _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(await _jobPositionRepository.GetAllAsync()));
+            //}
+
+            //var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
+            //vm.StartDate = vm.StartDate.ToLocalTime();
+            //vm.EndDate = vm.EndDate?.ToLocalTime();
+
+            //return View(vm);
+            #endregion
         }
 
         [HttpPost]

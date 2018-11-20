@@ -134,5 +134,20 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
+
+        public async Task<EditJobPositionViewModel> GetViewModelForEditJobPosition(string jobPositionId, string userId)
+        {
+            var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
+            if (jobPosition == null)
+                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+
+            var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
+            vm.StartDate = vm.StartDate.ToLocalTime();
+            vm.EndDate = vm.EndDate?.ToLocalTime();
+
+            return vm;
+
+            //throw new NotImplementedException();
+        }
     }
 }
