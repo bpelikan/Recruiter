@@ -86,23 +86,28 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var jobPosition = await _jobPositionRepository.GetAsync(id);
-
-            if (jobPosition == null)
-                return RedirectToAction(nameof(JobPositionController.Index));
-
-            var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
-            vm.StartDate = vm.StartDate.ToLocalTime();
-            vm.EndDate = vm.EndDate?.ToLocalTime();
-
-            var applications = await _context.Applications.Include(x => x.User).Where(x => x.JobPositionId == jobPosition.Id).ToListAsync();
-            foreach (var application in applications)
-            {
-                application.CreatedAt = application.CreatedAt.ToLocalTime();
-                vm.AddApplication(application);
-            }
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _jobPositionService.GetViewModelForJobPositionDetails(id, userId);
 
             return View(vm);
+
+            //var jobPosition = await _jobPositionRepository.GetAsync(id);
+
+            //if (jobPosition == null)
+            //    return RedirectToAction(nameof(JobPositionController.Index));
+
+            //var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
+            //vm.StartDate = vm.StartDate.ToLocalTime();
+            //vm.EndDate = vm.EndDate?.ToLocalTime();
+
+            //var applications = await _context.Applications.Include(x => x.User).Where(x => x.JobPositionId == jobPosition.Id).ToListAsync();
+            //foreach (var application in applications)
+            //{
+            //    application.CreatedAt = application.CreatedAt.ToLocalTime();
+            //    vm.AddApplication(application);
+            //}
+
+            //return View(vm);
         }
 
         public async Task<IActionResult> Add()
