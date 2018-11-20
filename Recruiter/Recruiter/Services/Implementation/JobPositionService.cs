@@ -39,24 +39,35 @@ namespace Recruiter.Services.Implementation
             {
                 case JobPositionActivity.Active:
                     jobPositions = _context.JobPositions.Where(x => x.StartDate <= DateTime.UtcNow &&
-                                                                    (x.EndDate >= DateTime.UtcNow || x.EndDate == null))
-                                                        .OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                                                                    (x.EndDate >= DateTime.UtcNow || x.EndDate == null));
+                                                        //.OrderByDescending(x => x.EndDate == null)
+                                                        //    .ThenByDescending(x => x.EndDate)
+                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 case JobPositionActivity.Planned:
-                    jobPositions = _context.JobPositions.Where(x => x.StartDate > DateTime.UtcNow)
-                                                        .OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                    jobPositions = _context.JobPositions.Where(x => x.StartDate > DateTime.UtcNow);
+                                                        //.OrderByDescending(x => x.EndDate == null)
+                                                        //    .ThenByDescending(x => x.EndDate)
+                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 case JobPositionActivity.Expired:
-                    jobPositions = _context.JobPositions.Where(x => x.EndDate < DateTime.UtcNow)
-                                                        .OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                    jobPositions = _context.JobPositions.Where(x => x.EndDate < DateTime.UtcNow);
+                                                        //.OrderByDescending(x => x.EndDate == null)
+                                                        //    .ThenByDescending(x => x.EndDate)
+                                                        //        .ThenByDescending(x => x.StartDate);
                     break;
 
                 default:
-                    jobPositions = _context.JobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
+                    jobPositions = _context.JobPositions;
                     break;
             }
+
+            jobPositions = jobPositions
+                            .OrderByDescending(x => x.EndDate == null)
+                                .ThenByDescending(x => x.EndDate)
+                                    .ThenByDescending(x => x.StartDate);
 
             var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
 
