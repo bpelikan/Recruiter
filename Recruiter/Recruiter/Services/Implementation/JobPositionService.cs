@@ -125,7 +125,7 @@ namespace Recruiter.Services.Implementation
             if (jobPositionCheck == null)
                 throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
 
-            return jobPosition;
+            return jobPositionCheck;
 
             //if (jobPositionId == null)
             //    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPositionId });
@@ -146,6 +146,42 @@ namespace Recruiter.Services.Implementation
             vm.EndDate = vm.EndDate?.ToLocalTime();
 
             return vm;
+
+            //throw new NotImplementedException();
+        }
+
+        public async Task<JobPosition> UpdateJobPosition(EditJobPositionViewModel editJobPositionViewModel, string userId)
+        {
+            var jobPosition = await _jobPositionRepository.GetAsync(editJobPositionViewModel.Id);
+            if (jobPosition == null)
+                throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found. (UserID: {userId})");
+
+            jobPosition.Name = editJobPositionViewModel.Name;
+            jobPosition.Description = editJobPositionViewModel.Description;
+            jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
+            jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
+
+            await _jobPositionRepository.UpdateAsync(jobPosition);
+
+            var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
+            if (jobPositionCheck == null)
+                throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
+
+            return jobPositionCheck;
+
+            //if (jobPosition != null)
+            //{
+            //jobPosition.Name = editJobPositionViewModel.Name;
+            //jobPosition.Description = editJobPositionViewModel.Description;
+            //jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
+            //jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
+
+            //await _jobPositionRepository.UpdateAsync(jobPosition);
+
+            //return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
+            //}
+
+
 
             //throw new NotImplementedException();
         }

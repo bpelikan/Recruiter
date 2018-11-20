@@ -249,23 +249,30 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
                 return View(editJobPositionViewModel);
 
-            var jobPosition = await _jobPositionRepository.GetAsync(editJobPositionViewModel.Id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var jobPosition = await _jobPositionService.UpdateJobPosition(editJobPositionViewModel, userId);
 
-            if (jobPosition != null)
-            {
-                jobPosition.Name = editJobPositionViewModel.Name;
-                jobPosition.Description = editJobPositionViewModel.Description;
-                jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
-                jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
+            return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
 
-                await _jobPositionRepository.UpdateAsync(jobPosition);
+            #region del
+            //var jobPosition = await _jobPositionRepository.GetAsync(editJobPositionViewModel.Id);
 
-                return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
-            }
+            //if (jobPosition != null)
+            //{
+            //    jobPosition.Name = editJobPositionViewModel.Name;
+            //    jobPosition.Description = editJobPositionViewModel.Description;
+            //    jobPosition.StartDate = editJobPositionViewModel.StartDate.ToUniversalTime();
+            //    jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
 
-            throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+            //    await _jobPositionRepository.UpdateAsync(jobPosition);
+
+            //    return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
+            //}
+
+            //throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found. (UserID: {_userManager.GetUserId(HttpContext.User)})");
             //ModelState.AddModelError("", "Something went wrong while editing job position.");
             //return View(editJobPositionViewModel);
+            #endregion
         }
 
         [HttpPost]

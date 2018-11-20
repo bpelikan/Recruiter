@@ -14,5 +14,6 @@ namespace Recruiter.Services
         AddJobPositionViewModel GetViewModelForAddJobPosition(string userId);
         Task<JobPosition> AddJobPosition(AddJobPositionViewModel addJobPositionViewModel, string userId);
         Task<EditJobPositionViewModel> GetViewModelForEditJobPosition(string jobPositionId, string userId);
+        Task<JobPosition> UpdateJobPosition(EditJobPositionViewModel editJobPositionViewModel, string userId);
     }
 }
