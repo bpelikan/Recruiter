@@ -11,7 +11,7 @@ using Recruiter.Models;
 using Recruiter.Models.ApplicationViewModels;
 using Recruiter.Models.ApplicationViewModels.Shared;
 
-namespace Recruiter.Services
+namespace Recruiter.Services.Implementation
 {
     public class ApplicationService : IApplicationService
     {
@@ -171,6 +171,7 @@ namespace Recruiter.Services
 
             return vm;
         }
+
 
         private List<StagesViewModel> GetApplicationCountSortedByCurrentStagesName(string userId)
         {

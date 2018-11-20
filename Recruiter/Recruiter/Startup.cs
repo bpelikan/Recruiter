@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Recruiter.Repositories;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using Recruiter.Services.Implementation;
 
 namespace Recruiter
 {

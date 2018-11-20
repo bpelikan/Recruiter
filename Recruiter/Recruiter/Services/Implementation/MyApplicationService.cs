@@ -12,7 +12,7 @@ using Recruiter.Models;
 using Recruiter.Models.MyApplicationViewModels;
 using Recruiter.Models.MyApplicationViewModels.Shared;
 
-namespace Recruiter.Services
+namespace Recruiter.Services.Implementation
 {
     public class MyApplicationService : IMyApplicationService
     {

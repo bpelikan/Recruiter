@@ -9,7 +9,7 @@
 //using Recruiter.Models.JobPositionViewModels;
 //using Recruiter.Repositories;
 
-//namespace Recruiter.Services
+//namespace Recruiter.Services.Implementation
 //{
 //    public class JobPositionService : IJobPositionService
 //    {

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Recruiter.Services
+namespace Recruiter.Services.Implementation
 {
     public class ApplicationStageService : IApplicationStageService
     {
