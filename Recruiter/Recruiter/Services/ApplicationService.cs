@@ -178,5 +178,24 @@ namespace Recruiter.Services
 
             //throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<ApplicationsViewHistory>> GetViewModelForApplicationsViewHistory(string applicationId, string userId)
+        {
+            var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
+
+            if (application == null)
+                throw new Exception($"Application with ID: {applicationId} doesn't exists. (UserID: {userId})");
+
+            var vm = await _context.ApplicationsViewHistories
+                                        .Where(x => x.ApplicationId == application.Id)
+                                        .OrderByDescending(x => x.ViewTime)
+                                        .ToListAsync();
+            foreach (var viewHistory in vm)
+                viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
+
+            return vm;
+
+            //throw new NotImplementedException();
+        }
     }
 }

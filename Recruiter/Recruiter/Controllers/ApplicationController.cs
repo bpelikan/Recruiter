@@ -259,22 +259,29 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var application = _context.Applications.FirstOrDefault(x => x.Id == id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _applicationService.GetViewModelForApplicationsViewHistory(id, userId);
 
-            if (application != null)
-            {
-                var vm = await _context.ApplicationsViewHistories
-                                            .Where(x => x.ApplicationId == application.Id)
-                                            .OrderByDescending(x => x.ViewTime)
-                                            .ToListAsync();
-                foreach (var viewHistory in vm)
-                    viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
+            return View(vm);
 
-                return View(vm);
-            }
+            #region del
+            //var application = _context.Applications.FirstOrDefault(x => x.Id == id);
 
-            //Add error: loading application Views
-            return RedirectToAction(nameof(OfferController.Index));
+            //if (application != null)
+            //{
+            //    var vm = await _context.ApplicationsViewHistories
+            //                                .Where(x => x.ApplicationId == application.Id)
+            //                                .OrderByDescending(x => x.ViewTime)
+            //                                .ToListAsync();
+            //    foreach (var viewHistory in vm)
+            //        viewHistory.ViewTime = viewHistory.ViewTime.ToLocalTime();
+
+            //    return View(vm);
+            //}
+
+            ////Add error: loading application Views
+            //return RedirectToAction(nameof(OfferController.Index));
+            #endregion
         }
 
         #region Helpers
