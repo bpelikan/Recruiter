@@ -317,6 +317,7 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivity = "") //-> DeleteFromIndexView
         {
             var userId = _userManager.GetUserId(HttpContext.User);
+            //IEnumerable<JobPositionViewModel> vm;
 
             try
             {
@@ -326,21 +327,27 @@ namespace Recruiter.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
 
-                var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
-                return View(nameof(JobPositionController.Index), vm);
-
                 //var jobPositions = await _jobPositionRepository.GetAllAsync();
                 //jobPositions = jobPositions.OrderByDescending(x => x.EndDate == null).ThenByDescending(x => x.EndDate);
                 //var vm = _mapper.Map<IEnumerable<JobPosition>, IEnumerable<JobPositionViewModel>>(jobPositions);
                 //return View(nameof(JobPositionController.Index), vm);
             }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("", "Something went wrong, try again.");
+            }
+
+            var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
+            return View(nameof(JobPositionController.Index), vm);
+
+
             //catch (Exception ex)
             //{
 
             //}
 
 
-            return RedirectToAction(nameof(JobPositionController.Index));
+            //return RedirectToAction(nameof(JobPositionController.Index));
 
             #region del
             //var jobPosition = await _jobPositionRepository.GetAsync(id);
