@@ -23,13 +23,20 @@ namespace Recruiter.Controllers
     {
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
+        private readonly IApplicationService _applicationService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public ApplicationController(ICvStorageService cvStorageService, IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public ApplicationController(
+                    ICvStorageService cvStorageService, 
+                    IMapper mapper, 
+                    IApplicationService applicationService, 
+                    UserManager<ApplicationUser> userManager, 
+                    ApplicationDbContext context)
         {
             _cvStorageService = cvStorageService;
             _mapper = mapper;
+            _applicationService = applicationService;
             _userManager = userManager;
             _context = context;
         }
@@ -55,78 +62,86 @@ namespace Recruiter.Controllers
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public IActionResult Applications(string stageName = "")
         {
-            var applications = _context.Applications
-                                        .Include(x => x.JobPosition)
-                                        .Include(x => x.User)
-                                        .Include(x => x.ApplicationStages);
-
-            List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            {
-                stagesSortedByName.Add(new StagesViewModel()
-                {
-                    Name = t.Name,
-                    Quantity = _context.ApplicationStages
-                                            .AsNoTracking()
-                                            .Where(x => x.State == ApplicationStageState.InProgress &&
-                                                        x.GetType().Name == t.Name).Count(),
-                });
-            }
-
-            stagesSortedByName.Add(new StagesViewModel()
-            {
-                Name = "Finished",
-                Quantity = _context.Applications
-                            .Include(x => x.ApplicationStages)
-                            .Where(x => x.ApplicationStages
-                                            .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
-                            .Count(),
-            });
-
-            var vm = new ApplicationsGroupedByStagesViewModel()
-            {
-                ApplicationStagesGroupedByName = stagesSortedByName,
-            };
-            vm.Applications = new List<ApplicationsViewModel>();
-            foreach (var application in applications)
-            {
-                var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
-                if (currentStage == null && application.ApplicationStages
-                                                                    .Where(x => x.State == ApplicationStageState.Finished)
-                                                                    .Count() == application.ApplicationStages.Count())
-                {
-                    if (stageName == "" || stageName == "Finished")
-                    {
-                        vm.Applications.Add(new ApplicationsViewModel()
-                        {
-                            Id = application.Id,
-                            CreatedAt = application.CreatedAt.ToLocalTime(),
-                            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                            CurrentStage = "Finished",
-                            CurrentStageIsAssigned = true
-                        });
-                    }
-                }
-                else
-                {
-                    if (stageName == "" || stageName == currentStage.GetType().Name)
-                    {
-                        vm.Applications.Add(new ApplicationsViewModel()
-                        {
-                            Id = application.Id,
-                            CreatedAt = application.CreatedAt.ToLocalTime(),
-                            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
-                            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
-                            CurrentStage = currentStage?.GetType().Name,
-                            CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
-                        });
-                    }
-                }
-            }
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var vm = _applicationService.GetViewModelForApplications(stageName, userId);
 
             return View(vm);
 
+            #region del
+            //var applications = _context.Applications
+            //                            .Include(x => x.JobPosition)
+            //                            .Include(x => x.User)
+            //                            .Include(x => x.ApplicationStages);
+
+            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
+            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
+            //{
+            //    stagesSortedByName.Add(new StagesViewModel()
+            //    {
+            //        Name = t.Name,
+            //        Quantity = _context.ApplicationStages
+            //                                .AsNoTracking()
+            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
+            //                                            x.GetType().Name == t.Name).Count(),
+            //    });
+            //}
+
+            //stagesSortedByName.Add(new StagesViewModel()
+            //{
+            //    Name = "Finished",
+            //    Quantity = _context.Applications
+            //                .Include(x => x.ApplicationStages)
+            //                .Where(x => x.ApplicationStages
+            //                                .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
+            //                .Count(),
+            //});
+
+            //var vm = new ApplicationsGroupedByStagesViewModel()
+            //{
+            //    ApplicationStagesGroupedByName = stagesSortedByName,
+            //};
+            //vm.Applications = new List<ApplicationsViewModel>();
+            //foreach (var application in applications)
+            //{
+            //    var currentStage = application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished).OrderBy(x => x.Level).FirstOrDefault();
+            //    if (currentStage == null && application.ApplicationStages
+            //                                                        .Where(x => x.State == ApplicationStageState.Finished)
+            //                                                        .Count() == application.ApplicationStages.Count())
+            //    {
+            //        if (stageName == "" || stageName == "Finished")
+            //        {
+            //            vm.Applications.Add(new ApplicationsViewModel()
+            //            {
+            //                Id = application.Id,
+            //                CreatedAt = application.CreatedAt.ToLocalTime(),
+            //                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+            //                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+            //                CurrentStage = "Finished",
+            //                CurrentStageIsAssigned = true
+            //            });
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (stageName == "" || stageName == currentStage.GetType().Name)
+            //        {
+            //            vm.Applications.Add(new ApplicationsViewModel()
+            //            {
+            //                Id = application.Id,
+            //                CreatedAt = application.CreatedAt.ToLocalTime(),
+            //                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(application.JobPosition),
+            //                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(application.User),
+            //                CurrentStage = currentStage?.GetType().Name,
+            //                CurrentStageIsAssigned = currentStage?.ResponsibleUserId != null ? true : false
+            //            });
+            //        }
+            //    }
+            //}
+
+            //return View(vm);
+            #endregion
+
+            #region
             //var applications = _context.Applications.Include(x => x.JobPosition).Include(x => x.User).Include(x => x.ApplicationStages);
             //var vm = new List<ApplicationsViewModel>();
 
@@ -147,6 +162,7 @@ namespace Recruiter.Controllers
             //var vm = _mapper.Map<IEnumerable<Application>, IEnumerable<ApplicationsViewModel>>(applications);
             //foreach (var application in vm)
             //    application.CreatedAt = application.CreatedAt.ToLocalTime();
+            #endregion
         }
 
         [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]

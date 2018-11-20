@@ -170,6 +170,7 @@ namespace Recruiter.Services
             return application;
         }
 
+
         public async Task<Homework> GetHomeworkStageToShowInProcessMyHomework(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetHomeworkStageToShowInProcessMyHomework with stageId={stageId}. (UserID: {userId})");
@@ -247,6 +248,7 @@ namespace Recruiter.Services
 
             return stage;
         }
+
 
         private async Task<Homework> GetHomeworkStageToShow(string stageId, string userId)
         {
