@@ -74,6 +74,7 @@ namespace Recruiter
             services.AddScoped<IApplicationService, ApplicationService>();
             services.AddScoped<IMyApplicationService, MyApplicationService>();
             services.AddScoped<IApplicationsViewHistoriesService, ApplicationsViewHistoriesService>();
+            services.AddScoped<IJobPositionService, JobPositionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
