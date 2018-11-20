@@ -43,29 +43,6 @@ namespace Recruiter.Services
 
             var stagesSortedByName = GetApplicationCountSortedByCurrentStagesName(userId);
 
-            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            //{
-            //    stagesSortedByName.Add(new StagesViewModel()
-            //    {
-            //        Name = t.Name,
-            //        Quantity = _context.ApplicationStages
-            //                                .AsNoTracking()
-            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
-            //                                            x.GetType().Name == t.Name).Count(),
-            //    });
-            //}
-
-            //stagesSortedByName.Add(new StagesViewModel()
-            //{
-            //    Name = "Finished",
-            //    Quantity = _context.Applications
-            //                .Include(x => x.ApplicationStages)
-            //                .Where(x => x.ApplicationStages
-            //                                .Where(y => y.State == ApplicationStageState.Finished).Count() == x.ApplicationStages.Count())
-            //                .Count(),
-            //});
-
             var vm = new ApplicationsGroupedByStagesViewModel()
             {
                 ApplicationStagesGroupedByName = stagesSortedByName,
@@ -227,22 +204,6 @@ namespace Recruiter.Services
             });
 
             return stagesSortedByName;
-
-            //List<StagesViewModel> stagesSortedByName = new List<StagesViewModel>();
-            //foreach (var t in Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsSubclassOf(typeof(ApplicationStageBase))))
-            //{
-            //    stagesSortedByName.Add(new StagesViewModel()
-            //    {
-            //        Name = t.Name,
-            //        Quantity = _context.ApplicationStages
-            //                                .AsNoTracking()
-            //                                .Where(x => x.State == ApplicationStageState.InProgress &&
-            //                                            x.ResponsibleUserId == userId &&
-            //                                            x.GetType().Name == t.Name).Count(),
-            //    });
-            //}
-
-            //return stagesSortedByName;
         }
     }
 }
