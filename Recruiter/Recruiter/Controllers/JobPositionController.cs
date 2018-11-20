@@ -47,6 +47,7 @@ namespace Recruiter.Controllers
 
             return View(vm);
 
+            #region del
             //IEnumerable<JobPosition> jobPositions = null;
             //switch (jobPositionActivity)
             //{
@@ -80,6 +81,7 @@ namespace Recruiter.Controllers
             //}
 
             //return View(vm);
+            #endregion
         }
 
         public async Task<IActionResult> Details(string id, string returnUrl = null)
@@ -91,6 +93,7 @@ namespace Recruiter.Controllers
 
             return View(vm);
 
+            #region del
             //var jobPosition = await _jobPositionRepository.GetAsync(id);
 
             //if (jobPosition == null)
@@ -108,15 +111,18 @@ namespace Recruiter.Controllers
             //}
 
             //return View(vm);
+            #endregion
         }
 
         public async Task<IActionResult> Add()
         {
+            #region del
             //var vm = new AddJobPositionViewModel()
             //{
             //    StartDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 
             //                                DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             //};
+            #endregion
 
             var userId = _userManager.GetUserId(HttpContext.User);
             var vm = _jobPositionService.GetViewModelForAddJobPosition(userId);
@@ -308,7 +314,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteFromIndex(string id) //-> DeleteFromIndexView
+        public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivity = "") //-> DeleteFromIndexView
         {
             var userId = _userManager.GetUserId(HttpContext.User);
 
@@ -320,7 +326,7 @@ namespace Recruiter.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
 
-                var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity("", userId);
+                var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
                 return View(nameof(JobPositionController.Index), vm);
 
                 //var jobPositions = await _jobPositionRepository.GetAllAsync();
