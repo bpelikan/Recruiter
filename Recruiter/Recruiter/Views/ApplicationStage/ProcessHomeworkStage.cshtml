@@ -69,6 +69,8 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.StageToProcess.SendingTime)
+            <span condition="@Model.StageToProcess.SendingTime > @Model.StageToProcess.EndTime" class="glyphicon glyphicon-remove"></span>
+            <span condition="@Model.StageToProcess.SendingTime <= @Model.StageToProcess.EndTime" class="glyphicon glyphicon-ok"></span>
         </dd>
 
     </dl>
@@ -112,6 +114,7 @@
             </div>
             <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
             <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+            @*<a asp-action="ApplicationsStagesToReview" asp-controller="ApplicationStage" asp-route-stageName="Homework" class="btn btn-sm btn-default">Back</a>*@
         </div>
     </form>
 </div>
