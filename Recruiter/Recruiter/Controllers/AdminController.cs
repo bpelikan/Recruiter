@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.Data;
@@ -213,6 +214,13 @@ namespace Recruiter.Controllers
                 var interviewResponsibilities = _context.ApplicationStagesRequirements.Where(x => x.DefaultResponsibleForInterviewId == user.Id);
                 foreach (var x in interviewResponsibilities)
                     x.DefaultResponsibleForApplicatioApprovalId = null;
+
+                var interwievAppointments = _context.InterviewAppointments
+                                                        .Include(x => x.Interview)
+                                                        .Where(x => x.Interview.ResponsibleUserId == user.Id &&
+                                                                    x.Interview.State != ApplicationStageState.Finished);
+                if(interwievAppointments != null)
+                    _context.InterviewAppointments.RemoveRange(interwievAppointments);
 
                 var applicationStagesResponsibilities = _context.ApplicationStages.Where(x => x.ResponsibleUserId == user.Id);
                 foreach (var x in applicationStagesResponsibilities)
