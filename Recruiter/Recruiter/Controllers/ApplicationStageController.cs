@@ -206,20 +206,74 @@ namespace Recruiter.Controllers
         #region Interview
         public async Task<IActionResult> ProcessInterview(string stageId)
         {
+
+            //var myId = _userManager.GetUserId(HttpContext.User);
+            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Homework;
+
+            //switch (stage.HomeworkState)
+            //{
+            //    case HomeworkState.WaitingForSpecification:
+            //        return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId = stage.Id });
+            //    case HomeworkState.WaitingForRead:
+            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            //    case HomeworkState.WaitingForSendHomework:
+            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            //    case HomeworkState.Completed:
+            //        return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id });
+            //    default:
+            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            //}
+
+            //var myId = _userManager.GetUserId(HttpContext.User);
+            //var vm = await _applicationStageService.GetViewModelForProcessInterview(stageId, myId);
+
+            //return View(vm);
+
             var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForProcessInterview(stageId, myId);
+            var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Interview;
+
+            switch (stage.InterviewState)
+            {
+                case InterviewState.WaitingForSettingAppointments:
+                    return RedirectToAction(nameof(ApplicationStageController.AddAppointmentsToInterview), new { stageId = stage.Id });
+                case InterviewState.RequestForNewAppointments:
+                    //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+                case InterviewState.WaitingForConfirmAppointment:
+                    //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+                case InterviewState.AppointmentConfirmed:
+                    //return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id });
+                default:
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            }
+            //return View(vm);
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel, bool accepted = false)
+        //{
+        //    var myId = _userManager.GetUserId(HttpContext.User);
+        //    await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
+
+        //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+        //}
+
+        public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(stageId, myId);
 
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel, bool accepted = false)
+        public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted = true)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
+            await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, myId);
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
+
 
         public async Task<IActionResult> AddInterviewAppointments(string stageId)
         {
@@ -251,6 +305,7 @@ namespace Recruiter.Controllers
             var newInterviewAppointment = new InterviewAppointment()
             {
                 Id = interviewAppointment.Id,
+                InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
                 InterviewId = interviewAppointment.InterviewId,
                 StartTime = interviewAppointment.StartTime,
                 Duration = interviewAppointment.Duration,

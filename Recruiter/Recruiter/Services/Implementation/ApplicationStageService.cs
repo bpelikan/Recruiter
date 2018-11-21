@@ -421,6 +421,96 @@ namespace Recruiter.Services.Implementation
         }
 
 
+        public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
+            //_logger.LogInformation($"Executing GetViewModelForAddHomeworkSpecification with stageId={stageId}. (UserID: {userId})");
+
+            //var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+            //var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+
+            //var vm = new AddHomeworkSpecificationViewModel()
+            //{
+            //    Application = new ApplicationViewModel()
+            //    {
+            //        Id = stage.Application.Id,
+            //        CreatedAt = stage.Application.CreatedAt,
+            //        CvFileName = stage.Application.CvFileName,
+            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+            //    },
+            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+            //    StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkSpecificationViewModel>(stage),
+            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            //};
+
+            //return vm;
+
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
+
+            var vm = new AddAppointmentsToInterviewViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, AddAppointmentsViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
+
+            var appointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id && 
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
+            vm.StageToProcess.InterviewAppointments = appointments.ToList();
+
+            return vm;
+            //throw new NotImplementedException();
+        }
+
+        public async Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId)
+        {
+            _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBaseToProcessStage(addAppointmentsToInterviewViewModel.StageToProcess.Id, userId) as Interview;
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments)
+                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments InterviewState. (UserID: {userId})");
+
+            var appointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id &&
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
+            foreach (var appointment in appointments)
+            {
+                appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+            }
+            stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
+
+            await _context.SaveChangesAsync();
+
+            //var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
+            //if (stage.State != ApplicationStageState.InProgress)
+            //    throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            //if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
+            //    throw new Exception($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
+
+            //stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
+            //stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
+            //stage.HomeworkState = HomeworkState.WaitingForRead;
+            //await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
+        }
+
+
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing UpdateApplicationApprovalStage. (UserID: {userId})");
@@ -556,5 +646,6 @@ namespace Recruiter.Services.Implementation
             return stagesSortedByName;
         }
 
+        
     }
 }

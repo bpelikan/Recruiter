@@ -30,6 +30,7 @@ namespace Recruiter.Models
 
     public enum InterviewAppointmentState
     {
+        WaitingToAdd,
         WaitingForConfirm,
         Confirmed,
         Rejected
