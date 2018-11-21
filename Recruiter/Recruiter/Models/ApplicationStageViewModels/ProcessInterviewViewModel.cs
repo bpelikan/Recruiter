@@ -20,5 +20,6 @@ namespace Recruiter.Models.ApplicationStageViewModels
         public string Id { get; set; }
         public string Note { get; set; }
         public int Rate { get; set; }
+        public virtual ICollection<InterviewAppointment> InterviewAppointments { get; set; }
     }
 }

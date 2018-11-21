@@ -1,0 +1,65 @@
+﻿@model Recruiter.Models.InterviewAppointment
+
+@{
+    ViewData["Title"] = "AddInterviewAppointments";
+}
+
+<h2>Add Interview Appointments</h2>
+
+<form asp-controller="ApplicationStage" asp-action="AddInterviewAppointments" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group" hidden>
+        <label asp-for="Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="Id" class="text-danger"></span>
+        </div>
+    </div>
+    @*<div class="form-group" hidden>
+        <label asp-for="RecruitId" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="RecruitId" class="form-control" readonly="readonly" />
+            <span asp-validation-for="RecruitId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group" hidden>
+        <label asp-for="RecruiterId" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="RecruiterId" class="form-control" readonly="readonly" />
+            <span asp-validation-for="RecruiterId" class="text-danger"></span>
+        </div>
+    </div>*@
+    <div class="form-group" hidden>
+        <label asp-for="InterviewId" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="InterviewId" class="form-control" readonly="readonly" />
+            <span asp-validation-for="InterviewId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StartTime" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StartTime" class="form-control" />
+            <span asp-validation-for="StartTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Duration" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Duration" class="form-control" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Send" />
+        </div>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+    </div>
+</form>

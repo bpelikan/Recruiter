@@ -414,6 +414,9 @@ namespace Recruiter.Services.Implementation
                 ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
             };
 
+            var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
+            vm.StageToProcess.InterviewAppointments = appointments.ToList();
+
             return vm;
         }
 
@@ -510,7 +513,7 @@ namespace Recruiter.Services.Implementation
         {
             var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
 
-            if (stage.State != ApplicationStageState.Waiting)
+            if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
                 throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
 
             stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;

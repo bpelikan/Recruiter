@@ -37,7 +37,67 @@
 </div>
 
 <hr />
+<h3>Appointments</h3>
+<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
+    Add Interview Appointment
+</a>
+
+<div class="row panel-body">
+    @if (Model.StageToProcess.InterviewAppointments.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().StartTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Duration)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().EndTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                    <th>
+                        - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)
+                        <br />
+                        @*- @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().RecruitId)
+                        <br />
+                        - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().RecruiterId)
+                        <br />*@
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model.StageToProcess.InterviewAppointments)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => appointment.Id)</td>
+                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.Duration)</td>
+                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        <td>
+                            - @Html.DisplayFor(model => appointment.InterviewId)
+                            <br />
+                            @*- @Html.DisplayFor(model => appointment.RecruitId)
+                            <br />
+                            - @Html.DisplayFor(model => appointment.RecruiterId)
+                            <br />*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Interview Appointments not found.
+    }
+</div>
+
+
+
+<hr />
 <h3>Processed Stages</h3>
+
 <form asp-controller="ApplicationStage" asp-action="ProcessInterview" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
 

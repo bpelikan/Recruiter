@@ -203,7 +203,7 @@ namespace Recruiter.Controllers
         }
         #endregion
 
-        #region ApplicationApproval
+        #region Interview
         public async Task<IActionResult> ProcessInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -220,6 +220,65 @@ namespace Recruiter.Controllers
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
+
+        public async Task<IActionResult> AddInterviewAppointments(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            //var stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
+            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId).Include();
+            var stage  = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                    //    .ThenInclude(x => x.ApplicationStages)
+                                    //.Include(x => x.Application)
+                                    //    .ThenInclude(x => x.User)
+                                    //.Include(x => x.Application)
+                                    //    .ThenInclude(x => x.JobPosition)
+                                    //.Include(x => x.AcceptedBy)
+                                    //.Include(x => x.ResponsibleUser)
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+
+            if (stage.GetType().Name != "Interview")
+                throw new Exception($"Stage with id {stageId} is not Interview stage. (UserID: {myId})");
+
+            var vm = new InterviewAppointment()
+            {
+                Id = Guid.NewGuid().ToString(),
+                //RecruitId = stage.Application.UserId,
+                //RecruiterId = stage.ResponsibleUserId,
+                InterviewId = stage.Id
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddInterviewAppointments(InterviewAppointment interviewAppointment)
+        {
+            if (!ModelState.IsValid)
+                return View(interviewAppointment);
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            var newInterviewAppointment = new InterviewAppointment()
+            {
+                Id = interviewAppointment.Id,
+                InterviewId = interviewAppointment.InterviewId,
+                //RecruitId = interviewAppointment.RecruitId,
+                //RecruiterId = interviewAppointment.RecruiterId,
+                StartTime = interviewAppointment.StartTime,
+                Duration = interviewAppointment.Duration,
+                EndTime = interviewAppointment.StartTime.AddMinutes(interviewAppointment.Duration),
+            };
+
+            await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
+            await _context.SaveChangesAsync();
+
+            //await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
+
+            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
+        }
+
+
         #endregion
 
         #region ShowApplicationStageDetails()
