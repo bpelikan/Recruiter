@@ -44,8 +44,8 @@ namespace Recruiter.Controllers
         #region ApplicationsStagesToReview()
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
-            if (stageName == "Homework")
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReviewHomework), new { stageName = "Homework"});
+            //if (stageName == "Homework")
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReviewHomework), new { stageName = "Homework"});
             
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
@@ -54,14 +54,14 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        public IActionResult ApplicationsStagesToReviewHomework(string stageName = "Homework")
-        {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
-            vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
+        //public IActionResult ApplicationsStagesToReviewHomework(string stageName = "Homework")
+        //{
+        //    var myId = _userManager.GetUserId(HttpContext.User);
+        //    var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
+        //    vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
 
-            return View(vm);
-        }
+        //    return View(vm);
+        //}
         #endregion
 
         #region AssingUserToApplicationStage()

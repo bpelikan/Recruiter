@@ -1,4 +1,4 @@
-﻿@using Recruiter.Models.ApplicationStageViewModels
+﻿@*@using Recruiter.Models.ApplicationStageViewModels
 @model ApplicationsStagesToReviewViewModel
 
 @{
@@ -51,8 +51,6 @@
     </ul>
 </div>
 
-<br />
-
 @if (!Model.AsignedStages.Any())
 {
     <tr><td colspan="3" class="text-center">No applications</td></tr>
@@ -74,12 +72,16 @@ else
                 if ((stage.CurrentStage as Homework)?.EndTime < DateTime.UtcNow)
                 {
                     @:<tr style = "background-color: red;">
-                }
+                }*@
+
+
+////////////////////////
                 @*else
                 {
                     @:<tr style = "background-color: lightgray;">
                 }*@
-            }
+//////////////////////////
+            @*}
             else
             {
                 @:<tr>
@@ -124,9 +126,9 @@ else
             @:</tr>
         }
     </table>
-}
+}*@
 
-
+///////////////////////////////////////
 @*@if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
 {
     <b>
