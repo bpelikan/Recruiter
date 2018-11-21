@@ -104,7 +104,6 @@ namespace Recruiter.Models
         WaitingForSettingAppointments,
         RequestForNewAppointments,
         WaitingForConfirmAppointment,
-        AppointmentConfirmed,
-        InterviewCompleted
+        AppointmentConfirmed
     }
 }

@@ -129,9 +129,9 @@ else
                             case InterviewState.AppointmentConfirmed:
                                 <a style="color: green" asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Process (Appointment Confirmed)</a>
                                 break;
-                            case InterviewState.InterviewCompleted:
+                            @*case InterviewState.InterviewCompleted:
                                 @:Interview completed
-                                break;
+                                break;*@
                         }
                     }
                     else
