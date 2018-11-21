@@ -118,7 +118,7 @@ namespace Recruiter.Services.Implementation
                 });
             }
 
-            if (applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
+            if (applicationStages.Count() != 0 && applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
                 applicationStages.OrderBy(x => x.Level).First().State = ApplicationStageState.InProgress;
 
             await _context.ApplicationStages.AddRangeAsync(applicationStages);

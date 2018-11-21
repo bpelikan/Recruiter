@@ -111,7 +111,7 @@ namespace Recruiter.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("", "Something went wrong, try again.");
+                ModelState.AddModelError("", "Something went wrong, please try again.");
             }
 
             return View(applyApplicationViewModel);
