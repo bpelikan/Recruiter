@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Recruiter.AttributeFilters;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.JobPositionViewModels;
@@ -40,13 +41,13 @@ namespace Recruiter.Controllers
             _jobPositionService = jobPositionService;
         }
 
+        [ImportModelState]
         public IActionResult Index(string jobPositionActivity = "")
         {
             var userId = _userManager.GetUserId(HttpContext.User);
             var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
 
             return View(vm);
-
         }
 
         public async Task<IActionResult> Details(string id, string returnUrl = null)
@@ -57,12 +58,10 @@ namespace Recruiter.Controllers
             var vm = await _jobPositionService.GetViewModelForJobPositionDetails(id, userId);
 
             return View(vm);
-
         }
 
         public async Task<IActionResult> Add()
         {
-
             var userId = _userManager.GetUserId(HttpContext.User);
             var vm = _jobPositionService.GetViewModelForAddJobPosition(userId);
 
@@ -93,7 +92,6 @@ namespace Recruiter.Controllers
             var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
 
             return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
-
         }
 
         public async Task<IActionResult> Edit(string id, string returnUrl = null)
@@ -104,7 +102,6 @@ namespace Recruiter.Controllers
             var vm = await _jobPositionService.GetViewModelForEditJobPosition(id, userId);
 
             return View(vm);
-
         }
 
         [HttpPost]
@@ -117,7 +114,6 @@ namespace Recruiter.Controllers
             var jobPosition = await _jobPositionService.UpdateJobPosition(editJobPositionViewModel, userId);
 
             return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
-
         }
 
         [HttpPost]
@@ -127,11 +123,11 @@ namespace Recruiter.Controllers
             await _jobPositionService.RemoveJobPosition(id, userId);
 
             return RedirectToAction(nameof(JobPositionController.Index));
-
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivity = "") //-> DeleteFromIndexView
+        [ExportModelState]
+        public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivityFromIndex = "") //-> DeleteFromIndexView
         {
             var userId = _userManager.GetUserId(HttpContext.User);
 
@@ -145,11 +141,10 @@ namespace Recruiter.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("", "Something went wrong, try again.");
+                ModelState.AddModelError("", "Something went wrong, please try again.");
             }
 
-            var vm = _jobPositionService.GetViewModelForIndexByJobPositionActivity(jobPositionActivity, userId);
-            return View(nameof(JobPositionController.Index), vm);
+            return RedirectToAction(nameof(JobPositionController.Index), new { jobPositionActivity = jobPositionActivityFromIndex });
         }
     }
 }
