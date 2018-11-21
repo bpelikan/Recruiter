@@ -91,6 +91,33 @@
                         </a>
                     }
                 }
+                else if (stage.GetType().Name == "Interview")
+                {
+                    if (stage.State == ApplicationStageState.InProgress)
+                    {
+                        switch ((stage as Interview).InterviewState)
+                        {
+                            case InterviewState.WaitingForSettingAppointments:
+                                @:- Waiting for Setting Appointments
+                                break;
+                            case InterviewState.RequestForNewAppointments:
+                                @:- Waiting for Setting another Appointments
+                                break;
+                            case InterviewState.WaitingForConfirmAppointment:
+                                @:- confirm your Appointment
+                                break;
+                            case InterviewState.AppointmentConfirmed:
+                                @:- Appointment Confirmed
+                                break;
+                                //case InterviewState.InterviewCompleted:
+                                //    break;
+                        }
+                    }
+                    //else if (stage.State == ApplicationStageState.Finished)
+                    //{
+
+                    //}
+                }
                 <br />
             }
 
