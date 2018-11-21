@@ -79,6 +79,8 @@ namespace Recruiter.Models
             Level = 4;
         }
 
+        public InterviewState InterviewState { get; set; }
+
         public virtual ICollection<InterviewAppointment> InterviewAppointments { get; set; }
     }
 
@@ -95,5 +97,14 @@ namespace Recruiter.Models
         WaitingForRead,
         WaitingForSendHomework,
         Completed
+    }
+
+    public enum InterviewState
+    {
+        WaitingForSettingAppointments,
+        RequestForNewAppointments,
+        WaitingForConfirmAppointment,
+        AppointmentConfirmed,
+        InterviewCompleted
     }
 }
