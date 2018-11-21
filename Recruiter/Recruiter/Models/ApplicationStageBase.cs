@@ -78,6 +78,8 @@ namespace Recruiter.Models
         {
             Level = 4;
         }
+
+        public virtual ICollection<InterviewAppointment> InterviewAppointments { get; set; }
     }
 
     public enum ApplicationStageState

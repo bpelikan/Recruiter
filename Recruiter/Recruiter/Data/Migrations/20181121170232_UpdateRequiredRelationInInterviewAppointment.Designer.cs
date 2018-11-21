@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recruiter.Data;
 
 namespace Recruiter.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181121170232_UpdateRequiredRelationInInterviewAppointment")]
+    partial class UpdateRequiredRelationInInterviewAppointment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,11 +321,21 @@ namespace Recruiter.Data.Migrations
                     b.Property<string>("InterviewId")
                         .IsRequired();
 
+                    b.Property<string>("RecruitId")
+                        .IsRequired();
+
+                    b.Property<string>("RecruiterId")
+                        .IsRequired();
+
                     b.Property<DateTime>("StartTime");
 
                     b.HasKey("Id");
 
                     b.HasIndex("InterviewId");
+
+                    b.HasIndex("RecruitId");
+
+                    b.HasIndex("RecruiterId");
 
                     b.ToTable("InterviewAppointments");
                 });
@@ -520,6 +532,16 @@ namespace Recruiter.Data.Migrations
                         .WithMany("InterviewAppointments")
                         .HasForeignKey("InterviewId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Recruiter.Models.ApplicationUser", "Recruit")
+                        .WithMany("InterviewAppointmentsAsRecruit")
+                        .HasForeignKey("RecruitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Recruiter.Models.ApplicationUser", "Recruiter")
+                        .WithMany("InterviewAppointmentsAsRecruiter")
+                        .HasForeignKey("RecruiterId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Recruiter.Models.JobPosition", b =>

@@ -24,6 +24,7 @@ namespace Recruiter.Data
         public DbSet<PhoneCall> PhoneCalls { get; set; }
         public DbSet<Homework> Homeworks { get; set; }
         public DbSet<Interview> Interviews { get; set; }
+        public DbSet<InterviewAppointment> InterviewAppointments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -38,6 +39,7 @@ namespace Recruiter.Data
             //   .WithMany(x => x.JobPositions)
             //   .HasForeignKey(x => x.CreatorId);
 
+            #region ApplicationUser
             builder.Entity<ApplicationUser>()
                 .HasMany(x => x.JobPositions)
                 .WithOne(x => x.Creator)
@@ -48,33 +50,64 @@ namespace Recruiter.Data
                 .WithOne(x => x.User)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            #endregion
 
+            #region ApplicationUser
             builder.Entity<JobPosition>()
                 .HasMany(x => x.Applications)
                 .WithOne(x => x.JobPosition)
                 .OnDelete(DeleteBehavior.SetNull);
+            #endregion
 
+            #region ApplicationStagesRequirement
             builder.Entity<ApplicationStagesRequirement>()
                 .HasOne(x => x.JobPosition)
                 .WithOne(x => x.ApplicationStagesRequirement)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            #endregion
+
+            #region ApplicationsViewHistory
+            builder.Entity<ApplicationsViewHistory>()
+                .HasOne(x => x.Application)
+                .WithMany(x => x.ApplicationsViewHistories)
+                //.IsRequired()   //
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ApplicationsViewHistory>()
                 .HasOne(x => x.User)
                 .WithMany(x => x.ApplicationsViewHistories)
+                //.IsRequired() //
                 .OnDelete(DeleteBehavior.Restrict);
+            #endregion
 
-            builder.Entity<ApplicationsViewHistory>()
-                .HasOne(x => x.Application)
-                .WithMany(x => x.ApplicationsViewHistories)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            #region ApplicationStageBase
             builder.Entity<ApplicationStageBase>()
                 .HasOne(x => x.Application)
                 .WithMany(x => x.ApplicationStages)
+                //.IsRequired() //
+                .OnDelete(DeleteBehavior.Cascade);
+            #endregion
+
+            #region InterviewAppointment
+            builder.Entity<InterviewAppointment>()
+                .HasOne(x => x.Interview)
+                .WithMany(x => x.InterviewAppointments)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
+            //builder.Entity<InterviewAppointment>()
+            //    .HasOne(x => x.Recruit)
+            //    .WithMany(x => x.InterviewAppointmentsAsRecruit)
+            //    .IsRequired()   //
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+            //builder.Entity<InterviewAppointment>()
+            //    .HasOne(x => x.Recruiter)
+            //    .WithMany(x => x.InterviewAppointmentsAsRecruiter)
+            //    .IsRequired()   //
+            //    .OnDelete(DeleteBehavior.Restrict);
+            #endregion
         }
     }
 }
