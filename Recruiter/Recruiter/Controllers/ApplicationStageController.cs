@@ -224,17 +224,8 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> AddInterviewAppointments(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            //var stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
-            //var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId).Include();
             var stage  = await _context.ApplicationStages
                                     .Include(x => x.Application)
-                                    //    .ThenInclude(x => x.ApplicationStages)
-                                    //.Include(x => x.Application)
-                                    //    .ThenInclude(x => x.User)
-                                    //.Include(x => x.Application)
-                                    //    .ThenInclude(x => x.JobPosition)
-                                    //.Include(x => x.AcceptedBy)
-                                    //.Include(x => x.ResponsibleUser)
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
 
             if (stage.GetType().Name != "Interview")
@@ -243,8 +234,6 @@ namespace Recruiter.Controllers
             var vm = new InterviewAppointment()
             {
                 Id = Guid.NewGuid().ToString(),
-                //RecruitId = stage.Application.UserId,
-                //RecruiterId = stage.ResponsibleUserId,
                 InterviewId = stage.Id
             };
 
@@ -263,8 +252,6 @@ namespace Recruiter.Controllers
             {
                 Id = interviewAppointment.Id,
                 InterviewId = interviewAppointment.InterviewId,
-                //RecruitId = interviewAppointment.RecruitId,
-                //RecruiterId = interviewAppointment.RecruiterId,
                 StartTime = interviewAppointment.StartTime,
                 Duration = interviewAppointment.Duration,
                 EndTime = interviewAppointment.StartTime.AddMinutes(interviewAppointment.Duration),
@@ -272,8 +259,6 @@ namespace Recruiter.Controllers
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
             await _context.SaveChangesAsync();
-
-            //await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
         }

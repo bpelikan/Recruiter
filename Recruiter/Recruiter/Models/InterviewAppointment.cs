@@ -9,12 +9,6 @@ namespace Recruiter.Models
     public class InterviewAppointment
     {
         public string Id { get; set; }
-
-        //public string RecruitId { get; set; }
-        //public virtual ApplicationUser Recruit { get; set; }
-
-        //public string RecruiterId { get; set; }
-        //public virtual ApplicationUser Recruiter { get; set; }
         
         public string InterviewId { get; set; }
         public virtual Interview Interview { get; set; }

@@ -95,18 +95,6 @@ namespace Recruiter.Data
                 .WithMany(x => x.InterviewAppointments)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-
-            //builder.Entity<InterviewAppointment>()
-            //    .HasOne(x => x.Recruit)
-            //    .WithMany(x => x.InterviewAppointmentsAsRecruit)
-            //    .IsRequired()   //
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.Entity<InterviewAppointment>()
-            //    .HasOne(x => x.Recruiter)
-            //    .WithMany(x => x.InterviewAppointmentsAsRecruiter)
-            //    .IsRequired()   //
-            //    .OnDelete(DeleteBehavior.Restrict);
             #endregion
         }
     }
