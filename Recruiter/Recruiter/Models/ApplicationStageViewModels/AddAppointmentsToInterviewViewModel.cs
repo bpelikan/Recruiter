@@ -10,6 +10,8 @@ namespace Recruiter.Models.ApplicationStageViewModels
     {
         public ApplicationViewModel Application { get; set; }
 
+        public InterviewAppointment NewInterviewAppointment { get; set; }
+
         public virtual ICollection<ApplicationStageBase> ApplicationStagesFinished { get; set; }
         public AddAppointmentsViewModel StageToProcess { get; set; }
         public virtual ICollection<ApplicationStageBase> ApplicationStagesWaiting { get; set; }
