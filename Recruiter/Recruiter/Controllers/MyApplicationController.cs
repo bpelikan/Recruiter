@@ -178,22 +178,38 @@ namespace Recruiter.Controllers
         }
 
 
-        public async Task<IActionResult> ConfirmInterviewAppointments(string stageId)
+        public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
 
             return View(vm);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ConfirmAppointmentsInInterview(Interview interview, bool accepted = true)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    await _myApplicationService.ConfirmAppointmentsInInterview(interview, myId);
+        public async Task<IActionResult> ConfirmAppointmentsInInterview(string interviewAppointmentId, string returnUrl = null)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            await _myApplicationService.ConfirmAppointmentsInInterview(interviewAppointmentId, myId);
 
-        //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
-        //}
+            return RedirectToLocal(returnUrl);
+            //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
+        }
 
+
+        #region Helpers
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(MyApplicationController.Index));
+            }
+        }
+        #endregion
     }
 }

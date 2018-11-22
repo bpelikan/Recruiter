@@ -35,7 +35,12 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
-
+                            <a class="btn btn-sm btn-primary" 
+                                    asp-action="ConfirmAppointmentsInInterview" 
+                                    asp-route-interviewAppointmentId="@appointment.Id" 
+                                    asp-route-returnurl="@ViewData["ReturnUrl"]">
+                                Confirm
+                            </a>
                         </td>
                         @*<td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>

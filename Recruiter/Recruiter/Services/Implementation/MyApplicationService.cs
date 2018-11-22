@@ -331,7 +331,32 @@ namespace Recruiter.Services.Implementation
 
             //return stage;
 
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+        }
+
+        public async Task ConfirmAppointmentsInInterview(string interviewAppointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing ConfirmAppointmentsInInterview with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
+
+            var appointmentToConfirm = await _context.InterviewAppointments
+                                        .Include(x => x.Interview)
+                                            .ThenInclude(x => x.InterviewAppointments)
+                                        .Include(x => x.Interview)
+                                            .ThenInclude(x => x.Application)
+                                        .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+            if (appointmentToConfirm == null)
+                throw new Exception($"InterviewAppointments with id {interviewAppointmentId} not found. (UserID: {userId})");
+            if (appointmentToConfirm.Interview.Application.UserId != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to confirm apointment with ID: {interviewAppointmentId}.");
+
+            appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
+            var appointmentsToDelete = appointmentToConfirm.Interview.InterviewAppointments
+                                                .Where(x => x.InterviewAppointmentState != InterviewAppointmentState.Confirmed);
+            appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
+            _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
+            await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
         }
     }
 }
