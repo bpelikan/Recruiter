@@ -371,7 +371,7 @@ namespace Recruiter.Services.Implementation
             if (appointmentToConfirm == null)
                 throw new Exception($"InterviewAppointments with id {interviewAppointmentId} not found. (UserID: {userId})");
             if (appointmentToConfirm.Interview.Application.UserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to confirm apointment with ID: {interviewAppointmentId}.");
+                throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
             var appointmentsToDelete = appointmentToConfirm.Interview.InterviewAppointments
@@ -379,6 +379,47 @@ namespace Recruiter.Services.Implementation
             appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
+
+            //throw new NotImplementedException();
+        }
+
+        public async Task RequestForNewAppointmentsInInterview(string interviewId, string userId)
+        {
+            _logger.LogInformation($"Executing RequestForNewAppointmentsInInterview with interviewAppointmentId={interviewId}. (UserID: {userId})");
+
+            var interview = await _context.Interviews
+                                        .Include(x => x.InterviewAppointments)
+                                        .Include(x => x.Application)
+                                        .FirstOrDefaultAsync(x => x.Id == interviewId);
+            if (interview == null)
+                throw new Exception($"interview with id {interviewId} not found. (UserID: {userId})");
+            if (interview.Application.UserId != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to request for new appointments in this interview with ID: {interviewId}. (UserID: {userId})");
+
+            foreach (var appointment in interview.InterviewAppointments)
+            {
+                appointment.InterviewAppointmentState = InterviewAppointmentState.Rejected;
+            }
+            interview.InterviewState = InterviewState.RequestForNewAppointments;
+            await _context.SaveChangesAsync();
+
+            //var appointmentToConfirm = await _context.InterviewAppointments
+            //                            .Include(x => x.Interview)
+            //                                .ThenInclude(x => x.InterviewAppointments)
+            //                            .Include(x => x.Interview)
+            //                                .ThenInclude(x => x.Application)
+            //                            .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+            //if (appointmentToConfirm == null)
+            //    throw new Exception($"InterviewAppointments with id {interviewAppointmentId} not found. (UserID: {userId})");
+            //if (appointmentToConfirm.Interview.Application.UserId != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
+
+            //appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
+            //var appointmentsToDelete = appointmentToConfirm.Interview.InterviewAppointments
+            //                                    .Where(x => x.InterviewAppointmentState != InterviewAppointmentState.Confirmed);
+            //appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
+            //_context.InterviewAppointments.RemoveRange(appointmentsToDelete);
+            //await _context.SaveChangesAsync();
 
             //throw new NotImplementedException();
         }

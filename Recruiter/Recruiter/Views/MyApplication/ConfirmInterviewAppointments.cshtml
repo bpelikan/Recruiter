@@ -21,9 +21,9 @@
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().EndTime)</th>
                     <th>Confirm</th>
                     @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewAppointmentState)</th>
-                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
-                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewId)</th>*@
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewId)</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -35,21 +35,28 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
-                            <a class="btn btn-sm btn-primary" 
-                                    asp-action="ConfirmAppointmentsInInterview" 
-                                    asp-route-interviewAppointmentId="@appointment.Id" 
-                                    asp-route-returnurl="@ViewData["ReturnUrl"]">
+                            <a class="btn btn-sm btn-primary"
+                               asp-action="ConfirmAppointmentsInInterview"
+                               asp-route-interviewAppointmentId="@appointment.Id"
+                               asp-route-returnurl="@ViewData["ReturnUrl"]">
                                 Confirm
                             </a>
                         </td>
                         @*<td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                            <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                            <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                            <td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
                     </tr>
                 }
             </tbody>
         </table>
+
+        <a class="btn btn-sm btn-primary"
+           asp-action="RequestForNewAppointmentsInInterview"
+           asp-route-interviewId="@Model.Id"
+           asp-route-returnurl="@ViewData["ReturnUrl"]">
+            Request for new appointment
+        </a>
     }
     else
     {

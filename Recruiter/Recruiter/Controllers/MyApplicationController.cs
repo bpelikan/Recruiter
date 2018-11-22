@@ -197,6 +197,15 @@ namespace Recruiter.Controllers
             //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
         }
 
+        public async Task<IActionResult> RequestForNewAppointmentsInInterview(string interviewId, string returnUrl = null)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            await _myApplicationService.RequestForNewAppointmentsInInterview(interviewId, myId);
+
+            return RedirectToLocal(returnUrl);
+            //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
+        }
+
 
         #region Helpers
         private IActionResult RedirectToLocal(string returnUrl)
