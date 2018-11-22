@@ -397,5 +397,15 @@ namespace Recruiter.Controllers
         }
         #endregion
 
+        public async Task<IActionResult> ShowMyAppointments(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var myAppointments = await _applicationStageService.GetViewModelForShowMyAppointments(myId);
+
+            return View(myAppointments);
+        }
+
     }
 }

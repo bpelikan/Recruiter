@@ -668,6 +668,18 @@ namespace Recruiter.Services.Implementation
             return stagesSortedByName;
         }
 
-        
+        public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForShowMyAppointments. (UserID: {userId})");
+
+            var myAppointments = await _context.InterviewAppointments
+                .Include(x => x.Interview)
+                .Where(x => x.Interview.ResponsibleUserId == userId &&
+                            x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
+
+            return myAppointments;
+
+            //throw new NotImplementedException();
+        }
     }
 }

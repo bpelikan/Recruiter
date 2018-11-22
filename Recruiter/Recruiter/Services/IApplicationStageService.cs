@@ -37,5 +37,8 @@ namespace Recruiter.Services
         Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId);
         Task UpdateInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
+
+        Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId);
+
     }
 }
