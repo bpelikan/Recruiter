@@ -123,6 +123,15 @@
                         <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        <td>
+                            <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd" 
+                                class="btn btn-default" asp-action="RemoveAppointmentsFromInterview" 
+                                                        asp-route-appointmentId="@appointment.Id" 
+                                                        asp-route-returnurl="@Context.Request.Path">
+                                    <span class="glyphicon glyphicon-minus small">
+                                    </span>
+                            </a>
+                        </td>
                         @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
                     @:</tr>
                 }
