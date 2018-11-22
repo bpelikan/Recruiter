@@ -356,7 +356,7 @@ namespace Recruiter.Controllers
                     return RedirectToAction(nameof(ApplicationStageController.HomeworkStageDetails), 
                                                 new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
                 case "Interview":
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), 
+                    return RedirectToAction(nameof(ApplicationStageController.InterviewStageDetails), 
                                                 new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
                 default:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), 
@@ -381,6 +381,18 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
             
+            return View(stage);
+        }
+
+        public async Task<IActionResult> InterviewStageDetails(string stageId, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Interview;
+
+            stage.InterviewAppointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id).ToList();
+
             return View(stage);
         }
         #endregion
