@@ -98,7 +98,7 @@
 <div class="row panel-body">
     @if (Model.InterviewAppointments.Count() != 0)
     {
-        <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
+        <table class="well table table-condensed table-bordered" header header-content="Interview Appointments" >
             <thead>
                 <tr>
                     @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>*@
@@ -108,6 +108,10 @@
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewAppointmentState)</th>
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                    <th>
+                        <span class="glyphicon glyphicon-wrench">
+                        </span>
+                    </th>
                     @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)</th>*@
                 </tr>
             </thead>
