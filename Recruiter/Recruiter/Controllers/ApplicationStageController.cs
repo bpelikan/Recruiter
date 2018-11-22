@@ -350,13 +350,13 @@ namespace Recruiter.Controllers
                                         new { stageId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
         }
 
-        public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId, bool accepted = true)
+        public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             var appointment = await _context.InterviewAppointments
                                             .FirstOrDefaultAsync(x => x.Id == appointmentId);
-            if(appointment != null)
+            if(appointment == null)
                 throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {myId})");
             if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
             {
