@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Recruiter.AttributeFilters;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationStageViewModels;
@@ -272,6 +273,7 @@ namespace Recruiter.Controllers
         ///////////////////////////////////////////////////////////////
         #endregion
 
+        //[ImportModelState]
         public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -279,22 +281,22 @@ namespace Recruiter.Controllers
             vm.NewInterviewAppointment = new InterviewAppointment()
             {
                 Id = Guid.NewGuid().ToString(),
-                InterviewId = vm.StageToProcess.Id
+                InterviewId = vm.StageToProcess.Id,
+                StartTime = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
+                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             };
 
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted = true)
+        //[ExportModelState]
+        public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
         {
-            //var myId = _userManager.GetUserId(HttpContext.User);
-            //await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
-
-            if (!ModelState.IsValid)
-                return View(addAppointmentsToInterviewViewModel);
-
             var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime < DateTime.UtcNow)
+                ModelState.AddModelError("", "StartTime must be in the future.");
 
             var newInterviewAppointment = new InterviewAppointment()
             {
@@ -306,6 +308,38 @@ namespace Recruiter.Controllers
                 EndTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
                                         .AddMinutes(addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
             };
+
+            var test = _context.InterviewAppointments
+                                .Include(x => x.Interview)
+                                .Where(x => x.Interview.ResponsibleUserId == myId &&
+                                            (x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
+                                                (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
+                                            ((newInterviewAppointment.StartTime < x.StartTime && x.StartTime < newInterviewAppointment.EndTime) ||
+                                              newInterviewAppointment.StartTime < x.EndTime && x.EndTime < newInterviewAppointment.EndTime))
+                                .OrderBy(x => x.StartTime);
+
+            foreach (var app in test)
+            {
+                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToString("dd.MM.yyyy HH:mm:ss")}");
+
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
+                vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
+                return View(vm);
+                //return View(addAppointmentsToInterviewViewModel);
+            }
+
+            //if (ModelState.ErrorCount != 0)
+            //{
+            //    var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
+            //    vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
+            //    return View(vm);
+            //}
+
+            
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
             await _context.SaveChangesAsync();
