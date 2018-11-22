@@ -86,7 +86,11 @@ namespace Recruiter.Services.Implementation
                                                 .Where(x => x.ApplicationId == application.Id)
                                                 .CountAsync(),
                 ApplicationStages = application.ApplicationStages
-                                                .OrderBy(x => x.Level).ToList()
+                                                .OrderBy(x => x.Level).ToList(),
+                ConfirmedInterviewAppointment = _context.InterviewAppointments
+                                                            .Include(x => x.Interview)
+                                                                .ThenInclude(x => x.Application)
+                                                            .Where(x => x.Interview.Application.Id == application.Id).FirstOrDefault()
             };
 
             return vm;

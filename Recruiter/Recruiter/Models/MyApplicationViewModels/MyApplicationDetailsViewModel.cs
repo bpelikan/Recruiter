@@ -15,6 +15,7 @@ namespace Recruiter.Models.MyApplicationViewModels
         public virtual JobPositionViewModel JobPosition { get; set; }
 
         public virtual ICollection<ApplicationStageBase> ApplicationStages { get; set; }
+        public virtual InterviewAppointment ConfirmedInterviewAppointment { get; set; }
 
         public string CvFileUrl { get; set; }
 
