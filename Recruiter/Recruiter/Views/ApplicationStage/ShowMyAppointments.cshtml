@@ -18,7 +18,7 @@
                     <th>@Html.DisplayNameFor(model => model.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
-                    <th>Application (JobPosition)</th>
+                    <th>User - JobPosition</th>
                     <th>@Html.DisplayNameFor(model => model.First().InterviewAppointmentState)</th>
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruit)</th>
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruitTime)</th>
@@ -49,6 +49,15 @@
                     <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                     <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
                     <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                    <td>
+                        <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
+                           class="btn btn-default" asp-action="RemoveAppointmentsFromInterview"
+                           asp-route-appointmentId="@appointment.Id"
+                           asp-route-returnurl="@Context.Request.Path">
+                            <span class="glyphicon glyphicon-minus small">
+                            </span>
+                        </a>
+                    </td>
                     @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
                 @:</tr>
                 }   
