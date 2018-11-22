@@ -485,7 +485,7 @@ namespace Recruiter.Services.Implementation
             //throw new NotImplementedException();
         }
 
-        public async Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId)
+        public async Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
 
@@ -500,11 +500,18 @@ namespace Recruiter.Services.Implementation
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
-            foreach (var appointment in appointments)
+            if (accepted)
             {
-                appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                foreach (var appointment in appointments)
+                {
+                    appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                }
+                stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
             }
-            stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
+            else
+            {
+                _context.InterviewAppointments.RemoveRange(appointments);
+            }
 
             await _context.SaveChangesAsync();
 

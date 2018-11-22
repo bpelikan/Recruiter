@@ -269,7 +269,7 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted = true)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, myId);
+            await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }

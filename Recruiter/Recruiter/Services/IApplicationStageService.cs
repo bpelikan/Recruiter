@@ -28,7 +28,7 @@ namespace Recruiter.Services
 
 
         Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId);
-        Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId);
+        Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId);
 
 
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
