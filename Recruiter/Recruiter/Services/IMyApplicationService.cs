@@ -22,7 +22,7 @@ namespace Recruiter.Services
         Task SendMyHomework(Homework homework, string userId);
         Task<Homework> GetViewModelForShowMyHomework(string stageId, string userId);
         Task<Interview> GetViewModelForConfirmInterviewAppointments(string stageId, string userId);
-        Task ConfirmAppointmentsInInterview(string interviewAppointmentId, string userId);
+        Task ConfirmAppointmentInInterview(string interviewAppointmentId, string userId);
         Task RequestForNewAppointmentsInInterview(string interviewId, string userId);
 
     }

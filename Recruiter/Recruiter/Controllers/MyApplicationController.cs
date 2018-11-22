@@ -188,10 +188,10 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
-        public async Task<IActionResult> ConfirmAppointmentsInInterview(string interviewAppointmentId, string returnUrl = null)
+        public async Task<IActionResult> ConfirmAppointmentInInterview(string interviewAppointmentId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.ConfirmAppointmentsInInterview(interviewAppointmentId, myId);
+            await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
 
             return RedirectToLocal(returnUrl);
             //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });

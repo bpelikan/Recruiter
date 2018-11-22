@@ -358,7 +358,7 @@ namespace Recruiter.Services.Implementation
             //throw new NotImplementedException();
         }
 
-        public async Task ConfirmAppointmentsInInterview(string interviewAppointmentId, string userId)
+        public async Task ConfirmAppointmentInInterview(string interviewAppointmentId, string userId)
         {
             _logger.LogInformation($"Executing ConfirmAppointmentsInInterview with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
 
@@ -374,9 +374,12 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
+            appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
+            appointmentToConfirm.AcceptedByRecruit = true;
+            appointmentToConfirm.AcceptedByRecruitTime = DateTime.UtcNow;
+
             var appointmentsToDelete = appointmentToConfirm.Interview.InterviewAppointments
                                                 .Where(x => x.InterviewAppointmentState != InterviewAppointmentState.Confirmed);
-            appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
 

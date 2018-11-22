@@ -36,7 +36,7 @@
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
                             <a class="btn btn-sm btn-primary"
-                               asp-action="ConfirmAppointmentsInInterview"
+                               asp-action="ConfirmAppointmentInInterview"
                                asp-route-interviewAppointmentId="@appointment.Id"
                                asp-route-returnurl="@ViewData["ReturnUrl"]">
                                 Confirm
