@@ -14,10 +14,11 @@
             <thead>
                 <tr>
                     @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>*@
-                    <th>Application (JobPosition)</th>
+
                     <th>@Html.DisplayNameFor(model => model.First().StartTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.First().EndTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
+                    <th>Application (JobPosition)</th>
                     <th>@Html.DisplayNameFor(model => model.First().InterviewAppointmentState)</th>
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruit)</th>
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruitTime)</th>
@@ -34,22 +35,22 @@
                     else
                     {
                         @:<tr>
-                    }
-                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
-                        <td>
-                            @Html.DisplayFor(model => appointment.Interview.Application.User.FirstName)
-                            @Html.DisplayFor(model => appointment.Interview.Application.User.LastName)
-                            (@Html.DisplayFor(model => appointment.Interview.Application.User.Email))
-                            - @Html.DisplayFor(model => appointment.Interview.Application.JobPosition.Name)
-                        </td>
-                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.Duration)</td>
-                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
-                        @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
-                    @:</tr>
+}
+                    @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
+                    <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                    <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                    <td>@Html.DisplayFor(model => appointment.Duration)</td>
+                    <td>
+                        @Html.DisplayFor(model => appointment.Interview.Application.User.FirstName)
+                        @Html.DisplayFor(model => appointment.Interview.Application.User.LastName)
+                        (@Html.DisplayFor(model => appointment.Interview.Application.User.Email))
+                        - @Html.DisplayFor(model => appointment.Interview.Application.JobPosition.Name)
+                    </td>
+                    <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
+                    <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                    <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                    @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                @:</tr>
                 }   
             </tbody>
         </table>
