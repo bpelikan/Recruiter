@@ -307,9 +307,9 @@ namespace Recruiter.Controllers
                 Id = interviewAppointment.Id,
                 InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
                 InterviewId = interviewAppointment.InterviewId,
-                StartTime = interviewAppointment.StartTime,
+                StartTime = interviewAppointment.StartTime.ToUniversalTime(),
                 Duration = interviewAppointment.Duration,
-                EndTime = interviewAppointment.StartTime.AddMinutes(interviewAppointment.Duration),
+                EndTime = interviewAppointment.StartTime.ToUniversalTime().AddMinutes(interviewAppointment.Duration),
             };
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);

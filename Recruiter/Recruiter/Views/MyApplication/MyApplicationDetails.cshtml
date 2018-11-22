@@ -114,7 +114,7 @@
                                 break;
                             case InterviewState.AppointmentConfirmed:
                                 @:- Appointment Confirmed
-                                <b>
+                                <b Condition="Model.ConfirmedInterviewAppointment != null">
                                     (@Html.DisplayFor(model => model.ConfirmedInterviewAppointment.StartTime) 
                                     - 
                                     @Html.DisplayFor(model => model.ConfirmedInterviewAppointment.EndTime))

@@ -472,6 +472,13 @@ namespace Recruiter.Services.Implementation
                                             .Where(x => x.InterviewId == stage.Id && 
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
                                             .OrderBy(x => x.StartTime);
+
+            foreach (var appointment in appointments)
+            {
+                appointment.StartTime = appointment.StartTime.ToLocalTime();
+                appointment.EndTime = appointment.EndTime.ToLocalTime();
+            }
+
             vm.StageToProcess.InterviewAppointments = appointments.ToList();
 
             return vm;

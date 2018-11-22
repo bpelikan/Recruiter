@@ -87,11 +87,24 @@ namespace Recruiter.Services.Implementation
                                                 .CountAsync(),
                 ApplicationStages = application.ApplicationStages
                                                 .OrderBy(x => x.Level).ToList(),
-                ConfirmedInterviewAppointment = _context.InterviewAppointments
+                //ConfirmedInterviewAppointment = _context.InterviewAppointments
+                //                                            .Include(x => x.Interview)
+                //                                                .ThenInclude(x => x.Application)
+                //                                            .Where(x => x.Interview.Application.Id == application.Id).FirstOrDefault()
+            };
+
+            var confirmedInterviewAppointment = _context.InterviewAppointments
                                                             .Include(x => x.Interview)
                                                                 .ThenInclude(x => x.Application)
-                                                            .Where(x => x.Interview.Application.Id == application.Id).FirstOrDefault()
-            };
+                                                            .Where(x => x.Interview.Application.Id == application.Id &&
+                                                                        x.InterviewAppointmentState == InterviewAppointmentState.Confirmed)
+                                                            .FirstOrDefault();
+            if (confirmedInterviewAppointment != null)
+            {
+                confirmedInterviewAppointment.StartTime = confirmedInterviewAppointment.StartTime.ToLocalTime();
+                confirmedInterviewAppointment.EndTime = confirmedInterviewAppointment.EndTime.ToLocalTime();
+                vm.ConfirmedInterviewAppointment = confirmedInterviewAppointment;
+            }
 
             return vm;
         }
@@ -306,6 +319,13 @@ namespace Recruiter.Services.Implementation
                                             .Where(x => x.InterviewId == stage.Id &&
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm)
                                             .OrderBy(x => x.StartTime);
+
+            foreach (var appointment in appointments)
+            {
+                appointment.StartTime = appointment.StartTime.ToLocalTime();
+                appointment.EndTime = appointment.EndTime.ToLocalTime();
+            }
+
             stage.InterviewAppointments = appointments.ToList();
 
             return stage;
