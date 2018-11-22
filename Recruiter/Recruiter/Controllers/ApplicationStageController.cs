@@ -315,6 +315,8 @@ namespace Recruiter.Controllers
                                 .Include(x => x.Interview)
                                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
                                 .Where(x => x.Interview.ResponsibleUserId == myId &&
+                                            (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
+                                             x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == newInterviewAppointment.InterviewId) &&
                                             //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
                                             //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
                                             ((newInterviewAppointment.StartTime < x.StartTime && x.StartTime < newInterviewAppointment.EndTime) ||
