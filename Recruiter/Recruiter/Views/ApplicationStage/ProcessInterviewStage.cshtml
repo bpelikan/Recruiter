@@ -1,7 +1,7 @@
 ﻿@model Recruiter.Models.ApplicationStageViewModels.ProcessInterviewViewModel
 
 @{
-    ViewData["Title"] = "Process Interview";
+    ViewData["Title"] = "Process Interview Stage";
 }
 
 <h2>Application Details</h2>
@@ -37,10 +37,10 @@
 </div>
 
 <hr />
-<h3>Appointments</h3>
-<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
+<h3>Appointment</h3>
+@*<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
     Add Interview Appointment
-</a>
+</a>*@
 
 <div class="row panel-body">
     @if (Model.StageToProcess.InterviewAppointments.Count() != 0)
@@ -48,32 +48,32 @@
         <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
             <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>*@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
-                    <th>
+                    @*<th>
                         - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)
                         <br />
-                    </th>
+                    </th>*@
                 </tr>
             </thead>
             <tbody>
                 @foreach (var appointment in Model.StageToProcess.InterviewAppointments)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(model => appointment.Id)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
-                        <td>
+                        @*<td>
                             - @Html.DisplayFor(model => appointment.InterviewId)
                             <br />
-                        </td>
+                        </td>*@
                     </tr>
                 }
             </tbody>

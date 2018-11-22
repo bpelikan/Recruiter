@@ -391,7 +391,7 @@ namespace Recruiter.Services.Implementation
             return vm;
         }
 
-        public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId)
+        public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
 
@@ -469,8 +469,8 @@ namespace Recruiter.Services.Implementation
             };
 
             var appointments = _context.InterviewAppointments
-                                            .Where(x => x.InterviewId == stage.Id && 
-                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+                                            .Where(x => x.InterviewId == stage.Id)  // && 
+                                                        //x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
                                             .OrderBy(x => x.StartTime);
 
             foreach (var appointment in appointments)
@@ -494,8 +494,9 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
             if (stage.ResponsibleUserId != userId)
                 throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
-            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments)
-                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments InterviewState. (UserID: {userId})");
+            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments &&
+                    stage.InterviewState != InterviewState.RequestForNewAppointments)
+                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments or RequestForNewAppointments InterviewState. (UserID: {userId})");
 
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&
@@ -602,7 +603,7 @@ namespace Recruiter.Services.Implementation
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
 
-        public async Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId)
+        public async Task UpdateInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing UpdateInterview. (UserID: {userId})");
 

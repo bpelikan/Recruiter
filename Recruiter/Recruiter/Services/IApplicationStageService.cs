@@ -24,7 +24,7 @@ namespace Recruiter.Services
         Task<ProcessPhoneCallViewModel> GetViewModelForProcessPhoneCall(string stageId, string userId);
         Task<AddHomeworkSpecificationViewModel> GetViewModelForAddHomeworkSpecification(string stageId, string userId);
         Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId);
-        Task<ProcessInterviewViewModel> GetViewModelForProcessInterview(string stageId, string userId);
+        Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId);
 
 
         Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId);
@@ -35,7 +35,7 @@ namespace Recruiter.Services
         Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId);
         Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId);
         Task UpdateHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted, string userId);
-        Task UpdateInterview(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
+        Task UpdateInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
     }
 }
