@@ -35,12 +35,58 @@
         </dd>
     </dl>
 </div>
+<a class="btn btn-sm btn-default" asp-action="ApplicationsStagesToReview" asp-route-stageId="@Model.StageToProcess.Id">Back</a>
 
 <hr />
 <h3>Appointments</h3>
-<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
+@*<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
     Add Interview Appointment
-</a>
+</a>*@
+
+<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group" hidden>
+        <label asp-for="NewInterviewAppointment.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="NewInterviewAppointment.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="NewInterviewAppointment.Id" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group" hidden>
+        <label asp-for="NewInterviewAppointment.InterviewId" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="NewInterviewAppointment.InterviewId" class="form-control" readonly="readonly" />
+            <span asp-validation-for="NewInterviewAppointment.InterviewId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewInterviewAppointment.StartTime" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="NewInterviewAppointment.StartTime" class="form-control" />
+            <span asp-validation-for="NewInterviewAppointment.StartTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NewInterviewAppointment.Duration" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="NewInterviewAppointment.Duration" class="form-control" />
+            <span asp-validation-for="NewInterviewAppointment.Duration" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Send" />
+        </div>
+        @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>*@
+        @*<a class="btn btn-sm btn-default" asp-action="Index">Back</a>*@
+    </div>
+</form>
+
 
 <div class="row panel-body">
     @if (Model.StageToProcess.InterviewAppointments.Count() != 0)
@@ -89,7 +135,23 @@
     }
 </div>
 
-<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
+
+<a class="btn btn-sm btn-primary"
+       asp-action="AcceptAppointmentsToInterview"
+       asp-route-stageId="@Model.StageToProcess.Id"
+       asp-route-accepted="@true"
+       asp-route-returnurl="@ViewData["ReturnUrl"]">
+    Add appointment to confirm
+</a>
+<a class="btn btn-sm btn-primary"
+       asp-action="AcceptAppointmentsToInterview"
+       asp-route-stageId="@Model.StageToProcess.Id"
+       asp-route-accepted="@false"
+       asp-route-returnurl="@ViewData["ReturnUrl"]">
+    Reject
+</a>
+
+@*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group" hidden>
@@ -115,7 +177,7 @@
         <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
         <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
     </div>
-</form>
+</form>*@
 
 <hr />
 <h4>Finished Stages</h4>
