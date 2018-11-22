@@ -104,7 +104,10 @@
                                 @:- Waiting for Setting another Appointments
                                 break;
                             case InterviewState.WaitingForConfirmAppointment:
-                                @:- confirm your Appointment
+                                <a  asp-controller="MyApplication" asp-action="ConfirmInterviewAppointments" asp-route-stageId="@stage.Id">
+                                    <b> - Confirm your Appointment</b>
+                                </a>
+                                @*@:- confirm your Appointment*@
                                 break;
                             case InterviewState.AppointmentConfirmed:
                                 @:- Appointment Confirmed

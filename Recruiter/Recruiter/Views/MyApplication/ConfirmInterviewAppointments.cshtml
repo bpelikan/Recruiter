@@ -1,0 +1,74 @@
+﻿@model Recruiter.Models.Interview
+
+@{
+    ViewData["Title"] = "ConfirmInterviewAppointments";
+}
+
+<h2>Confirm Interview Appointments</h2>
+
+<hr />
+<h3>Appointments</h3>
+
+<div class="row panel-body">
+    @if (Model.InterviewAppointments.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
+            <thead>
+                <tr>
+                    @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().Id)</th>*@
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().StartTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().Duration)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().EndTime)</th>
+                    <th>Confirm</th>
+                    @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewAppointmentState)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewId)</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model.InterviewAppointments)
+                {
+                    <tr>
+                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
+                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.Duration)</td>
+                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        <td>
+
+                        </td>
+                        @*<td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
+                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Interview Appointments not found.
+    }
+</div>
+
+@*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group" hidden>
+        <label asp-for="Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="Id" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="Add appointment to confirm" asp-route-accepted="@true" />
+            <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" />
+        </div>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+    </div>
+</form>*@

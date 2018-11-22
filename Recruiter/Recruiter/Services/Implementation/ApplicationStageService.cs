@@ -421,6 +421,8 @@ namespace Recruiter.Services.Implementation
         }
 
 
+
+
         public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
@@ -468,7 +470,8 @@ namespace Recruiter.Services.Implementation
 
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id && 
-                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+                                            .OrderBy(x => x.StartTime);
             vm.StageToProcess.InterviewAppointments = appointments.ToList();
 
             return vm;
@@ -482,6 +485,8 @@ namespace Recruiter.Services.Implementation
             var stage = await GetApplicationStageBaseToProcessStage(addAppointmentsToInterviewViewModel.StageToProcess.Id, userId) as Interview;
             if (stage.State != ApplicationStageState.InProgress)
                 throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            if (stage.ResponsibleUserId != userId)
+                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
             if (stage.InterviewState != InterviewState.WaitingForSettingAppointments)
                 throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments InterviewState. (UserID: {userId})");
 
@@ -509,6 +514,8 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
+
+
 
 
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)

@@ -24,7 +24,7 @@ namespace Recruiter.Controllers
         private readonly IMyApplicationService _myApplicationService;
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
-        private readonly IApplicationStageService _applicationStageService;
+        //private readonly IApplicationStageService _applicationStageService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
@@ -32,14 +32,14 @@ namespace Recruiter.Controllers
             IMyApplicationService myApplicationService,
             ICvStorageService cvStorageService, 
             IMapper mapper,
-            IApplicationStageService applicationStageService,
+            //IApplicationStageService applicationStageService,
             UserManager<ApplicationUser> userManager, 
             ApplicationDbContext context)
         {
             _myApplicationService = myApplicationService;
             _cvStorageService = cvStorageService;
             _mapper = mapper;
-            _applicationStageService = applicationStageService;
+            //_applicationStageService = applicationStageService;
             _userManager = userManager;
             _context = context;
         }
@@ -176,5 +176,24 @@ namespace Recruiter.Controllers
 
             return View(stage);
         }
+
+
+        public async Task<IActionResult> ConfirmInterviewAppointments(string stageId)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+
+            return View(vm);
+        }
+
+        //[HttpPost]
+        //public async Task<IActionResult> ConfirmAppointmentsInInterview(Interview interview, bool accepted = true)
+        //{
+        //    var myId = _userManager.GetUserId(HttpContext.User);
+        //    await _myApplicationService.ConfirmAppointmentsInInterview(interview, myId);
+
+        //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+        //}
+
     }
 }

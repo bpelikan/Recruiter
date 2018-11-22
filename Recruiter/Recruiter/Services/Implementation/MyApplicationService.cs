@@ -244,7 +244,6 @@ namespace Recruiter.Services.Implementation
             return stage;
         }
 
-
         private async Task<Homework> GetHomeworkStageToShow(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetHomeworkStageToShow with stageId={stageId}. (UserID: {userId})");
@@ -286,5 +285,53 @@ namespace Recruiter.Services.Implementation
             return stage;
         }
 
+        public async Task<Interview> GetViewModelForConfirmInterviewAppointments(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForConfirmAppointmentsInInterview with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                        .Include(x => x.Application)
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync(x => x.Id == stageId) as Interview;
+            if (stage == null)
+                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            if (stage.Application.UserId != userId)
+                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            var appointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id &&
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm)
+                                            .OrderBy(x => x.StartTime);
+            stage.InterviewAppointments = appointments.ToList();
+
+            return stage;
+            //foreach (var appointment in appointments)
+            //{
+            //    appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+            //}
+            //stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
+
+            //_logger.LogInformation($"Executing GetHomeworkStageToShow with stageId={stageId}. (UserID: {userId})");
+
+            //var stage = await _context.ApplicationStages
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.User)
+            //                        .Include(x => x.Application)
+            //                            .ThenInclude(x => x.JobPosition)
+            //                        .AsNoTracking()
+            //                        .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
+            //if (stage == null)
+            //    throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            //if (stage.Application.User.Id != userId)
+            //    throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+
+            //stage.StartTime = stage.StartTime?.ToLocalTime();
+            //stage.EndTime = stage.EndTime?.ToLocalTime();
+            //stage.SendingTime = stage.SendingTime?.ToLocalTime();
+
+            //return stage;
+
+            throw new NotImplementedException();
+        }
     }
 }

@@ -21,5 +21,8 @@ namespace Recruiter.Services
         Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId);
         Task SendMyHomework(Homework homework, string userId);
         Task<Homework> GetViewModelForShowMyHomework(string stageId, string userId);
+        Task<Interview> GetViewModelForConfirmInterviewAppointments(string stageId, string userId);
+        //Task ConfirmAppointmentsInInterview(Interview interview, string userId);
+
     }
 }
