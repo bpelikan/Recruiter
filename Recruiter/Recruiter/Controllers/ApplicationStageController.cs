@@ -325,7 +325,7 @@ namespace Recruiter.Controllers
 
             foreach (var app in test)
             {
-                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. {app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - {app.Interview.Application.JobPosition.Name}");
+                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. ({app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - {app.Interview.Application.JobPosition.Name})");
 
             }
 
