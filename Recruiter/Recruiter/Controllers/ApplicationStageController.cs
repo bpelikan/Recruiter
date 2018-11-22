@@ -311,9 +311,13 @@ namespace Recruiter.Controllers
 
             var test = _context.InterviewAppointments
                                 .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
+                                .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
+                                
                                 .Where(x => x.Interview.ResponsibleUserId == myId &&
-                                            (x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
-                                                (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
+                                            //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
+                                            //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
                                             ((newInterviewAppointment.StartTime < x.StartTime && x.StartTime < newInterviewAppointment.EndTime) ||
                                               newInterviewAppointment.StartTime < x.EndTime && x.EndTime < newInterviewAppointment.EndTime) ||
                                               x.StartTime < newInterviewAppointment.StartTime && newInterviewAppointment.EndTime < x.EndTime)
@@ -321,7 +325,7 @@ namespace Recruiter.Controllers
 
             foreach (var app in test)
             {
-                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}");
+                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. {app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - {app.Interview.Application.JobPosition.Name}");
 
             }
 
