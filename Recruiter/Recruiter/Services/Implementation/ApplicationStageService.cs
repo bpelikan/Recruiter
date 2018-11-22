@@ -645,8 +645,12 @@ namespace Recruiter.Services.Implementation
                 .Include(x => x.Interview)
                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
                 .Where(x => x.Interview.ResponsibleUserId == userId).ToListAsync();// &&
-                            //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
-
+                                                                                   //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
+            foreach (var myAppointment in myAppointments)
+            {
+                myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();
+                myAppointment.EndTime = myAppointment.EndTime.ToLocalTime();
+            }
             return myAppointments;
 
             //throw new NotImplementedException();
