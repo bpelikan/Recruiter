@@ -18,14 +18,12 @@ namespace Recruiter.Components
 
         public IViewComponentResult Invoke()
         {
-            var menuItems = new List<AdminMenuItem> { new AdminMenuItem()
-                {
+            var menuItems = new List<AdminMenuItem> {
+                new AdminMenuItem(){
                     DisplayValue = _stringLocalizer["User management"],
                     ActionValue = "UserManagement"
-
                 },
-                new AdminMenuItem()
-                {
+                new AdminMenuItem(){
                     DisplayValue = _stringLocalizer["Role management"],
                     ActionValue = "RoleManagement"
                 }};

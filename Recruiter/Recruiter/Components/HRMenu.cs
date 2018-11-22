@@ -18,15 +18,23 @@ namespace Recruiter.Components
 
         public IViewComponentResult Invoke()
         {
-            var menuItems = new List<HRMenuItem> { new HRMenuItem()
-                {
+            var menuItems = new List<HRMenuItem> {
+                new HRMenuItem(){
+                    DisplayValue = _stringLocalizer["Appointments"],
+                    ControllerValue = "ApplicationStage",
+                    ActionValue = "ShowMyAppointments"
+                },
+                new HRMenuItem(){
+                    DisplayValue = _stringLocalizer["Stages to review"],
+                    ControllerValue = "ApplicationStage",
+                    ActionValue = "ApplicationsStagesToReview"
+                },
+                new HRMenuItem(){
                     DisplayValue = _stringLocalizer["Applications management"],
                     ControllerValue = "Application",
                     ActionValue = "Applications"
-
                 },
-                new HRMenuItem()
-                {
+                new HRMenuItem(){
                     DisplayValue = _stringLocalizer["Job Positions management"],
                     ControllerValue = "JobPosition",
                     ActionValue = "Index"
