@@ -315,12 +315,13 @@ namespace Recruiter.Controllers
                                             (x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
                                                 (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
                                             ((newInterviewAppointment.StartTime < x.StartTime && x.StartTime < newInterviewAppointment.EndTime) ||
-                                              newInterviewAppointment.StartTime < x.EndTime && x.EndTime < newInterviewAppointment.EndTime))
+                                              newInterviewAppointment.StartTime < x.EndTime && x.EndTime < newInterviewAppointment.EndTime) ||
+                                              x.StartTime < newInterviewAppointment.StartTime && newInterviewAppointment.EndTime < x.EndTime)
                                 .OrderBy(x => x.StartTime);
 
             foreach (var app in test)
             {
-                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToString("dd.MM.yyyy HH:mm:ss")}");
+                ModelState.AddModelError("", $"Collision with appointment: {app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}");
 
             }
 
