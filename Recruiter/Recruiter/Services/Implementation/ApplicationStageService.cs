@@ -641,7 +641,7 @@ namespace Recruiter.Services.Implementation
 
             var myAppointments = await _context.InterviewAppointments
                 .Include(x => x.Interview)
-                .Where(x => x.Interview.ResponsibleUserId == userId).ToListAsync()// &&
+                .Where(x => x.Interview.ResponsibleUserId == userId).ToListAsync();// &&
                             //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
 
             return myAppointments;
