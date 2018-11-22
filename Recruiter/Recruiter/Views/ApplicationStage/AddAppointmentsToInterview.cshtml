@@ -48,29 +48,37 @@
         <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
             <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>*@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewAppointmentState)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)</th>*@
                 </tr>
             </thead>
             <tbody>
                 @foreach (var appointment in Model.StageToProcess.InterviewAppointments)
                 {
-                    <tr>
-                        <td>@Html.DisplayFor(model => appointment.Id)</td>
+                    @if (appointment.InterviewAppointmentState == InterviewAppointmentState.Rejected)
+                    {
+                        @:<tr style="color: gray">
+                    }
+                    else
+                    {
+                        @:<tr>
+                    }
+                    
+                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.InterviewId)</td>
-                    </tr>
+                        @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                    @:</tr>
                 }
             </tbody>
         </table>
