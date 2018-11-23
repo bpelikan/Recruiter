@@ -15,15 +15,19 @@ namespace Recruiter.Models
         public string InterviewId { get; set; }
         public virtual Interview Interview { get; set; }
 
+        [Required]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime StartTime { get; set; }
 
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Duration must be greater than 0")]
         public int Duration { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime EndTime { get; set; }
 
         public bool AcceptedByRecruit { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime? AcceptedByRecruitTime { get; set; }
     }
