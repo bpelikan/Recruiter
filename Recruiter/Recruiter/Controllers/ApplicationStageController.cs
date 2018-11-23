@@ -213,9 +213,9 @@ namespace Recruiter.Controllers
             switch (stage.InterviewState)
             {
                 case InterviewState.WaitingForSettingAppointments:
-                    return RedirectToAction(nameof(ApplicationStageController.AddAppointmentsToInterview), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id });
                 case InterviewState.RequestForNewAppointments:
-                    return RedirectToAction(nameof(ApplicationStageController.AddAppointmentsToInterview), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id });
                 case InterviewState.WaitingForConfirmAppointment:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
                 case InterviewState.AppointmentConfirmed:
@@ -225,16 +225,16 @@ namespace Recruiter.Controllers
             }
         }
 
-        public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
+        public async Task<IActionResult> SetAppointmentsToInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(stageId, myId);
+            var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(stageId, myId);
 
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
+        public async Task<IActionResult> SetAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
@@ -253,7 +253,7 @@ namespace Recruiter.Controllers
             }
             if (!ModelState.IsValid)
             {
-                var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
+                var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
                 vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
                 return View(vm);
             }
@@ -292,7 +292,7 @@ namespace Recruiter.Controllers
             };
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
+            await _applicationStageService.SetAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }

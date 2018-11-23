@@ -422,7 +422,7 @@ namespace Recruiter.Services.Implementation
 
 
 
-        public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId)
+        public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
 
@@ -512,7 +512,7 @@ namespace Recruiter.Services.Implementation
         }
 
 
-        public async Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
+        public async Task SetAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
 
