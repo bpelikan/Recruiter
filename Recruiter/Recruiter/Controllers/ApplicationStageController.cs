@@ -279,16 +279,6 @@ namespace Recruiter.Controllers
             var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(stageId, myId);
 
             return View(vm);
-
-            //var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(stageId, myId);
-            //vm.NewInterviewAppointment = new InterviewAppointment()
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    InterviewId = vm.StageToProcess.Id,
-            //    StartTime = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
-            //                                DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
-            //};
-
         }
 
         [HttpPost]
@@ -319,39 +309,6 @@ namespace Recruiter.Controllers
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
                                        new { stageId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
-
-
-            //var newInterviewAppointment = new InterviewAppointment()
-            //{
-            //    Id = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
-            //    InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
-            //    InterviewId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
-            //    StartTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
-            //    Duration = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
-            //    EndTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
-            //                            .AddMinutes(addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
-            //};
-
-            //await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
-            //await _context.SaveChangesAsync();
-
-            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
-
-            //var collisionAppointments = _context.InterviewAppointments
-            //                    .Include(x => x.Interview)
-            //                        .ThenInclude(x => x.Application).ThenInclude(x => x.User)
-            //                    .Include(x => x.Interview)
-            //                        .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-            //                    .Where(x => x.Interview.ResponsibleUserId == myId &&
-            //                                (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
-            //                                 x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == newInterviewAppointment.InterviewId) &&
-            //                                //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
-            //                                //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
-            //                                ((newInterviewAppointment.StartTime < x.StartTime && x.StartTime < newInterviewAppointment.EndTime) ||
-            //                                  newInterviewAppointment.StartTime < x.EndTime && x.EndTime < newInterviewAppointment.EndTime) ||
-            //                                  x.StartTime < newInterviewAppointment.StartTime && newInterviewAppointment.EndTime < x.EndTime)
-            //                    .OrderBy(x => x.StartTime);
-
         }
 
         public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
