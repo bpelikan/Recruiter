@@ -28,7 +28,9 @@ namespace Recruiter.Services
 
 
         Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId);
+        Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview,string userId);
         Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId);
+        Task AddNewInterviewAppointments(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId);
 
 
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
@@ -39,6 +41,5 @@ namespace Recruiter.Services
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
 
         Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId);
-
     }
 }

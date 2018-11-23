@@ -485,6 +485,53 @@ namespace Recruiter.Services.Implementation
             //throw new NotImplementedException();
         }
 
+        public async Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview, string userId)
+        {
+            _logger.LogInformation($"Executing GetCollidingInterviewAppointment. (UserID: {userId})");
+
+            interview.EndTime = interview.StartTime.ToUniversalTime()
+                                        .AddMinutes(interview.Duration);
+
+            var collisionAppointments = await _context.InterviewAppointments
+                                .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
+                                .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
+                                .Where(x => x.Interview.ResponsibleUserId == userId &&
+                                            (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
+                                             x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId) &&
+                                            //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
+                                            //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
+                                            ((interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime) ||
+                                              interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime) ||
+                                              x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime)
+                                .OrderBy(x => x.StartTime)
+                                .ToListAsync();
+            
+            return collisionAppointments;
+            //throw new NotImplementedException();
+        }
+
+        public async Task AddNewInterviewAppointments(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId)
+        {
+            _logger.LogInformation($"Executing AddNewInterviewAppointments. (UserID: {userId})");
+
+            var newInterviewAppointment = new InterviewAppointment()
+            {
+                Id = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
+                InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
+                InterviewId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
+                StartTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
+                Duration = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
+                EndTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
+                                        .AddMinutes(addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
+            };
+
+            await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
+            await _context.SaveChangesAsync();
+        }
+
+
         public async Task AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
@@ -689,5 +736,7 @@ namespace Recruiter.Services.Implementation
 
             return stagesSortedByName;
         }
+
+        
     }
 }
