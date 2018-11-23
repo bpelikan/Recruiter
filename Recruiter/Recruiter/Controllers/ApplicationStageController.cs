@@ -273,7 +273,6 @@ namespace Recruiter.Controllers
         ///////////////////////////////////////////////////////////////
         #endregion
 
-        //[ImportModelState]
         public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -290,7 +289,6 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        //[ExportModelState]
         public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -337,15 +335,6 @@ namespace Recruiter.Controllers
                 return View(vm);
                 //return View(addAppointmentsToInterviewViewModel);
             }
-
-            //if (ModelState.ErrorCount != 0)
-            //{
-            //    var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
-            //    vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
-            //    return View(vm);
-            //}
-
-            
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
             await _context.SaveChangesAsync();
