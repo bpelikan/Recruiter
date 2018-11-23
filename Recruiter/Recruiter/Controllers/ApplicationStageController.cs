@@ -207,29 +207,6 @@ namespace Recruiter.Controllers
         #region Interview
         public async Task<IActionResult> ProcessInterview(string stageId)
         {
-
-            //var myId = _userManager.GetUserId(HttpContext.User);
-            //var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Homework;
-
-            //switch (stage.HomeworkState)
-            //{
-            //    case HomeworkState.WaitingForSpecification:
-            //        return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId = stage.Id });
-            //    case HomeworkState.WaitingForRead:
-            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
-            //    case HomeworkState.WaitingForSendHomework:
-            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
-            //    case HomeworkState.Completed:
-            //        return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id });
-            //    default:
-            //        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
-            //}
-
-            //var myId = _userManager.GetUserId(HttpContext.User);
-            //var vm = await _applicationStageService.GetViewModelForProcessInterview(stageId, myId);
-
-            //return View(vm);
-
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Interview;
 
@@ -246,7 +223,6 @@ namespace Recruiter.Controllers
                 default:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
             }
-            //return View(vm);
         }
 
         #region del
@@ -327,9 +303,6 @@ namespace Recruiter.Controllers
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
                                         new { stageId = appointment.InterviewId });
-            //await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
-
-            //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
         public async Task<IActionResult> AcceptAppointmentsToInterview(string stageId, bool accepted = true)
