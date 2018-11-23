@@ -488,7 +488,6 @@ namespace Recruiter.Services.Implementation
             };
 
             return vm;
-            //throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview, string userId)
@@ -515,7 +514,6 @@ namespace Recruiter.Services.Implementation
                                 .ToListAsync();
             
             return collisionAppointments;
-            //throw new NotImplementedException();
         }
 
         public async Task AddNewInterviewAppointments(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId)
@@ -579,8 +577,6 @@ namespace Recruiter.Services.Implementation
             //stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
             //stage.HomeworkState = HomeworkState.WaitingForRead;
             //await _context.SaveChangesAsync();
-
-            //throw new NotImplementedException();
         }
 
 
@@ -705,8 +701,6 @@ namespace Recruiter.Services.Implementation
                 myAppointment.EndTime = myAppointment.EndTime.ToLocalTime();
             }
             return myAppointments;
-
-            //throw new NotImplementedException();
         }
 
 
