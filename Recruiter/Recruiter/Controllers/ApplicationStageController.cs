@@ -298,11 +298,6 @@ namespace Recruiter.Controllers
         }
 
         #region del
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-
         //public async Task<IActionResult> AddInterviewAppointments(string stageId)
         //{
         //    var myId = _userManager.GetUserId(HttpContext.User);
@@ -345,31 +340,6 @@ namespace Recruiter.Controllers
 
         //    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
         //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddInterviewAppointmentsTest(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View(addAppointmentsToInterviewViewModel);
-
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-
-        //    var newInterviewAppointment = new InterviewAppointment()
-        //    {
-        //        Id = interviewAppointment.Id,
-        //        InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
-        //        InterviewId = interviewAppointment.InterviewId,
-        //        StartTime = interviewAppointment.StartTime.ToUniversalTime(),
-        //        Duration = interviewAppointment.Duration,
-        //        EndTime = interviewAppointment.StartTime.ToUniversalTime().AddMinutes(interviewAppointment.Duration),
-        //    };
-
-        //    await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
-        //}
-
 
         //[HttpPost]
         //public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted = true)
