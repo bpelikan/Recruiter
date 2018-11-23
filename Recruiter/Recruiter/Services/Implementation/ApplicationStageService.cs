@@ -470,6 +470,7 @@ namespace Recruiter.Services.Implementation
         {
             _logger.LogInformation($"Executing GetCollidingInterviewAppointment. (UserID: {userId})");
 
+            interview.StartTime = interview.StartTime.ToUniversalTime();
             interview.EndTime = interview.StartTime.ToUniversalTime()
                                         .AddMinutes(interview.Duration);
 
