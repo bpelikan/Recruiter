@@ -50,18 +50,18 @@
                 }
             </tbody>
         </table>
-
-        <a class="btn btn-sm btn-primary"
-           asp-action="RequestForNewAppointmentsInInterview"
-           asp-route-interviewId="@Model.Id"
-           asp-route-returnurl="@ViewData["ReturnUrl"]">
-            Request for new appointment
-        </a>
     }
     else
     {
         @:Interview Appointments not found.
     }
+
+    <a class="btn btn-sm btn-primary"
+       asp-action="RequestForNewAppointmentsInInterview"
+       asp-route-interviewId="@Model.Id"
+       asp-route-returnurl="@ViewData["ReturnUrl"]">
+        Request for new appointment
+    </a>
 </div>
 
 @*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">

@@ -529,20 +529,24 @@ namespace Recruiter.Services.Implementation
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
-            if (accepted)
+            if (appointments.Count() != 0)
             {
-                foreach (var appointment in appointments)
+                if (accepted)
                 {
-                    appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                    foreach (var appointment in appointments)
+                    {
+                        appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                    }
+                    stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
                 }
-                stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
-            }
-            else
-            {
-                _context.InterviewAppointments.RemoveRange(appointments);
+                else
+                {
+                    _context.InterviewAppointments.RemoveRange(appointments);
+                }
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
 
             //var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
             //if (stage.State != ApplicationStageState.InProgress)
