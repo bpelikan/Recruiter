@@ -240,7 +240,7 @@ namespace Recruiter.Controllers
 
             if (ModelState.IsValid)
             {
-                if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime < DateTime.UtcNow)
+                if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime() < DateTime.UtcNow)
                     ModelState.AddModelError("", "StartTime must be in the future.");
                 var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(addAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
                 foreach (var app in collidingAppointments)
