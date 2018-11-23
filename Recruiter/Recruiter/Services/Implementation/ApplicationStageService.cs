@@ -478,8 +478,14 @@ namespace Recruiter.Services.Implementation
                 appointment.StartTime = appointment.StartTime.ToLocalTime();
                 appointment.EndTime = appointment.EndTime.ToLocalTime();
             }
-
             vm.StageToProcess.InterviewAppointments = appointments.ToList();
+            vm.NewInterviewAppointment = new InterviewAppointment()
+            {
+                Id = Guid.NewGuid().ToString(),
+                InterviewId = vm.StageToProcess.Id,
+                StartTime = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
+                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
+            };
 
             return vm;
             //throw new NotImplementedException();
