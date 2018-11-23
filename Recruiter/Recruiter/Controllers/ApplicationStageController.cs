@@ -225,30 +225,6 @@ namespace Recruiter.Controllers
             }
         }
 
-        #region del
-        //[HttpPost]
-        //public async Task<IActionResult> ProcessInterview(ProcessInterviewViewModel interviewViewModel, bool accepted = false)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    await _applicationStageService.UpdateInterview(interviewViewModel, accepted, myId);
-
-        //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
-        //}
-
-        //public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    var vm = await _applicationStageService.GetViewModelForAddAppointmentsToInterview(stageId, myId);
-
-        //    return View(vm);
-        //}
-
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        #endregion
-
         public async Task<IActionResult> AddAppointmentsToInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
