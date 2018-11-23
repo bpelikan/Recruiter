@@ -296,15 +296,18 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
-            if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime < DateTime.UtcNow)
-                ModelState.AddModelError("", "StartTime must be in the future.");
-            var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(addAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
-            foreach (var app in collidingAppointments)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("", $"Collision with appointment: " +
-                        $"{app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. " +
-                        $"({app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - " +
-                        $"{app.Interview.Application.JobPosition.Name})");
+                if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime < DateTime.UtcNow)
+                    ModelState.AddModelError("", "StartTime must be in the future.");
+                var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(addAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
+                foreach (var app in collidingAppointments)
+                {
+                    ModelState.AddModelError("", $"Collision with appointment: " +
+                            $"{app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. " +
+                            $"({app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - " +
+                            $"{app.Interview.Application.JobPosition.Name})");
+                }
             }
             if (!ModelState.IsValid)
             {
@@ -312,7 +315,6 @@ namespace Recruiter.Controllers
                 vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
                 return View(vm);
             }
-
             await _applicationStageService.AddNewInterviewAppointments(addAppointmentsToInterviewViewModel, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
