@@ -422,7 +422,6 @@ namespace Recruiter.Services.Implementation
 
 
 
-
         public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
@@ -447,8 +446,7 @@ namespace Recruiter.Services.Implementation
             };
 
             var appointments = _context.InterviewAppointments
-                                            .Where(x => x.InterviewId == stage.Id)  // && 
-                                                        //x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+                                            .Where(x => x.InterviewId == stage.Id)
                                             .OrderBy(x => x.StartTime);
 
             foreach (var appointment in appointments)
