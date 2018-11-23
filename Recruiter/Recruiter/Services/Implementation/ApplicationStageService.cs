@@ -426,28 +426,6 @@ namespace Recruiter.Services.Implementation
         public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForAddAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
-            //_logger.LogInformation($"Executing GetViewModelForAddHomeworkSpecification with stageId={stageId}. (UserID: {userId})");
-
-            //var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            //var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-
-            //var vm = new AddHomeworkSpecificationViewModel()
-            //{
-            //    Application = new ApplicationViewModel()
-            //    {
-            //        Id = stage.Application.Id,
-            //        CreatedAt = stage.Application.CreatedAt,
-            //        CvFileName = stage.Application.CvFileName,
-            //        CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-            //        User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-            //        JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-            //    },
-            //    ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-            //    StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkSpecificationViewModel>(stage),
-            //    ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            //};
-
-            //return vm;
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
