@@ -37,6 +37,7 @@ namespace Recruiter.Models
         WaitingToAdd,
         WaitingForConfirm,
         Confirmed,
-        Rejected
+        Rejected,
+        Finished
     }
 }

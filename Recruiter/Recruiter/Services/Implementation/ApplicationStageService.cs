@@ -42,20 +42,20 @@ namespace Recruiter.Services.Implementation
                                         .AddMinutes(interview.Duration);
 
             var collisionAppointments = await _context.InterviewAppointments
-                                .Include(x => x.Interview)
-                                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
-                                .Include(x => x.Interview)
-                                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                                .Where(x => x.Interview.ResponsibleUserId == userId &&
-                                            (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
-                                             (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
-                                            //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
-                                            //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
-                                            (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
-                                             interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
-                                             x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
-                                .OrderBy(x => x.StartTime)
-                                .ToListAsync();
+                    .Include(x => x.Interview)
+                        .ThenInclude(x => x.Application).ThenInclude(x => x.User)
+                    .Include(x => x.Interview)
+                        .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
+                    .Where(x => x.Interview.ResponsibleUserId == userId &&
+                                ((x.InterviewAppointmentState != InterviewAppointmentState.Rejected && x.InterviewAppointmentState != InterviewAppointmentState.Finished) ||
+                                (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
+                                //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
+                                //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
+                                (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
+                                    interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
+                                    x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
+                    .OrderBy(x => x.StartTime)
+                    .ToListAsync();
 
             return collisionAppointments;
         }
@@ -407,7 +407,8 @@ namespace Recruiter.Services.Implementation
                     .ThenInclude(x => x.Application).ThenInclude(x => x.User)
                 .Include(x => x.Interview)
                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                .Where(x => x.Interview.ResponsibleUserId == userId)
+                .Where(x => x.Interview.ResponsibleUserId == userId && 
+                            x.InterviewAppointmentState != InterviewAppointmentState.Finished)
                 .OrderBy(x => x.StartTime)
                 .ToListAsync();// &&
                                //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
@@ -629,6 +630,10 @@ namespace Recruiter.Services.Implementation
             var stage = await GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
                 throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+
+            var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
+            foreach (var appointment in appointments)
+                appointment.InterviewAppointmentState = InterviewAppointmentState.Finished;
 
             stage.Note = interviewViewModel.StageToProcess.Note;
             stage.Rate = interviewViewModel.StageToProcess.Rate;

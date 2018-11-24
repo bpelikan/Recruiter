@@ -32,11 +32,12 @@
             <tbody>
                 @foreach (var appointment in Model)
                 {
-                    @if (appointment.Interview.State == ApplicationStageState.Finished)
+                    @*@if (appointment.Interview.State == ApplicationStageState.Finished)
                     {
                         @:<tr style="color: gray">
                     }
-                    else if(appointment.InterviewAppointmentState == InterviewAppointmentState.Rejected)
+                    else*@ 
+                    if(appointment.InterviewAppointmentState == InterviewAppointmentState.Rejected)
                     {
                         @:<tr style="color: gray">
                     }
@@ -61,7 +62,8 @@
                         <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                         <td>
                             <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
-                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)
+                        </td>
                         <td>
                             <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
                                class="btn btn-default" asp-action="RemoveAssignedAppointment"

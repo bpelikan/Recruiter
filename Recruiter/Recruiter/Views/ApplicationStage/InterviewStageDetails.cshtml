@@ -106,7 +106,7 @@
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewAppointmentState)</th>
-                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>*@
                     <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
                     <th>
                         <span class="glyphicon glyphicon-wrench">
@@ -122,6 +122,10 @@
                     {
                         @:<tr style="color: gray">
                     }
+                    else if(appointment.InterviewAppointmentState == InterviewAppointmentState.Confirmed || appointment.InterviewAppointmentState == InterviewAppointmentState.Finished)
+                    {
+                        @:<tr style="color: green">
+                    }
                     else
                     {
                         @:<tr>
@@ -132,8 +136,11 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>*@
+                        <td>
+                            <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
+                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)
+                        </td>
                         @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
                         <td>
                             <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
