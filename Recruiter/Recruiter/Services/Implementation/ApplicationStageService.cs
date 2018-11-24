@@ -704,6 +704,26 @@ namespace Recruiter.Services.Implementation
             return myAppointments;
         }
 
+        public async Task<InterviewAppointment> RemoveAppointmentsAssignToMe(string appointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing RemoveAppointmentsAssignToMe with appointmentId={appointmentId}. (UserID: {userId})");
+
+            var appointment = await _context.InterviewAppointments
+                                            .Include(x => x.Interview)
+                                            .FirstOrDefaultAsync(x => x.Id == appointmentId);
+            if (appointment == null)
+                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
+            if(appointment.Interview.ResponsibleUserId != userId)
+                throw new Exception($"User with id {userId} is not allowed to delete InterviewAppointment with id {appointmentId}. (UserID: {userId})");
+
+            if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
+                throw new Exception($"InterviewAppointment with id {appointmentId} is not in WaitingToAdd state. (UserID: {userId})");
+
+            _context.InterviewAppointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+
+            return appointment;
+        }
 
 
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationId(string applicationId, string userId)

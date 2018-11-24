@@ -288,28 +288,7 @@ namespace Recruiter.Controllers
             #endregion
         }
 
-        public async Task<IActionResult> RemoveMyAppointments(string appointmentId, string returnUrl = null)
-        {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var appointment = await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
-
-            return RedirectToLocal(returnUrl);
-
-            #region del
-            //var appointment = await _context.InterviewAppointments
-            //                                .FirstOrDefaultAsync(x => x.Id == appointmentId);
-            //if(appointment == null)
-            //    throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {myId})");
-            //if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
-            //{
-            //    _context.InterviewAppointments.Remove(appointment);
-            //    await _context.SaveChangesAsync();
-            //}
-
-            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-            //                            new { stageId = appointment.InterviewId });
-            #endregion
-        }
+        
 
 
         public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true)
@@ -425,6 +404,13 @@ namespace Recruiter.Controllers
             return View(myAppointments);
         }
 
+        public async Task<IActionResult> RemoveMyAppointments(string appointmentId, string returnUrl = null)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var appointment = await _applicationStageService.RemoveAppointmentsAssignToMe(appointmentId, myId);
+
+            return RedirectToLocal(returnUrl);
+        }
 
         #region Helpers
         private IActionResult RedirectToLocal(string returnUrl)

@@ -26,13 +26,11 @@ namespace Recruiter.Services
         Task<ProcessHomeworkStageViewModel> GetViewModelForProcessHomeworkStage(string stageId, string userId);
         Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId);
 
-
         Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId);
         Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview,string userId);
         Task SendInterviewAppointmentsToConfirm(string stageId, bool accepted, string userId);
         Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId);
         Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId);
-
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
         Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId);
         Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId);
@@ -41,5 +39,6 @@ namespace Recruiter.Services
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
 
         Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId);
+        Task<InterviewAppointment> RemoveAppointmentsAssignToMe(string appointmentId, string userId);
     }
 }
