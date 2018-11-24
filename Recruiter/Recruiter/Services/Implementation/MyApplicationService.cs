@@ -401,7 +401,6 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"ApplicationStage that contain interview appointment with id {interviewAppointmentId} not found. (UserID: {userId})");
 
             return stage.Id;
-            //throw new NotImplementedException();
         }
 
         public async Task RequestForNewAppointmentsInInterview(string interviewId, string userId)

@@ -738,6 +738,6 @@ namespace Recruiter.Services.Implementation
             return stagesSortedByName;
         }
 
-        
+
     }
 }

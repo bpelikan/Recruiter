@@ -335,60 +335,6 @@ namespace Recruiter.Controllers
             #endregion
         }
 
-        #region del
-        //public async Task<IActionResult> AddInterviewAppointments(string stageId)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    var stage = await _context.ApplicationStages
-        //                            .Include(x => x.Application)
-        //                            .FirstOrDefaultAsync(x => x.Id == stageId);
-
-        //    if (stage.GetType().Name != "Interview")
-        //        throw new Exception($"Stage with id {stageId} is not Interview stage. (UserID: {myId})");
-
-        //    var vm = new InterviewAppointment()
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        InterviewId = stage.Id
-        //    };
-
-        //    return View(vm);
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddInterviewAppointments(InterviewAppointment interviewAppointment)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View(interviewAppointment);
-
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-
-        //    var newInterviewAppointment = new InterviewAppointment()
-        //    {
-        //        Id = interviewAppointment.Id,
-        //        InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
-        //        InterviewId = interviewAppointment.InterviewId,
-        //        StartTime = interviewAppointment.StartTime.ToUniversalTime(),
-        //        Duration = interviewAppointment.Duration,
-        //        EndTime = interviewAppointment.StartTime.ToUniversalTime().AddMinutes(interviewAppointment.Duration),
-        //    };
-
-        //    await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = newInterviewAppointment.InterviewId });
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted = true)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    await _applicationStageService.AddAppointmentsToInterview(addAppointmentsToInterviewViewModel, accepted, myId);
-
-        //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
-        //}
-        #endregion
-
         public async Task<IActionResult> ProcessInterviewStage(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -489,7 +435,7 @@ namespace Recruiter.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(ApplicationController.Index));
+                return RedirectToAction(nameof(ApplicationStageController.Index));
             }
         }
         #endregion
