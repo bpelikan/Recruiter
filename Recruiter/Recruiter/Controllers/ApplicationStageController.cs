@@ -313,7 +313,7 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
         #endregion
