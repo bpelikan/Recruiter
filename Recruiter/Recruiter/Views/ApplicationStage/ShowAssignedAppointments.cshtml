@@ -13,8 +13,6 @@
         <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
             <thead>
                 <tr>
-                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Id)</th>*@
-
                     <th>@Html.DisplayNameFor(model => model.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
@@ -49,7 +47,6 @@
                     {
                         @:<tr>
                     }
-                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
