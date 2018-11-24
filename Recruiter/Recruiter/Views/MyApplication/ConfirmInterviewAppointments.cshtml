@@ -8,6 +8,7 @@
 
 <hr />
 <h3>Appointments</h3>
+<div asp-validation-summary="All" class="text-danger"></div>
 
 <div class="row panel-body">
     @if (Model.InterviewAppointments.Count() != 0)
@@ -62,6 +63,7 @@
        asp-route-returnurl="@ViewData["ReturnUrl"]">
         Request for new appointment
     </a>
+    <a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-id="@Model.Application.Id">Back</a>
 </div>
 
 @*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">

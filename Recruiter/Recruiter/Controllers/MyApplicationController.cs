@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Recruiter.AttributeFilters;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.MyApplicationViewModels;
@@ -177,7 +178,7 @@ namespace Recruiter.Controllers
             return View(stage);
         }
 
-
+        [ImportModelState]
         public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -188,10 +189,27 @@ namespace Recruiter.Controllers
             return View(vm);
         }
 
+        [ExportModelState]
         public async Task<IActionResult> ConfirmAppointmentInInterview(string interviewAppointmentId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
+
+            try
+            {
+                await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
+            }
+            catch (ApplicationException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            if (!ModelState.IsValid)
+            {
+                var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
+                return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
+
+                //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+                //return View(vm);
+            }
 
             return RedirectToLocal(returnUrl);
             //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });

@@ -372,6 +372,8 @@ namespace Recruiter.Services.Implementation
                 throw new Exception($"InterviewAppointments with id {interviewAppointmentId} not found. (UserID: {userId})");
             if (appointmentToConfirm.Interview.Application.UserId != userId)
                 throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
+            if (appointmentToConfirm.StartTime < DateTime.UtcNow)
+                throw new ApplicationException($"You can't confirm appointment that StartTime isn't in the future.");
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
             appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
@@ -383,6 +385,22 @@ namespace Recruiter.Services.Implementation
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
 
+            //throw new NotImplementedException();
+        }
+
+        public async Task<string> GetStageIdThatContainInterviewAppointmentWithId(string interviewAppointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing GetStageIdThatContainInterviewAppointmentWithId with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
+
+            var stage = await _context.Interviews
+                .Include(x => x.InterviewAppointments)
+                .Where(x => x.InterviewAppointments.Any(y => y.Id == interviewAppointmentId))
+                .FirstOrDefaultAsync();
+
+            if(stage == null)
+                throw new Exception($"ApplicationStage that contain interview appointment with id {interviewAppointmentId} not found. (UserID: {userId})");
+
+            return stage.Id;
             //throw new NotImplementedException();
         }
 
@@ -426,5 +444,7 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
+
+        
     }
 }
