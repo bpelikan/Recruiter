@@ -45,24 +45,12 @@ namespace Recruiter.Controllers
         #region ApplicationsStagesToReview()
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
-            //if (stageName == "Homework")
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReviewHomework), new { stageName = "Homework"});
-            
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
 
             return View(vm);
         }
-
-        //public IActionResult ApplicationsStagesToReviewHomework(string stageName = "Homework")
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-        //    var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
-        //    vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
-
-        //    return View(vm);
-        //}
         #endregion
 
         #region AssingUserToApplicationStage()
@@ -287,9 +275,6 @@ namespace Recruiter.Controllers
             //                            new { stageId = appointment.InterviewId });
             #endregion
         }
-
-        
-
 
         public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true)
         {
