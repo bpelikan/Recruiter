@@ -513,11 +513,11 @@ namespace Recruiter.Services.Implementation
         }
 
 
-        public async Task SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
+        public async Task SendInterviewAppointmentsToConfirm(string stageId, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
 
-            var stage = await GetApplicationStageBaseToProcessStage(addAppointmentsToInterviewViewModel.StageToProcess.Id, userId) as Interview;
+            var stage = await GetApplicationStageBaseToProcessStage(stageId, userId) as Interview;
             if (stage.State != ApplicationStageState.InProgress)
                 throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
             if (stage.ResponsibleUserId != userId)

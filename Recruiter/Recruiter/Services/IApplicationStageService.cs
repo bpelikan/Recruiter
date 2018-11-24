@@ -29,7 +29,7 @@ namespace Recruiter.Services
 
         Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId);
         Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview,string userId);
-        Task SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, bool accepted, string userId);
+        Task SendInterviewAppointmentsToConfirm(string stageId, bool accepted, string userId);
         Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId);
         Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId);
 

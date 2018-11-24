@@ -150,14 +150,14 @@
 
 
 <a class="btn btn-sm btn-primary"
-       asp-action="AcceptAppointmentsToInterview"
+       asp-action="SendInterviewAppointmentsToConfirm"
        asp-route-stageId="@Model.StageToProcess.Id"
        asp-route-accepted="@true"
        asp-route-returnurl="@ViewData["ReturnUrl"]">
     Send appointment to confirm
 </a>
 <a class="btn btn-sm btn-primary"
-       asp-action="AcceptAppointmentsToInterview"
+       asp-action="SendInterviewAppointmentsToConfirm"
        asp-route-stageId="@Model.StageToProcess.Id"
        asp-route-accepted="@false"
        asp-route-returnurl="@ViewData["ReturnUrl"]">
