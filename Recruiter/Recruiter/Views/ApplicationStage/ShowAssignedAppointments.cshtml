@@ -54,14 +54,6 @@
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>
-                            @*<a asp-action="ShowApplicationStageDetails"
-                               asp-route-stageId="@appointment.InterviewId"
-                               asp-route-returnurl="@Context.Request.Path">
-                                @Html.DisplayFor(model => appointment.Interview.Application.User.FirstName)
-                                @Html.DisplayFor(model => appointment.Interview.Application.User.LastName)
-                                (@Html.DisplayFor(model => appointment.Interview.Application.User.Email))
-                                - @Html.DisplayFor(model => appointment.Interview.Application.JobPosition.Name)
-                            </a>*@
                             <a asp-action="ProcessInterview"
                                asp-route-stageId="@appointment.InterviewId"
                                asp-route-returnurl="@Context.Request.Path">
