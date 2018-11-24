@@ -130,8 +130,7 @@
                         <td>
                             <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd" 
                                 class="btn btn-default" asp-action="RemoveAppointmentsFromInterview" 
-                                                        asp-route-appointmentId="@appointment.Id" 
-                                                        asp-route-returnurl="@Context.Request.Path">
+                                                        asp-route-appointmentId="@appointment.Id">
                                     <span class="glyphicon glyphicon-minus small">
                                     </span>
                             </a>

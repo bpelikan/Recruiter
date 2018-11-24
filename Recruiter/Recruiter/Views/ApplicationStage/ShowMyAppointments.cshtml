@@ -56,7 +56,7 @@
                         @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
                     <td>
                         <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
-                           class="btn btn-default" asp-action="RemoveAppointmentsFromInterview"
+                           class="btn btn-default" asp-action="RemoveMyAppointments"
                            asp-route-appointmentId="@appointment.Id"
                            asp-route-returnurl="@Context.Request.Path">
                             <span class="glyphicon glyphicon-minus small">
