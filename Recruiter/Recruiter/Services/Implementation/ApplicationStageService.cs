@@ -30,104 +30,38 @@ namespace Recruiter.Services.Implementation
             _logger = logger;
             _cvStorageService = cvStorageService;
         }
+        
 
-        public async Task<bool> UpdateNextApplicationStageState(string applicationId)
+        //GET
+        public async Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview, string userId)
         {
-            _logger.LogInformation($"Executing UpdateNextApplicationStageState with applicationId={applicationId}");
+            _logger.LogInformation($"Executing GetCollidingInterviewAppointment. (UserID: {userId})");
 
-            var application = await _context.Applications
-                                                .Include(x => x.ApplicationStages)
-                                                .FirstOrDefaultAsync(x => x.Id == applicationId);
-            if (application == null)
-                throw new Exception($"Application with id {applicationId} not found.)");
+            interview.StartTime = interview.StartTime.ToUniversalTime();
+            interview.EndTime = interview.StartTime.ToUniversalTime()
+                                        .AddMinutes(interview.Duration);
 
-            if (application.ApplicationStages.Count() != 0)
-            {
-                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).FirstOrDefault();
-                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).LastOrDefault();
+            var collisionAppointments = await _context.InterviewAppointments
+                                .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
+                                .Include(x => x.Interview)
+                                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
+                                .Where(x => x.Interview.ResponsibleUserId == userId &&
+                                            (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
+                                             (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
+                                            //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
+                                            //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
+                                            (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
+                                             interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
+                                             x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
+                                .OrderBy(x => x.StartTime)
+                                .ToListAsync();
 
-                if (nextStage != null && nextStage.State == ApplicationStageState.Waiting)
-                {
-                    if ((prevStage == null || prevStage.Accepted) && nextStage.ResponsibleUserId != null)
-                    {
-                        nextStage.State = ApplicationStageState.InProgress;
-                    }
-                    else if (prevStage != null && !prevStage.Accepted)
-                    {
-                        foreach (var stage in application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished))
-                        {
-                            stage.Accepted = false;
-                            stage.State = ApplicationStageState.Finished;
-                        }
-                    }
-                    await _context.SaveChangesAsync();
-                }
-            }
-
-            return true;
-        }
-
-        public async Task<bool> AddRequiredStagesToApplication(string applicationId)
-        {
-            _logger.LogInformation($"Executing AddRequiredStagesToApplication with applicationId={applicationId}");
-
-            var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
-            if (application == null)
-                throw new Exception($"Application with id: {applicationId} not found.");
-
-            var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
-            if (applicationStagesRequirements == null)
-                throw new Exception($"Application Stages Requirements with id: {application.JobPositionId} not found.");
-
-            List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
-            if (applicationStagesRequirements.IsApplicationApprovalRequired)
-            {
-                applicationStages.Add(new ApplicationApproval()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ApplicationId = application.Id,
-                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForApplicatioApprovalId
-                });
-            }
-            if (applicationStagesRequirements.IsPhoneCallRequired)
-            {
-                applicationStages.Add(new PhoneCall()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ApplicationId = application.Id,
-                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForPhoneCallId
-                });
-            }
-            if (applicationStagesRequirements.IsHomeworkRequired)
-            {
-                applicationStages.Add(new Homework()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ApplicationId = application.Id,
-                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId,
-                    HomeworkState = HomeworkState.WaitingForSpecification
-                });
-            }
-            if (applicationStagesRequirements.IsInterviewRequired)
-            {
-                applicationStages.Add(new Interview()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ApplicationId = application.Id,
-                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForInterviewId
-                });
-            }
-
-            if (applicationStages.Count() != 0 && applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
-                applicationStages.OrderBy(x => x.Level).First().State = ApplicationStageState.InProgress;
-
-            await _context.ApplicationStages.AddRangeAsync(applicationStages);
-            await _context.SaveChangesAsync();
-
-            return true;
+            return collisionAppointments;
         }
 
 
+        //GET ApplicationStageBase
         public async Task<ApplicationStageBase> GetApplicationStageBase(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetApplicationStageBase with stageId={stageId}. (UserID: {userId})");
@@ -211,7 +145,7 @@ namespace Recruiter.Services.Implementation
         }
 
 
-
+        //GET ViewModelFor
         public ApplicationsStagesToReviewViewModel GetViewModelForApplicationsStagesToReview(string stageName, string userId)
         {
             List<StagesViewModel> assingStagesCountSortedByName = GetAssignedStagesCountSortedByName(userId);
@@ -391,37 +325,6 @@ namespace Recruiter.Services.Implementation
             return vm;
         }
 
-        public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId)
-        {
-            _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
-
-            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
-            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
-
-            var vm = new ProcessInterviewViewModel()
-            {
-                Application = new ApplicationViewModel()
-                {
-                    Id = stage.Application.Id,
-                    CreatedAt = stage.Application.CreatedAt,
-                    CvFileName = stage.Application.CvFileName,
-                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
-                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-                },
-                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-                StageToProcess = _mapper.Map<ApplicationStageBase, InterviewViewModel>(stage),
-                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
-            };
-
-            var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
-            vm.StageToProcess.InterviewAppointments = appointments.ToList();
-
-            return vm;
-        }
-
-
-
         public async Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
@@ -466,31 +369,117 @@ namespace Recruiter.Services.Implementation
             return vm;
         }
 
-        public async Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview, string userId)
+        public async Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId)
         {
-            _logger.LogInformation($"Executing GetCollidingInterviewAppointment. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetViewModelForProcessInterview with stageId={stageId}. (UserID: {userId})");
 
-            interview.StartTime = interview.StartTime.ToUniversalTime();
-            interview.EndTime = interview.StartTime.ToUniversalTime()
-                                        .AddMinutes(interview.Duration);
+            var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
+            var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
 
-            var collisionAppointments = await _context.InterviewAppointments
-                                .Include(x => x.Interview)
-                                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
-                                .Include(x => x.Interview)
-                                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                                .Where(x => x.Interview.ResponsibleUserId == userId &&
-                                            (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
-                                             (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
-                                            //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
-                                            //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
-                                            (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
-                                             interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
-                                             x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
-                                .OrderBy(x => x.StartTime)
-                                .ToListAsync();
+            var vm = new ProcessInterviewViewModel()
+            {
+                Application = new ApplicationViewModel()
+                {
+                    Id = stage.Application.Id,
+                    CreatedAt = stage.Application.CreatedAt,
+                    CvFileName = stage.Application.CvFileName,
+                    CvFileUrl = _cvStorageService.UriFor(stage.Application.CvFileName),
+                    User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                    JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                },
+                ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
+                StageToProcess = _mapper.Map<ApplicationStageBase, InterviewViewModel>(stage),
+                ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
+            };
 
-            return collisionAppointments;
+            var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
+            vm.StageToProcess.InterviewAppointments = appointments.ToList();
+
+            return vm;
+        }
+
+        public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForShowMyAppointments. (UserID: {userId})");
+
+            var myAppointments = await _context.InterviewAppointments
+                .Include(x => x.Interview)
+                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
+                .Include(x => x.Interview)
+                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
+                .Where(x => x.Interview.ResponsibleUserId == userId)
+                .OrderBy(x => x.StartTime)
+                .ToListAsync();// &&
+                               //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
+            foreach (var myAppointment in myAppointments)
+            {
+                myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();
+                myAppointment.EndTime = myAppointment.EndTime.ToLocalTime();
+                myAppointment.AcceptedByRecruitTime = myAppointment.AcceptedByRecruitTime?.ToLocalTime();
+            }
+            return myAppointments;
+        }
+
+
+        //ADD
+        public async Task<bool> AddRequiredStagesToApplication(string applicationId)
+        {
+            _logger.LogInformation($"Executing AddRequiredStagesToApplication with applicationId={applicationId}");
+
+            var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
+            if (application == null)
+                throw new Exception($"Application with id: {applicationId} not found.");
+
+            var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
+            if (applicationStagesRequirements == null)
+                throw new Exception($"Application Stages Requirements with id: {application.JobPositionId} not found.");
+
+            List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
+            if (applicationStagesRequirements.IsApplicationApprovalRequired)
+            {
+                applicationStages.Add(new ApplicationApproval()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ApplicationId = application.Id,
+                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForApplicatioApprovalId
+                });
+            }
+            if (applicationStagesRequirements.IsPhoneCallRequired)
+            {
+                applicationStages.Add(new PhoneCall()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ApplicationId = application.Id,
+                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForPhoneCallId
+                });
+            }
+            if (applicationStagesRequirements.IsHomeworkRequired)
+            {
+                applicationStages.Add(new Homework()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ApplicationId = application.Id,
+                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForHomeworkId,
+                    HomeworkState = HomeworkState.WaitingForSpecification
+                });
+            }
+            if (applicationStagesRequirements.IsInterviewRequired)
+            {
+                applicationStages.Add(new Interview()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ApplicationId = application.Id,
+                    ResponsibleUserId = applicationStagesRequirements.DefaultResponsibleForInterviewId
+                });
+            }
+
+            if (applicationStages.Count() != 0 && applicationStages.OrderBy(x => x.Level).First().ResponsibleUserId != null)
+                applicationStages.OrderBy(x => x.Level).First().State = ApplicationStageState.InProgress;
+
+            await _context.ApplicationStages.AddRangeAsync(applicationStages);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId)
@@ -513,72 +502,55 @@ namespace Recruiter.Services.Implementation
         }
 
 
-        public async Task SendInterviewAppointmentsToConfirm(string stageId, bool accepted, string userId)
+        //UPDATE
+        public async Task<bool> UpdateNextApplicationStageState(string applicationId)
         {
-            _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
+            _logger.LogInformation($"Executing UpdateNextApplicationStageState with applicationId={applicationId}");
 
-            var stage = await GetApplicationStageBaseToProcessStage(stageId, userId) as Interview;
-            if (stage.State != ApplicationStageState.InProgress)
-                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
-            if (stage.ResponsibleUserId != userId)
-                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
-            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments &&
-                    stage.InterviewState != InterviewState.RequestForNewAppointments)
-                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments or RequestForNewAppointments InterviewState. (UserID: {userId})");
+            var application = await _context.Applications
+                                                .Include(x => x.ApplicationStages)
+                                                .FirstOrDefaultAsync(x => x.Id == applicationId);
+            if (application == null)
+                throw new Exception($"Application with id {applicationId} not found.)");
 
-            var appointments = _context.InterviewAppointments
-                                            .Where(x => x.InterviewId == stage.Id &&
-                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
-            if (appointments.Count() != 0)
+            if (application.ApplicationStages.Count() != 0)
             {
-                if (accepted)
+                var nextStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State != ApplicationStageState.Finished).FirstOrDefault();
+                var prevStage = application.ApplicationStages.OrderBy(x => x.Level).Where(x => x.State == ApplicationStageState.Finished).LastOrDefault();
+
+                if (nextStage != null && nextStage.State == ApplicationStageState.Waiting)
                 {
-                    foreach (var appointment in appointments)
+                    if ((prevStage == null || prevStage.Accepted) && nextStage.ResponsibleUserId != null)
                     {
-                        appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                        nextStage.State = ApplicationStageState.InProgress;
                     }
-                    stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
+                    else if (prevStage != null && !prevStage.Accepted)
+                    {
+                        foreach (var stage in application.ApplicationStages.Where(x => x.State != ApplicationStageState.Finished))
+                        {
+                            stage.Accepted = false;
+                            stage.State = ApplicationStageState.Finished;
+                        }
+                    }
+                    await _context.SaveChangesAsync();
                 }
-                else
-                {
-                    _context.InterviewAppointments.RemoveRange(appointments);
-                }
-
-                await _context.SaveChangesAsync();
             }
 
-
-            //var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
-            //if (stage.State != ApplicationStageState.InProgress)
-            //    throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
-            //if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
-            //    throw new Exception($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
-
-            //stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
-            //stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
-            //stage.HomeworkState = HomeworkState.WaitingForRead;
-            //await _context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId)
+        public async Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId)
         {
-            _logger.LogInformation($"Executing RemoveAppointmentsFromInterview with appointmentId={appointmentId}. (UserID: {userId})");
+            var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
 
-            var appointment = await _context.InterviewAppointments
-                                            .FirstOrDefaultAsync(x => x.Id == appointmentId);
-            if (appointment == null)
-                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
-            if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
-            {
-                _context.InterviewAppointments.Remove(appointment);
-                await _context.SaveChangesAsync();
-            }
+            if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
+                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
 
-            return appointment;
+            stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
+            await _context.SaveChangesAsync();
 
-            //throw new NotImplementedException();
+            await UpdateNextApplicationStageState(stage.ApplicationId);
         }
-
 
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
         {
@@ -668,42 +640,8 @@ namespace Recruiter.Services.Implementation
             await UpdateNextApplicationStageState(stage.ApplicationId);
         }
 
-        public async Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId)
-        {
-            var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
 
-            if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
-                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
-
-            stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
-            await _context.SaveChangesAsync();
-
-            await UpdateNextApplicationStageState(stage.ApplicationId);
-        }
-
-
-        public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId)
-        {
-            _logger.LogInformation($"Executing GetViewModelForShowMyAppointments. (UserID: {userId})");
-
-            var myAppointments = await _context.InterviewAppointments
-                .Include(x => x.Interview)
-                    .ThenInclude(x => x.Application).ThenInclude(x => x.User)
-                .Include(x => x.Interview)
-                    .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                .Where(x => x.Interview.ResponsibleUserId == userId)
-                .OrderBy(x => x.StartTime)
-                .ToListAsync();// &&
-                            //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
-            foreach (var myAppointment in myAppointments)
-            {
-                myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();
-                myAppointment.EndTime = myAppointment.EndTime.ToLocalTime();
-                myAppointment.AcceptedByRecruitTime = myAppointment.AcceptedByRecruitTime?.ToLocalTime();
-            }
-            return myAppointments;
-        }
-
+        //REMOVE
         public async Task<InterviewAppointment> RemoveAssignedAppointment(string appointmentId, string userId)
         {
             _logger.LogInformation($"Executing RemoveAppointmentsAssignToMe with appointmentId={appointmentId}. (UserID: {userId})");
@@ -713,7 +651,7 @@ namespace Recruiter.Services.Implementation
                                             .FirstOrDefaultAsync(x => x.Id == appointmentId);
             if (appointment == null)
                 throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
-            if(appointment.Interview.ResponsibleUserId != userId)
+            if (appointment.Interview.ResponsibleUserId != userId)
                 throw new Exception($"User with id {userId} is not allowed to delete InterviewAppointment with id {appointmentId}. (UserID: {userId})");
 
             if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
@@ -725,7 +663,76 @@ namespace Recruiter.Services.Implementation
             return appointment;
         }
 
+        public async Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing RemoveAppointmentsFromInterview with appointmentId={appointmentId}. (UserID: {userId})");
 
+            var appointment = await _context.InterviewAppointments
+                                            .FirstOrDefaultAsync(x => x.Id == appointmentId);
+            if (appointment == null)
+                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
+            if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+            {
+                _context.InterviewAppointments.Remove(appointment);
+                await _context.SaveChangesAsync();
+            }
+
+            return appointment;
+
+            //throw new NotImplementedException();
+        }
+        
+
+        //SEND
+        public async Task SendInterviewAppointmentsToConfirm(string stageId, bool accepted, string userId)
+        {
+            _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBaseToProcessStage(stageId, userId) as Interview;
+            if (stage.State != ApplicationStageState.InProgress)
+                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            if (stage.ResponsibleUserId != userId)
+                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments &&
+                    stage.InterviewState != InterviewState.RequestForNewAppointments)
+                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments or RequestForNewAppointments InterviewState. (UserID: {userId})");
+
+            var appointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id &&
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd);
+            if (appointments.Count() != 0)
+            {
+                if (accepted)
+                {
+                    foreach (var appointment in appointments)
+                    {
+                        appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
+                    }
+                    stage.InterviewState = InterviewState.WaitingForConfirmAppointment;
+                }
+                else
+                {
+                    _context.InterviewAppointments.RemoveRange(appointments);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+
+            //var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
+            //if (stage.State != ApplicationStageState.InProgress)
+            //    throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            //if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
+            //    throw new Exception($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
+
+            //stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
+            //stage.Duration = addHomeworkSpecificationViewModel.StageToProcess.Duration;
+            //stage.HomeworkState = HomeworkState.WaitingForRead;
+            //await _context.SaveChangesAsync();
+        }
+
+        
+        //PRIVATE
         private IQueryable<ApplicationStageBase> GetStagesFromApplicationId(string applicationId, string userId)
         {
             _logger.LogInformation($"Executing GetStagesFromApplicationId with applicationId={applicationId}. (UserID: {userId})");
