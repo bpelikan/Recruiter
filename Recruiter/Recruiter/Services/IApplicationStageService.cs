@@ -38,7 +38,7 @@ namespace Recruiter.Services
         Task UpdateInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId);
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
 
-        Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId);
-        Task<InterviewAppointment> RemoveAppointmentsAssignToMe(string appointmentId, string userId);
+        Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId);
+        Task<InterviewAppointment> RemoveAssignedAppointment(string appointmentId, string userId);
     }
 }

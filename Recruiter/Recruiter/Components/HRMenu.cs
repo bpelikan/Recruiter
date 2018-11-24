@@ -20,9 +20,9 @@ namespace Recruiter.Components
         {
             var menuItems = new List<HRMenuItem> {
                 new HRMenuItem(){
-                    DisplayValue = _stringLocalizer["Appointments"],
+                    DisplayValue = _stringLocalizer["Assigned Appointments"],
                     ControllerValue = "ApplicationStage",
-                    ActionValue = "ShowMyAppointments"
+                    ActionValue = "ShowAssignedAppointments"
                 },
                 new HRMenuItem(){
                     DisplayValue = _stringLocalizer["Stages to review"],

@@ -682,7 +682,7 @@ namespace Recruiter.Services.Implementation
         }
 
 
-        public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowMyAppointments(string userId)
+        public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForShowMyAppointments. (UserID: {userId})");
 
@@ -704,7 +704,7 @@ namespace Recruiter.Services.Implementation
             return myAppointments;
         }
 
-        public async Task<InterviewAppointment> RemoveAppointmentsAssignToMe(string appointmentId, string userId)
+        public async Task<InterviewAppointment> RemoveAssignedAppointment(string appointmentId, string userId)
         {
             _logger.LogInformation($"Executing RemoveAppointmentsAssignToMe with appointmentId={appointmentId}. (UserID: {userId})");
 

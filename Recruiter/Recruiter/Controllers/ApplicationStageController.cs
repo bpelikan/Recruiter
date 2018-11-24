@@ -394,20 +394,20 @@ namespace Recruiter.Controllers
         }
         #endregion
 
-        public async Task<IActionResult> ShowMyAppointments(string returnUrl = null)
+        public async Task<IActionResult> ShowAssignedAppointments(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var myAppointments = await _applicationStageService.GetViewModelForShowMyAppointments(myId);
+            var myAppointments = await _applicationStageService.GetViewModelForShowAssignedAppointments(myId);
 
             return View(myAppointments);
         }
 
-        public async Task<IActionResult> RemoveMyAppointments(string appointmentId, string returnUrl = null)
+        public async Task<IActionResult> RemoveAssignedAppointment(string appointmentId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var appointment = await _applicationStageService.RemoveAppointmentsAssignToMe(appointmentId, myId);
+            var appointment = await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
 
             return RedirectToLocal(returnUrl);
         }
