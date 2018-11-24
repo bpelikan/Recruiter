@@ -400,7 +400,7 @@ namespace Recruiter.Services.Implementation
 
         public async Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId)
         {
-            _logger.LogInformation($"Executing GetViewModelForShowMyAppointments. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetViewModelForShowAssignedAppointments. (UserID: {userId})");
 
             var myAppointments = await _context.InterviewAppointments
                 .Include(x => x.Interview)
@@ -408,8 +408,8 @@ namespace Recruiter.Services.Implementation
                 .Include(x => x.Interview)
                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
                 .Where(x => x.Interview.ResponsibleUserId == userId && 
-                            x.InterviewAppointmentState != InterviewAppointmentState.Finished &&
-                            DateTime.UtcNow <= x.StartTime)
+                            x.InterviewAppointmentState != InterviewAppointmentState.Finished) //&&
+                            //DateTime.UtcNow <= x.StartTime)
                 .OrderBy(x => x.StartTime)
                 .ToListAsync();
 
