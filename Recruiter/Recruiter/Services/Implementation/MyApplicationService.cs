@@ -317,7 +317,8 @@ namespace Recruiter.Services.Implementation
 
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&
-                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm)
+                                                        x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm &&
+                                                        DateTime.UtcNow <= x.StartTime)
                                             .OrderBy(x => x.StartTime);
 
             foreach (var appointment in appointments)

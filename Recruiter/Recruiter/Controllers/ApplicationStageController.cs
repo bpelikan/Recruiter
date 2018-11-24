@@ -373,7 +373,10 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Interview;
 
-            stage.InterviewAppointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id).ToList();
+            stage.InterviewAppointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id)
+                                            .OrderBy(x => x.StartTime)
+                                            .ToList();
 
             return View(stage);
         }
