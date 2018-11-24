@@ -422,14 +422,14 @@ namespace Recruiter.Services.Implementation
 
 
 
-        public async Task<AddAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId)
+        public async Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForAddAppointmentsToInterview with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToShowInProcessStage(stageId, userId);
             var applicationStages = GetStagesFromApplicationId(stage.ApplicationId, userId);
 
-            var vm = new AddAppointmentsToInterviewViewModel()
+            var vm = new SetAppointmentsToInterviewViewModel()
             {
                 Application = new ApplicationViewModel()
                 {
@@ -441,7 +441,7 @@ namespace Recruiter.Services.Implementation
                     JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
                 },
                 ApplicationStagesFinished = applicationStages.Where(x => x.State == ApplicationStageState.Finished).OrderBy(x => x.Level).ToArray(),
-                StageToProcess = _mapper.Map<ApplicationStageBase, AddAppointmentsViewModel>(stage),
+                StageToProcess = _mapper.Map<ApplicationStageBase, SetAppointmentsViewModel>(stage),
                 ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
             };
 
@@ -493,19 +493,19 @@ namespace Recruiter.Services.Implementation
             return collisionAppointments;
         }
 
-        public async Task AddNewInterviewAppointments(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId)
+        public async Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId)
         {
             _logger.LogInformation($"Executing AddNewInterviewAppointments. (UserID: {userId})");
 
             var newInterviewAppointment = new InterviewAppointment()
             {
-                Id = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
+                Id = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
                 InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
-                InterviewId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
-                StartTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
-                Duration = addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
-                EndTime = addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
-                                        .AddMinutes(addAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
+                InterviewId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
+                StartTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
+                Duration = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
+                EndTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
+                                        .AddMinutes(setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
             };
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
@@ -513,7 +513,7 @@ namespace Recruiter.Services.Implementation
         }
 
 
-        public async Task SetAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
+        public async Task SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId)
         {
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
 

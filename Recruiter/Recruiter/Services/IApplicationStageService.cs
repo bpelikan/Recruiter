@@ -27,10 +27,10 @@ namespace Recruiter.Services
         Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId);
 
 
-        Task<AddAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId);
+        Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId);
         Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview,string userId);
-        Task SetAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, bool accepted, string userId);
-        Task AddNewInterviewAppointments(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel, string userId);
+        Task SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, bool accepted, string userId);
+        Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId);
 
 
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);

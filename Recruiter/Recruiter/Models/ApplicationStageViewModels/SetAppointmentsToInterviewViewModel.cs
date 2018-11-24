@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Models.ApplicationStageViewModels
 {
-    public class AddAppointmentsToInterviewViewModel
+    public class SetAppointmentsToInterviewViewModel
     {
         public ApplicationViewModel Application { get; set; }
 
         public InterviewAppointment NewInterviewAppointment { get; set; }
 
         public virtual ICollection<ApplicationStageBase> ApplicationStagesFinished { get; set; }
-        public AddAppointmentsViewModel StageToProcess { get; set; }
+        public SetAppointmentsViewModel StageToProcess { get; set; }
         public virtual ICollection<ApplicationStageBase> ApplicationStagesWaiting { get; set; }
     }
 
-    public class AddAppointmentsViewModel
+    public class SetAppointmentsViewModel
     {
         public string Id { get; set; }
         //public string Note { get; set; }

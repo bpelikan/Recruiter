@@ -234,15 +234,15 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetAppointmentsToInterview(AddAppointmentsToInterviewViewModel addAppointmentsToInterviewViewModel)
+        public async Task<IActionResult> SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             if (ModelState.IsValid)
             {
-                if (addAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime() < DateTime.UtcNow)
+                if (setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime() < DateTime.UtcNow)
                     ModelState.AddModelError("", "StartTime must be in the future.");
-                var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(addAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
+                var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(setAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
                 foreach (var app in collidingAppointments)
                 {
                     ModelState.AddModelError("", $"Collision with appointment: " +
@@ -253,14 +253,14 @@ namespace Recruiter.Controllers
             }
             if (!ModelState.IsValid)
             {
-                var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
-                vm.NewInterviewAppointment = addAppointmentsToInterviewViewModel.NewInterviewAppointment;
+                var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
+                vm.NewInterviewAppointment = setAppointmentsToInterviewViewModel.NewInterviewAppointment;
                 return View(vm);
             }
-            await _applicationStageService.AddNewInterviewAppointments(addAppointmentsToInterviewViewModel, myId);
+            await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-                                       new { stageId = addAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
+                                       new { stageId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
         }
 
         public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
@@ -283,9 +283,9 @@ namespace Recruiter.Controllers
 
         public async Task<IActionResult> AcceptAppointmentsToInterview(string stageId, bool accepted = true)
         {
-            var addAppointmentsToInterviewViewModel = new AddAppointmentsToInterviewViewModel()
+            var addAppointmentsToInterviewViewModel = new SetAppointmentsToInterviewViewModel()
             {
-                StageToProcess = new AddAppointmentsViewModel()
+                StageToProcess = new SetAppointmentsViewModel()
                 {
                     Id = stageId,
                 }
