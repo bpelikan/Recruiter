@@ -481,15 +481,15 @@ namespace Recruiter.Services.Implementation
                                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
                                 .Where(x => x.Interview.ResponsibleUserId == userId &&
                                             (x.InterviewAppointmentState != InterviewAppointmentState.Rejected ||
-                                             x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId) &&
+                                             (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
                                             //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
                                             //    (x.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd && x.InterviewId == newInterviewAppointment.InterviewId)) &&
-                                            ((interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime) ||
-                                              interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime) ||
-                                              x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime)
+                                            (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
+                                             interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
+                                             x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
                                 .OrderBy(x => x.StartTime)
                                 .ToListAsync();
-            
+
             return collisionAppointments;
         }
 
@@ -691,8 +691,10 @@ namespace Recruiter.Services.Implementation
                     .ThenInclude(x => x.Application).ThenInclude(x => x.User)
                 .Include(x => x.Interview)
                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                .Where(x => x.Interview.ResponsibleUserId == userId).ToListAsync();// &&
-                                                                                   //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
+                .Where(x => x.Interview.ResponsibleUserId == userId)
+                .OrderBy(x => x.StartTime)
+                .ToListAsync();// &&
+                            //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
             foreach (var myAppointment in myAppointments)
             {
                 myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();

@@ -36,11 +36,48 @@
                     {
                         @:<tr style="color: gray">
                     }
+                    else if(appointment.InterviewAppointmentState == InterviewAppointmentState.Rejected)
+                    {
+                        @:<tr style="color: gray">
+                    }
+                    else if(appointment.InterviewAppointmentState == InterviewAppointmentState.Confirmed)
+                    {
+                        @:<tr style="color: green">
+                    }
                     else
                     {
                         @:<tr>
-}
-                    @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
+                    }
+                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
+                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.Duration)</td>
+                        <td>
+                            @Html.DisplayFor(model => appointment.Interview.Application.User.FirstName)
+                            @Html.DisplayFor(model => appointment.Interview.Application.User.LastName)
+                            (@Html.DisplayFor(model => appointment.Interview.Application.User.Email))
+                            - @Html.DisplayFor(model => appointment.Interview.Application.JobPosition.Name)
+                        </td>
+                        <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
+                        <td>
+                            <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
+                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        <td>
+                            <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
+                               class="btn btn-default" asp-action="RemoveMyAppointments"
+                               asp-route-appointmentId="@appointment.Id"
+                               asp-route-returnurl="@Context.Request.Path">
+                                <span class="glyphicon glyphicon-minus small">
+                                </span>
+                            </a>
+                        </td>
+                        @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                    @:</tr>
+                }   
+                @*@foreach (var appointment in Model.Where(x => x.InterviewAppointmentState == InterviewAppointmentState.Rejected))
+                {
+                    <tr style="color: red">
+
                     <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                     <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                     <td>@Html.DisplayFor(model => appointment.Duration)</td>
@@ -63,9 +100,8 @@
                             </span>
                         </a>
                     </td>
-                    @*<td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
-                @:</tr>
-                }   
+                </tr>
+                }*@
             </tbody>
         </table>
     }

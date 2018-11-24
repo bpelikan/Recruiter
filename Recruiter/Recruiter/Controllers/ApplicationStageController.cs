@@ -248,7 +248,8 @@ namespace Recruiter.Controllers
                     ModelState.AddModelError("", $"Collision with appointment: " +
                             $"{app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. " +
                             $"({app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - " +
-                            $"{app.Interview.Application.JobPosition.Name})");
+                            $"{app.Interview.Application.JobPosition.Name}) - " +
+                            $"{app.InterviewAppointmentState}");
                 }
             }
             if (!ModelState.IsValid)
