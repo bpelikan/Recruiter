@@ -25,7 +25,7 @@ namespace Recruiter.Components
                     ActionValue = "ShowAssignedAppointments"
                 },
                 new HRMenuItem(){
-                    DisplayValue = _stringLocalizer["Stages to review"],
+                    DisplayValue = _stringLocalizer["Assigned Stages"],
                     ControllerValue = "ApplicationStage",
                     ActionValue = "ApplicationsStagesToReview"
                 },
