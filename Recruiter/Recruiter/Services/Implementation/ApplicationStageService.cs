@@ -408,7 +408,8 @@ namespace Recruiter.Services.Implementation
                 .Include(x => x.Interview)
                     .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
                 .Where(x => x.Interview.ResponsibleUserId == userId && 
-                            x.InterviewAppointmentState != InterviewAppointmentState.Finished)
+                            x.InterviewAppointmentState != InterviewAppointmentState.Finished &&
+                            DateTime.UtcNow <= x.StartTime)
                 .OrderBy(x => x.StartTime)
                 .ToListAsync();// &&
                                //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
