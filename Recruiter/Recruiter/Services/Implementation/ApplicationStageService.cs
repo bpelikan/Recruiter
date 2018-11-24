@@ -411,8 +411,8 @@ namespace Recruiter.Services.Implementation
                             x.InterviewAppointmentState != InterviewAppointmentState.Finished &&
                             DateTime.UtcNow <= x.StartTime)
                 .OrderBy(x => x.StartTime)
-                .ToListAsync();// &&
-                               //x.InterviewAppointmentState == InterviewAppointmentState.Confirmed).ToListAsync();
+                .ToListAsync();
+
             foreach (var myAppointment in myAppointments)
             {
                 myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();
