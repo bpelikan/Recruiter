@@ -266,19 +266,25 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-
-            var appointment = await _context.InterviewAppointments
-                                            .FirstOrDefaultAsync(x => x.Id == appointmentId);
-            if(appointment == null)
-                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {myId})");
-            if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
-            {
-                _context.InterviewAppointments.Remove(appointment);
-                await _context.SaveChangesAsync();
-            }
+            var appointment = await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
                                         new { stageId = appointment.InterviewId });
+
+            #region del
+            //var appointment = await _context.InterviewAppointments
+            //                                .FirstOrDefaultAsync(x => x.Id == appointmentId);
+            //if(appointment == null)
+            //    throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {myId})");
+            //if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+            //{
+            //    _context.InterviewAppointments.Remove(appointment);
+            //    await _context.SaveChangesAsync();
+            //}
+
+            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
+            //                            new { stageId = appointment.InterviewId });
+            #endregion
         }
 
         public async Task<IActionResult> AcceptAppointmentsToInterview(string stageId, bool accepted = true)

@@ -560,7 +560,24 @@ namespace Recruiter.Services.Implementation
             //await _context.SaveChangesAsync();
         }
 
+        public async Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing RemoveAppointmentsFromInterview with appointmentId={appointmentId}. (UserID: {userId})");
 
+            var appointment = await _context.InterviewAppointments
+                                            .FirstOrDefaultAsync(x => x.Id == appointmentId);
+            if (appointment == null)
+                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
+            if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
+            {
+                _context.InterviewAppointments.Remove(appointment);
+                await _context.SaveChangesAsync();
+            }
+
+            return appointment;
+
+            //throw new NotImplementedException();
+        }
 
 
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
@@ -680,6 +697,7 @@ namespace Recruiter.Services.Implementation
             {
                 myAppointment.StartTime = myAppointment.StartTime.ToLocalTime();
                 myAppointment.EndTime = myAppointment.EndTime.ToLocalTime();
+                myAppointment.AcceptedByRecruitTime = myAppointment.AcceptedByRecruitTime?.ToLocalTime();
             }
             return myAppointments;
         }

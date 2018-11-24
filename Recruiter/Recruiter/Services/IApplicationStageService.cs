@@ -31,7 +31,7 @@ namespace Recruiter.Services
         Task<IEnumerable<InterviewAppointment>> GetCollidingInterviewAppointment(InterviewAppointment interview,string userId);
         Task SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, bool accepted, string userId);
         Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId);
-
+        Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId);
 
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
         Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId);

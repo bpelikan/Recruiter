@@ -20,7 +20,7 @@
                     <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
                     <th>User - JobPosition</th>
                     <th>@Html.DisplayNameFor(model => model.First().InterviewAppointmentState)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruit)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruit)</th>*@
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruitTime)</th>
                     <th>
                         <span class="glyphicon glyphicon-wrench">
@@ -51,8 +51,9 @@
                         - @Html.DisplayFor(model => appointment.Interview.Application.JobPosition.Name)
                     </td>
                     <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
-                    <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                    <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                    <td>
+                        <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
+                        @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
                     <td>
                         <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
                            class="btn btn-default" asp-action="RemoveAppointmentsFromInterview"
