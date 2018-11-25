@@ -80,42 +80,82 @@
 
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
-                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
-                <td >
-                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.FirstAndLastName) 
-                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval != null">
-                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.Email))
-                    </b>
+                <td>
+                    @*@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)*@
+                    <span condition="@Model.ApplicationStagesRequirement.IsApplicationApprovalRequired" class="glyphicon glyphicon-ok" style="color:green"></span>
+                    <span condition="!@Model.ApplicationStagesRequirement.IsApplicationApprovalRequired" class="glyphicon glyphicon-remove" style="color:red"></span>
+                </td>
+                <td>
+                    @if (@Model.ApplicationStagesRequirement.IsApplicationApprovalRequired)
+                    {
+                        @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.FirstAndLastName)
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval != null">
+                            (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval.Email))
+                        </b>
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApproval == null">
+                            NOT SET
+                        </b>
+                    }
                 </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
-                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
                 <td>
-                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.FirstAndLastName)
-                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall != null">
-                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.Email))
-                    </b>
+                    @*@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)*@
+                    <span condition="@Model.ApplicationStagesRequirement.IsPhoneCallRequired" class="glyphicon glyphicon-ok" style="color:green"></span>
+                    <span condition="!@Model.ApplicationStagesRequirement.IsPhoneCallRequired" class="glyphicon glyphicon-remove" style="color:red"></span>
+                </td>
+                <td>
+                    @if (@Model.ApplicationStagesRequirement.IsPhoneCallRequired)
+                    {
+                        @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.FirstAndLastName)
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall != null">
+                            (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall.Email))
+                        </b>
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForPhoneCall == null">
+                            NOT SET
+                        </b>
+                    }
                 </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
-                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
                 <td>
-                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.FirstAndLastName)
-                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForHomework != null">
-                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.Email))
-                    </b>
+                    @*@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)*@
+                    <span condition="@Model.ApplicationStagesRequirement.IsHomeworkRequired" class="glyphicon glyphicon-ok" style="color:green"></span>
+                    <span condition="!@Model.ApplicationStagesRequirement.IsHomeworkRequired" class="glyphicon glyphicon-remove" style="color:red"></span>
+                </td>
+                <td>
+                    @if (@Model.ApplicationStagesRequirement.IsHomeworkRequired)
+                    {
+                        @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.FirstAndLastName)
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForHomework != null">
+                            (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForHomework.Email))
+                        </b>
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForHomework == null">
+                            NOT SET
+                        </b>
+                    }
                 </td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
-                <td>@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
                 <td>
-                    @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.FirstAndLastName)
-                    <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForInterview != null">
-                        (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.Email))
-                    </b>
+                    @*@Html.DisplayFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)*@
+                    <span condition="@Model.ApplicationStagesRequirement.IsInterviewRequired" class="glyphicon glyphicon-ok" style="color:green"></span>
+                    <span condition="!@Model.ApplicationStagesRequirement.IsInterviewRequired" class="glyphicon glyphicon-remove" style="color:red"></span>
+                </td>
+                <td>
+                    @if (@Model.ApplicationStagesRequirement.IsInterviewRequired)
+                    {
+                        @Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.FirstAndLastName)
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForInterview != null">
+                            (@Html.DisplayFor(model => model.ApplicationStagesRequirement.DefaultResponsibleForInterview.Email))
+                        </b>
+                        <b Condition="Model.ApplicationStagesRequirement.DefaultResponsibleForInterview == null">
+                            NOT SET
+                        </b>
+                    }
                 </td>
             </tr>
         </table>

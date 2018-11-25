@@ -5,7 +5,7 @@
     ViewData["Title"] = "Applications";
 }
 
-<h2>Applications to review</h2>
+<h2>Application stages to review</h2>
 
 <div>
     <ul class="nav nav-tabs">
@@ -53,7 +53,13 @@
 
 @if (!Model.AsignedStages.Any())
 {
-    <tr><td colspan="3" class="text-center">No applications</td></tr>
+    <tr>
+        <td colspan="3" class="text-center">
+            <br />
+            @*@:Any job position not found.*@
+            Any application stages to review not found.
+        </td>
+    </tr>
 }
 else
 {
