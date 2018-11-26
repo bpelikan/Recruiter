@@ -3,20 +3,21 @@
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-<p>
-    Please try again or contact with the administrator by including given below <i><strong>Request Id</strong></i>.
-</p>
-
+@*<h1 class="text-danger">Error.</h1>*@
+@*<h2 class="text-danger">An error occurred while processing your request.</h2>*@
+<h2 class="text-danger">Sorry, something went wrong.</h2>
+<hr />
+<h3>
+    Please try again or contact with the administrator by including below information.
+</h3>
+<br />
 @if (Model.ShowRequestId)
 {
     <p>
         <strong>Request ID:</strong> <code>@Model.RequestId</code>
     </p>
 }
-
-<hr />
+<br />
 <a Condition="@ViewContext.HttpContext.Request.Query["returnurl"].ToString().Length != 0" class="btn btn-sm btn-default" href="@ViewContext.HttpContext.Request.Query["returnurl"]">Back</a>
 <a Condition="@ViewContext.HttpContext.Request.Query["returnurl"].ToString().Length == 0" class="btn btn-sm btn-default" asp-action="Index">Back</a>
 
