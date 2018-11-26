@@ -13,10 +13,21 @@
     </p>
 }
 
-<h3>Development Mode</h3>
+<hr />
+<a Condition="@ViewContext.HttpContext.Request.Query["returnurl"].ToString().Length != 0" class="btn btn-sm btn-default" href="@ViewContext.HttpContext.Request.Query["returnurl"]">Back</a>
+<a Condition="@ViewContext.HttpContext.Request.Query["returnurl"].ToString().Length == 0" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+
+@*<br />
+<hr />
+<a class="btn btn-sm btn-default" asp-action="Index">Back</a>*@
+
+@*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>*@
+@*<a Condition="@ViewContext.HttpContext.Request.Query["returnurl"].ToString().Length != 0" href="@ViewContext.HttpContext.Request.Query["returnurl"]">return url</a>*@
+
+@*<h3>Development Mode</h3>
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
 </p>
 <p>
     <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+</p>*@
