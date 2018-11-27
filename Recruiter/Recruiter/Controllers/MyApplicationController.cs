@@ -183,7 +183,6 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-
             if (stageId == null)
                 return RedirectToLocal(returnUrl);
 

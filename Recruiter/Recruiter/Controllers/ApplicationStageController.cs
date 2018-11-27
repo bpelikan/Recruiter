@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -47,6 +48,8 @@ namespace Recruiter.Controllers
         [Route("{stageName?}")]
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
+            //TempData["Error"] = $"Something went wrong, try again or contact with administrator. ({Activity.Current?.Id ?? HttpContext.TraceIdentifier})";
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
@@ -57,19 +60,28 @@ namespace Recruiter.Controllers
 
         #region AssingUserToApplicationStage()
         [Route("{stageId?}")]
-        public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
+        public async Task<IActionResult> AssingUserToApplicationStage(string stageId, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            if (stageId == null)
+            {
+                TempData["Error"] = "Id couldn't be null.";
+                return RedirectToLocal(returnUrl);
+            }
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForAssingUserToStage(stageId, myId);
             
             var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
             if (users.Count() != 0)
                 ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
+
             return View(vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssingUserToApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel)
+        public async Task<IActionResult> AssingUserToApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(addResponsibleUserToStageViewModel);
@@ -77,6 +89,7 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
 
+            TempData["Success"] = "Success.";
             return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
         }
         #endregion
@@ -121,6 +134,7 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
 
+            TempData["Success"] = "Success.";
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
         #endregion
@@ -136,7 +150,8 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPhoneCall(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessPhoneCall(string stageId, ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
