@@ -40,7 +40,7 @@ namespace Recruiter.Services
 
 
         //UPDATE
-        Task<bool> UpdateNextApplicationStageState(string applicationId);
+        Task<bool> UpdateNextApplicationStageState(string applicationId, string userId);
         Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId);
         Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId);
         Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId);

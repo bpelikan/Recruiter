@@ -76,13 +76,16 @@ namespace Recruiter.Controllers
             }
             catch (NotFoundException ex)
             {
-                TempData["Error"] = $"Object with given <i><b>ID:{stageId}</b></i> not found.";
+                //TempData["Error"] = $"Object with given <i><b>ID:{stageId}</b></i> not found.";
+                TempData["Error"] = ex.Message;
             }
+
+            #region del
             //catch (Exception ex)
             //{
             //    TempData["Error"] = $"Something went wrong, try again or contact with administrator. ({Activity.Current?.Id ?? HttpContext.TraceIdentifier})";
             //}
-
+            #endregion
             return RedirectToLocal(returnUrl);
         }
 
@@ -94,9 +97,21 @@ namespace Recruiter.Controllers
                 return View(addResponsibleUserToStageViewModel);
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
 
-            TempData["Success"] = "Success.";
+            try
+            {
+                await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (NotFoundException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (InvalidActionException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            
             if(returnUrl != null)
                 return RedirectToLocal(returnUrl);
             else

@@ -69,7 +69,7 @@ namespace Recruiter.Services.Implementation
 
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+                throw new Exception($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
 
             return stage;
         }
@@ -99,14 +99,14 @@ namespace Recruiter.Services.Implementation
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new NotFoundException($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
 
             return stage;
         }
 
         public async Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeOtherStages(string stageId, string userId)
         {
-            _logger.LogInformation($"Executing GetApplicationStageBaseWithInclude with stageId={stageId}. (UserID: {userId})");
+            _logger.LogInformation($"Executing GetApplicationStageBaseWithIncludeOtherStages with stageId={stageId}. (UserID: {userId})");
 
             var stage = await _context.ApplicationStages
                                     .Include(x => x.Application)
@@ -119,7 +119,7 @@ namespace Recruiter.Services.Implementation
                                     .Include(x => x.ResponsibleUser)
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with id {stageId} not found.");
 
             return stage;
         }
@@ -506,15 +506,15 @@ namespace Recruiter.Services.Implementation
 
 
         //UPDATE
-        public async Task<bool> UpdateNextApplicationStageState(string applicationId)
+        public async Task<bool> UpdateNextApplicationStageState(string applicationId, string userId)
         {
-            _logger.LogInformation($"Executing UpdateNextApplicationStageState with applicationId={applicationId}");
+            _logger.LogInformation($"Executing UpdateNextApplicationStageState with applicationId={applicationId}. (UserID: {userId})");
 
             var application = await _context.Applications
                                                 .Include(x => x.ApplicationStages)
                                                 .FirstOrDefaultAsync(x => x.Id == applicationId);
             if (application == null)
-                throw new Exception($"Application with id {applicationId} not found.)");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.)");
 
             if (application.ApplicationStages.Count() != 0)
             {
@@ -544,15 +544,17 @@ namespace Recruiter.Services.Implementation
 
         public async Task UpdateResponsibleUserInApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string userId)
         {
+            _logger.LogInformation($"Executing UpdateResponsibleUserInApplicationStage. (UserID: {userId})");
+
             var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
 
             if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
-                throw new Exception($"Can't change ResponsibleUser in ApplicationStage with ID: {stage.Id} this is possible only in Waiting state. (UserID: {userId})");
+                throw new InvalidActionException($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state.");
 
             stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
             await _context.SaveChangesAsync();
 
-            await UpdateNextApplicationStageState(stage.ApplicationId);
+            await UpdateNextApplicationStageState(stage.ApplicationId, userId);
         }
 
         public async Task UpdateApplicationApprovalStage(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted, string userId)
@@ -570,7 +572,7 @@ namespace Recruiter.Services.Implementation
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            await UpdateNextApplicationStageState(stage.ApplicationId);
+            await UpdateNextApplicationStageState(stage.ApplicationId, userId);
         }
 
         public async Task UpdatePhoneCallStage(ProcessPhoneCallViewModel phoneCallViewModel, bool accepted, string userId)
@@ -588,7 +590,7 @@ namespace Recruiter.Services.Implementation
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            await UpdateNextApplicationStageState(stage.ApplicationId);
+            await UpdateNextApplicationStageState(stage.ApplicationId, userId);
         }
 
         public async Task UpdateHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string userId)
@@ -622,7 +624,7 @@ namespace Recruiter.Services.Implementation
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            await UpdateNextApplicationStageState(stage.ApplicationId);
+            await UpdateNextApplicationStageState(stage.ApplicationId, userId);
         }
 
         public async Task UpdateInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted, string userId)
@@ -644,7 +646,7 @@ namespace Recruiter.Services.Implementation
             stage.State = ApplicationStageState.Finished;
             await _context.SaveChangesAsync();
 
-            await UpdateNextApplicationStageState(stage.ApplicationId);
+            await UpdateNextApplicationStageState(stage.ApplicationId, userId);
         }
 
 
