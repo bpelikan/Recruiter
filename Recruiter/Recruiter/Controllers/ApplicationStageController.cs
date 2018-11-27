@@ -63,11 +63,11 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            if (stageId == null)
-            {
-                TempData["Error"] = "Given <i><b>ID</b></i> equals <i><b>null</b></i>.";
-                return RedirectToLocal(returnUrl);
-            }
+            //if (stageId == null)
+            //{
+            //    TempData["Error"] = "Given ID equals null.";
+            //    return RedirectToLocal(returnUrl);
+            //}
 
             try
             {
@@ -82,14 +82,19 @@ namespace Recruiter.Controllers
             }
             catch (NotFoundException ex)
             {
-                TempData["Error"] = "Object with given <i><b>ID</b></i> not found.";
+                TempData["Error"] = $"Object with given <i><b>ID:{stageId}</b></i> not found.";
             }
+            //catch (Exception ex)
+            //{
+            //    TempData["Error"] = $"Something went wrong, try again or contact with administrator. ({Activity.Current?.Id ?? HttpContext.TraceIdentifier})";
+            //}
 
             return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AssingUserToApplicationStage(AssingUserToStageViewModel addResponsibleUserToStageViewModel, string returnUrl = null)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> AssingUserToApplicationStage(string stageId, AssingUserToStageViewModel addResponsibleUserToStageViewModel, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(addResponsibleUserToStageViewModel);
@@ -98,7 +103,9 @@ namespace Recruiter.Controllers
             await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
 
             TempData["Success"] = "Success.";
-            return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
+            return RedirectToLocal(returnUrl);
+
+            //return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
         }
         #endregion
 
