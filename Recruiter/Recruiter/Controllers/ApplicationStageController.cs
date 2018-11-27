@@ -80,7 +80,6 @@ namespace Recruiter.Controllers
             }
             catch (CustomException ex)
             {
-                //TempData["Error"] = $"Object with given <i><b>ID:{stageId}</b></i> not found.";
                 TempData["Error"] = ex.Message;
             }
 
