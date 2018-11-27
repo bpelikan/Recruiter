@@ -1,3 +1,18 @@
 ﻿@{
     Layout = "_Layout";
 }
+
+@if (@TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in" id="success-alert">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @TempData["Error"]
+    </div>
+}
+@if (@TempData["Success"] != null)
+{
+    <div class="alert alert-success fade in" id="success-alert">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @TempData["Success"]
+    </div>
+}

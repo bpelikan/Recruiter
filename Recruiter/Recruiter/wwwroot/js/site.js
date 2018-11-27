@@ -8,3 +8,10 @@ $(document).ready(function () {
         focus: true                  // set focus to editable area after initializing summernote
     });
 });
+
+//close the alert
+window.setTimeout(function () {
+    $(".alert").fadeTo(500, 0).slideUp(500, function () {
+        $(this).remove();
+    });
+}, 4000);
