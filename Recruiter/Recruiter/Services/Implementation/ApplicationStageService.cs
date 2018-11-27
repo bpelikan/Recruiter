@@ -69,7 +69,7 @@ namespace Recruiter.Services.Implementation
 
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new Exception($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
 
             return stage;
         }
@@ -80,7 +80,7 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBase(stageId, userId);
             if (stage.ResponsibleUserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to process ApplicationStage with ID: {stage.Id} not found. (UserID: {userId})");
+                throw new PermissionException($"User with ID:{userId} is not allowed to process ApplicationStage with ID: {stage.Id}.");
 
             return stage;
         }

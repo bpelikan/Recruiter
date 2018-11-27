@@ -31,7 +31,11 @@ namespace Recruiter.Controllers
         private readonly ICvStorageService _cvStorageService;
         private readonly IApplicationStageService _applicationStageService;
 
-        public ApplicationStageController(IMapper mapper, ICvStorageService cvStorageService, IApplicationStageService applicationStageService, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ApplicationStageController(IMapper mapper, 
+                    ICvStorageService cvStorageService, 
+                    IApplicationStageService applicationStageService, 
+                    ApplicationDbContext context, 
+                    UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
             _cvStorageService = cvStorageService;
@@ -91,10 +95,17 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{stageId?}")]
-        public async Task<IActionResult> AssingUserToApplicationStage(string stageId, AssingUserToStageViewModel addResponsibleUserToStageViewModel, string returnUrl = null)
+        public async Task<IActionResult> AssingUserToApplicationStage(string stageId, 
+                                                                        AssingUserToStageViewModel addResponsibleUserToStageViewModel, 
+                                                                        string returnUrl = null)
         {
             if (!ModelState.IsValid)
+            {
+                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+                if (users.Count() != 0)
+                    ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
                 return View(addResponsibleUserToStageViewModel);
+            }
 
             var myId = _userManager.GetUserId(HttpContext.User);
 
@@ -108,7 +119,6 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
             
-            
             if(returnUrl != null)
                 return RedirectToLocal(returnUrl);
             else
@@ -121,9 +131,23 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessStage(string stageId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId);
-            
-            switch (stage.GetType().Name) {
+            ApplicationStageBase stage = null;
+            try
+            {
+                stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId);
+                
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                if (returnUrl != null)
+                    return RedirectToLocal(returnUrl);
+                else
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            }
+
+            switch (stage?.GetType().Name)
+            {
                 case "ApplicationApproval":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
                 case "PhoneCall":
@@ -133,7 +157,11 @@ namespace Recruiter.Controllers
                 case "Interview":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId });
                 default:
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                    TempData["Error"] = $"Couldn't process stage: Unknown Application Stage with ID:{stageId}.";
+                    if (returnUrl!=null)
+                        return RedirectToLocal(returnUrl);
+                    else
+                        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
         }
         #endregion
