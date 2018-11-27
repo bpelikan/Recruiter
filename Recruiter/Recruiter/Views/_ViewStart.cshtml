@@ -6,13 +6,16 @@
 {
     <div class="alert alert-danger fade in" id="success-alert">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
-        @TempData["Error"]
+        @*@TempData["Error"]
+        <br />*@
+        @Html.Raw(TempData["Error"])
     </div>
 }
 @if (@TempData["Success"] != null)
 {
     <div class="alert alert-success fade in" id="success-alert">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
-        @TempData["Success"]
+        @*@TempData["Success"]*@
+        @Html.Raw(TempData["Success"])
     </div>
 }
