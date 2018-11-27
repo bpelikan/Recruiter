@@ -63,12 +63,6 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            //if (stageId == null)
-            //{
-            //    TempData["Error"] = "Given ID equals null.";
-            //    return RedirectToLocal(returnUrl);
-            //}
-
             try
             {
                 var myId = _userManager.GetUserId(HttpContext.User);
