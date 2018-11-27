@@ -97,9 +97,10 @@ namespace Recruiter.Controllers
             await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
 
             TempData["Success"] = "Success.";
-            return RedirectToLocal(returnUrl);
-
-            //return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
+            if(returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationController.ApplicationDetails), "Application", new { id = addResponsibleUserToStageViewModel.ApplicationId });
         }
         #endregion
 
