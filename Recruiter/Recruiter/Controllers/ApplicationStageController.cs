@@ -74,7 +74,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (NotFoundException ex)
+            catch (CustomException ex)
             {
                 //TempData["Error"] = $"Object with given <i><b>ID:{stageId}</b></i> not found.";
                 TempData["Error"] = ex.Message;
@@ -103,14 +103,11 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (NotFoundException ex)
+            catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
             }
-            catch (InvalidActionException ex)
-            {
-                TempData["Error"] = ex.Message;
-            }
+            
             
             if(returnUrl != null)
                 return RedirectToLocal(returnUrl);

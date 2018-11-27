@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.CustomExceptions
 {
-    public class NotFoundException : Exception
+    public class NotFoundException : CustomException
     {
         public NotFoundException()
         {
