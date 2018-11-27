@@ -7,7 +7,7 @@
 <h2>Confirm Interview Appointments</h2>
 
 <hr />
-<h3>Appointments</h3>
+@*<h3>Appointments</h3>*@
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <div class="row panel-body">
@@ -55,8 +55,8 @@
     else
     {
         @:Interview Appointments not found.
+        <hr />
     }
-
     <a class="btn btn-sm btn-primary"
        asp-action="RequestForNewAppointmentsInInterview"
        asp-route-interviewId="@Model.Id"

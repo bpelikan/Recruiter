@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.MyApplicationViewModels;
@@ -374,7 +375,7 @@ namespace Recruiter.Services.Implementation
             if (appointmentToConfirm.Interview.Application.UserId != userId)
                 throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
             if (appointmentToConfirm.StartTime < DateTime.UtcNow)
-                throw new ApplicationException($"You can't confirm appointment that StartTime isn't in the future.");
+                throw new UserInvalidActionException($"You can't confirm appointment that StartTime isn't in the future.");
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
             appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;

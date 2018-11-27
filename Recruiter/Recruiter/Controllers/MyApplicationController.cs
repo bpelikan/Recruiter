@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Recruiter.AttributeFilters;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.MyApplicationViewModels;
@@ -183,6 +184,9 @@ namespace Recruiter.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
+            if (stageId == null)
+                return RedirectToLocal(returnUrl);
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
 
@@ -198,7 +202,7 @@ namespace Recruiter.Controllers
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
             }
-            catch (ApplicationException ex)
+            catch (UserInvalidActionException ex)
             {
                 ModelState.AddModelError("", ex.Message);
             }
