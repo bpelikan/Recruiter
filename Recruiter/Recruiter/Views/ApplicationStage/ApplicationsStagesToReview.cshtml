@@ -9,7 +9,8 @@
 
 <div>
     <ul class="nav nav-tabs">
-        @if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.HttpContext.Request.Query["stageName"]).Count() == 0)
+        @if (Model.StageSortedByName.Where(x => x.Name == @ViewContext.RouteData.Values["stageName"]?.ToString())
+                                    .Count() == 0)
         {
             <li class="nav-item active">
                 <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a>
@@ -24,7 +25,8 @@
 
         @foreach (var stage in Model.StageSortedByName)
         {
-            if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+            //if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
+            if (@ViewContext.RouteData.Values["stageName"]?.ToString() == stage.Name)
             {
                 <li class="nav-item active">
                     <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
