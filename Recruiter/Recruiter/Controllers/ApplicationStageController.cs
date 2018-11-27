@@ -19,6 +19,7 @@ using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {
+    [Route("[controller]/[action]")]
     [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
     public class ApplicationStageController : Controller
     {
@@ -43,6 +44,7 @@ namespace Recruiter.Controllers
         }
 
         #region ApplicationsStagesToReview()
+        [Route("{stageName?}")]
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -54,6 +56,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region AssingUserToApplicationStage()
+        [Route("{stageId?}")]
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -79,20 +82,21 @@ namespace Recruiter.Controllers
         #endregion
 
         #region ProcessStage()
-        public async Task<IActionResult> ProcessStage(string stageId)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessStage(string stageId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId);
             
             switch (stage.GetType().Name) {
                 case "ApplicationApproval":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
                 case "PhoneCall":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId });
                 case "Homework":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId });
                 case "Interview":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId });
                 default:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
@@ -100,8 +104,11 @@ namespace Recruiter.Controllers
         #endregion
 
         #region ApplicationApproval
-        public async Task<IActionResult> ProcessApplicationApproval(string stageId)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessApplicationApproval(string stageId, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
 
@@ -119,6 +126,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region PhoneCall
+        [Route("{stageId?}")]
         public async Task<IActionResult> ProcessPhoneCall(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -138,6 +146,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region Homework
+        [Route("{stageId?}")]
         public async Task<IActionResult> ProcessHomework(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -157,6 +166,7 @@ namespace Recruiter.Controllers
             }
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> AddHomeworkSpecification(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -174,6 +184,7 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> ProcessHomeworkStage(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -193,6 +204,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region Interview
+        [Route("{stageId?}")]
         public async Task<IActionResult> ProcessInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -213,6 +225,7 @@ namespace Recruiter.Controllers
             }
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> SetAppointmentsToInterview(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -252,6 +265,7 @@ namespace Recruiter.Controllers
                                        new { stageId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
         }
 
+        [Route("{appointmentId?}")]
         public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -276,6 +290,7 @@ namespace Recruiter.Controllers
             #endregion
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -299,6 +314,7 @@ namespace Recruiter.Controllers
             #endregion
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> ProcessInterviewStage(string stageId)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
@@ -319,6 +335,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region ShowApplicationStageDetails()
+        [Route("{stageId?}")]
         public async Task<IActionResult> ShowApplicationStageDetails(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -346,6 +363,7 @@ namespace Recruiter.Controllers
             }
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> ApplicationStageBaseDatails(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -356,6 +374,7 @@ namespace Recruiter.Controllers
             return View(stage);
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> HomeworkStageDetails(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -366,6 +385,7 @@ namespace Recruiter.Controllers
             return View(stage);
         }
 
+        [Route("{stageId?}")]
         public async Task<IActionResult> InterviewStageDetails(string stageId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -392,6 +412,7 @@ namespace Recruiter.Controllers
             return View(myAppointments);
         }
 
+        [Route("{appointmentId?}")]
         public async Task<IActionResult> RemoveAssignedAppointment(string appointmentId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
