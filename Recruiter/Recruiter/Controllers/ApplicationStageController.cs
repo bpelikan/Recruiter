@@ -101,7 +101,6 @@ namespace Recruiter.Controllers
             }
 
             var myId = _userManager.GetUserId(HttpContext.User);
-
             try
             {
                 await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
@@ -128,7 +127,6 @@ namespace Recruiter.Controllers
             try
             {
                 stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId);
-                
             }
             catch (CustomException ex)
             {

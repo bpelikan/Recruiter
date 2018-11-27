@@ -80,7 +80,7 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBase(stageId, userId);
             if (stage.ResponsibleUserId != userId)
-                throw new PermissionException($"User with ID:{userId} is not allowed to process ApplicationStage with ID: {stage.Id}.");
+                throw new PermissionException($"User with ID:{userId} is not allowed to process ApplicationStage with ID:{stage.Id}.");
 
             return stage;
         }
@@ -547,7 +547,6 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing UpdateResponsibleUserInApplicationStage. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
-
             if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
                 throw new InvalidActionException($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state.");
 
