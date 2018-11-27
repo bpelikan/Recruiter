@@ -69,7 +69,7 @@
                                 <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
                                 <span condition="!applicationStage.Accepted" class="glyphicon glyphicon-remove"></span>
                             </span>
-                            
+
                         </td>
                         <td>@Html.DisplayFor(model => applicationStage.State)</td>
                         <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
@@ -78,11 +78,22 @@
                             @Html.DisplayFor(model => applicationStage.ResponsibleUser.LastName)
                             <b Condition="applicationStage.ResponsibleUserId != null">
                                 (@Html.DisplayFor(model => applicationStage.ResponsibleUser.Email))
-                                <a Condition="applicationStage.State == ApplicationStageState.Waiting" asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Change</a>
+                                <a Condition="applicationStage.State == ApplicationStageState.Waiting"
+                                   asp-action="AssingUserToApplicationStage"
+                                   asp-controller="ApplicationStage"
+                                   asp-route-stageId="@applicationStage.Id"
+                                   asp-route-returnurl="@Context.Request.Path">
+                                    Change
+                                </a>
                             </b>
                             <b Condition="applicationStage.ResponsibleUserId == null">
                                 (not assigned)
-                                <a asp-action="AssingUserToApplicationStage" asp-controller="ApplicationStage" asp-route-stageId="@applicationStage.Id">Assing</a>
+                                <a asp-action="AssingUserToApplicationStage"
+                                   asp-controller="ApplicationStage"
+                                   asp-route-stageId="@applicationStage.Id"
+                                   asp-route-returnurl="@Context.Request.Path">
+                                    Assing
+                                </a>
                             </b>
                         </td>
                         <td>
@@ -144,3 +155,4 @@
         @:Applications View History not found.
     }
 </div>
+
