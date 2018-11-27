@@ -48,8 +48,6 @@ namespace Recruiter.Controllers
         [Route("{stageName?}")]
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
-            //TempData["Error"] = $"Something went wrong, try again or contact with administrator. ({Activity.Current?.Id ?? HttpContext.TraceIdentifier})";
-
             var myId = _userManager.GetUserId(HttpContext.User);
             var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
             vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
