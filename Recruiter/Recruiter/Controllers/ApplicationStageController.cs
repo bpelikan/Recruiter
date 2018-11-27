@@ -84,12 +84,6 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            #region del
-            //catch (Exception ex)
-            //{
-            //    TempData["Error"] = $"Something went wrong, try again or contact with administrator. ({Activity.Current?.Id ?? HttpContext.TraceIdentifier})";
-            //}
-            #endregion
             return RedirectToLocal(returnUrl);
         }
 
