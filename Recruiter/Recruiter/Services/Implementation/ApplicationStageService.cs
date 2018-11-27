@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationStageViewModels;
@@ -98,7 +99,7 @@ namespace Recruiter.Services.Implementation
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
 
             return stage;
         }

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Recruiter.AttributeFilters;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationStageViewModels;
@@ -64,18 +65,27 @@ namespace Recruiter.Controllers
 
             if (stageId == null)
             {
-                TempData["Error"] = "Id couldn't be null.";
+                TempData["Error"] = "Given <i><b>ID</b></i> equals <i><b>null</b></i>.";
                 return RedirectToLocal(returnUrl);
             }
 
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForAssingUserToStage(stageId, myId);
-            
-            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-            if (users.Count() != 0)
-                ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
+            try
+            {
+                var myId = _userManager.GetUserId(HttpContext.User);
+                var vm = await _applicationStageService.GetViewModelForAssingUserToStage(stageId, myId);
 
-            return View(vm);
+                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+                if (users.Count() != 0)
+                    ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
+
+                return View(vm);
+            }
+            catch (NotFoundException ex)
+            {
+                TempData["Error"] = "Object with given <i><b>ID</b></i> not found.";
+            }
+
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]
