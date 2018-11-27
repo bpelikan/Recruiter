@@ -88,14 +88,22 @@ else
                 @:<tr>
             }
                 <td>
-                    <a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@stage.Application.Id" asp-route-returnurl="@Context.Request.Path">
-                        @Html.DisplayFor(model => stage.Application.User.FirstName)
-                        @Html.DisplayFor(model => stage.Application.User.LastName)
-                        (@Html.DisplayFor(model => stage.Application.User.Email))
+                    <a asp-controller="Application" 
+                        asp-action="ApplicationDetails" 
+                        asp-route-id="@stage.Application.Id" 
+                        asp-route-returnurl="@Context.Request.Path">
+                            @Html.DisplayFor(model => stage.Application.User.FirstName)
+                            @Html.DisplayFor(model => stage.Application.User.LastName)
+                            (@Html.DisplayFor(model => stage.Application.User.Email))
                     </a>
                 </td>
                 <td>
-                    <a asp-controller="JobPosition" asp-action="Details" asp-route-id="@stage.Application.JobPosition.Id" asp-route-returnurl="@Context.Request.Path">@Html.DisplayFor(model => stage.Application.JobPosition.Name)</a>
+                    <a asp-controller="JobPosition" 
+                        asp-action="Details" 
+                        asp-route-id="@stage.Application.JobPosition.Id" 
+                        asp-route-returnurl="@Context.Request.Path">
+                            @Html.DisplayFor(model => stage.Application.JobPosition.Name)
+                    </a>
                 </td>
                 <td>
                     @if (stage.CurrentStage.GetType().Name == "Homework")
@@ -104,7 +112,12 @@ else
                         switch (homework.HomeworkState)
                         {
                             case HomeworkState.WaitingForSpecification:
-                                <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Waiting for specification</a>
+                                <a asp-controller="ApplicationStage" 
+                                    asp-action="ProcessStage" 
+                                    asp-route-stageId="@stage.CurrentStage.Id" 
+                                    asp-route-returnurl="@Context.Request.Path">
+                                        Waiting for specification
+                                </a>
                                 break;
                             case HomeworkState.WaitingForRead:
                                 @:Waiting for reading
@@ -116,7 +129,12 @@ else
                                 </b>
                                 break;
                             case HomeworkState.Completed:
-                                <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Waiting for accept</a>
+                                <a asp-controller="ApplicationStage" 
+                                    asp-action="ProcessStage" 
+                                    asp-route-stageId="@stage.CurrentStage.Id" 
+                                    asp-route-returnurl="@Context.Request.Path">
+                                        Waiting for accept
+                                </a>
                                 break;
                         }
                     }
@@ -126,16 +144,33 @@ else
                         switch (homework.InterviewState)
                         {
                             case InterviewState.WaitingForSettingAppointments:
-                                <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Waiting for setting appointments</a>
+                                <a asp-controller="ApplicationStage" 
+                                    asp-action="ProcessStage" 
+                                    asp-route-stageId="@stage.CurrentStage.Id" 
+                                    asp-route-returnurl="@Context.Request.Path">
+                                        Waiting for setting appointments
+                                </a>
                                 break;
                             case InterviewState.RequestForNewAppointments:
-                                <a style="color: blue" asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Reguest for another appointments</a>
+                                <a style="color: blue" 
+                                    asp-controller="ApplicationStage" 
+                                    asp-action="ProcessStage" 
+                                    asp-route-stageId="@stage.CurrentStage.Id" 
+                                    asp-route-returnurl="@Context.Request.Path">
+                                        Reguest for another appointments
+                                </a>
                                 break;
                             case InterviewState.WaitingForConfirmAppointment:
                                 @:Waiting to confirm appointment
                                 break;
                             case InterviewState.AppointmentConfirmed:
-                                <a style="color: green" asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Process (Appointment Confirmed)</a>
+                                <a style="color: green" 
+                                    asp-controller="ApplicationStage" 
+                                    asp-action="ProcessStage" 
+                                    asp-route-stageId="@stage.CurrentStage.Id" 
+                                    asp-route-returnurl="@Context.Request.Path">
+                                        Process (Appointment Confirmed)
+                                </a>
                                 break;
                             @*case InterviewState.InterviewCompleted:
                                 @:Interview completed
@@ -144,7 +179,12 @@ else
                     }
                     else
                     {
-                        <a asp-controller="ApplicationStage" asp-action="ProcessStage" asp-route-stageId="@stage.CurrentStage.Id" asp-route-returnurl="@Context.Request.Path">Process</a>
+                        <a asp-controller="ApplicationStage" 
+                            asp-action="ProcessStage" 
+                            asp-route-stageId="@stage.CurrentStage.Id" 
+                            asp-route-returnurl="@Context.Request.Path">
+                                Process
+                        </a>
                     }
                 </td>
                 <td>
