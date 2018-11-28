@@ -69,7 +69,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
                 throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
 
             return stage;
         }
@@ -80,7 +83,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBase(stageId, userId);
             if (stage.ResponsibleUserId != userId)
-                throw new PermissionException($"User with ID:{userId} is not allowed to process ApplicationStage with ID:{stage.Id}.");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to process ApplicationStage with ID:{stage.Id}. (UserID: {userId})");
+                throw new PermissionException($"You are not allowed to process ApplicationStage with ID:{stage.Id}.");
+            }
 
             return stage;
         }
@@ -99,7 +105,10 @@ namespace Recruiter.Services.Implementation
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
                 throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
 
             return stage;
         }
@@ -119,7 +128,10 @@ namespace Recruiter.Services.Implementation
                                     .Include(x => x.ResponsibleUser)
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
+            {
+                _logger.LogError($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
                 throw new NotFoundException($"ApplicationStage with id {stageId} not found.");
+            }
 
             return stage;
         }
@@ -514,7 +526,10 @@ namespace Recruiter.Services.Implementation
                                                 .Include(x => x.ApplicationStages)
                                                 .FirstOrDefaultAsync(x => x.Id == applicationId);
             if (application == null)
+            {
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
                 throw new NotFoundException($"Application with ID:{applicationId} not found.)");
+            }
 
             if (application.ApplicationStages.Count() != 0)
             {
@@ -548,7 +563,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseWithIncludeOtherStages(addResponsibleUserToStageViewModel.StageId, userId);
             if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
+            {
+                _logger.LogError($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state. (UserID: {userId})");
                 throw new InvalidActionException($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state.");
+            }
 
             stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
             await _context.SaveChangesAsync();
