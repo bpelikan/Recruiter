@@ -392,21 +392,6 @@ namespace Recruiter.Controllers
             await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
 
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
-
-            #region del
-            //var addAppointmentsToInterviewViewModel = new SetAppointmentsToInterviewViewModel()
-            //{
-            //    StageToProcess = new SetAppointmentsViewModel()
-            //    {
-            //        Id = stageId,
-            //    }
-            //};
-
-            //var myId = _userManager.GetUserId(HttpContext.User);
-            //await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
-
-            //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
-            #endregion
         }
 
         [Route("{stageId?}")]
