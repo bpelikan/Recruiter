@@ -50,22 +50,6 @@
                 <span asp-validation-for="Application.Id" class="text-danger"></span>
             </div>
         </div>*@
-
-
-    @*<table class="table table-condensed table-bordered" header header-content="Application Stages Requirement">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.StageToProcess.Note)</th>
-                <th>@Html.DisplayNameFor(model => model.StageToProcess.Rate)</th>
-                <th>@Html.DisplayNameFor(model => model.StageToProcess.Accepted)</th>
-            </tr>
-
-            <tr>
-                <td><input asp-for="StageToProcess.Note" class="form-control" /></td>
-                <td><input asp-for="StageToProcess.Rate" class="form-control" /></td>
-                <td>@Html.CheckBoxFor(model => model.StageToProcess.Accepted)</td>
-
-            </tr>
-        </table>*@
     <div class="form-group" hidden>
         <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
         <div class="col-md-10">
