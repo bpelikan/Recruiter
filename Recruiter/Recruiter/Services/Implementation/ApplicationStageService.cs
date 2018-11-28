@@ -87,6 +87,43 @@ namespace Recruiter.Services.Implementation
                 _logger.LogError($"User with ID:{userId} is not allowed to process ApplicationStage with ID:{stage.Id}. (UserID: {userId})");
                 throw new PermissionException($"You are not allowed to process ApplicationStage with ID:{stage.Id}.");
             }
+            if (stage.State != ApplicationStageState.InProgress)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} isn't in InProgress state. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in InProgress state.");
+            }
+
+            return stage;
+        }
+
+        public async Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessStage with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.ApplicationStages)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
+            if (stage.ResponsibleUserId != userId)
+            {
+                _logger.LogError($"User with ID: {userId} is not responsible for the ApplicationStage with ID:{stage.Id}. (UserID: {userId})");
+                throw new PermissionException($"You are not responsible for the ApplicationStage with ID:{stage.Id}.");
+            }
+            if (stage.State != ApplicationStageState.InProgress)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} isn't in InProgress state. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in InProgress state.");
+            }
 
             return stage;
         }
@@ -129,39 +166,14 @@ namespace Recruiter.Services.Implementation
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
             {
-                _logger.LogError($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with id {stageId} not found.");
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
             }
 
             return stage;
         }
 
-        public async Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId)
-        {
-            _logger.LogInformation($"Executing GetApplicationStageBaseToShowInProcessStage with stageId={stageId}. (UserID: {userId})");
-
-            var stage = await _context.ApplicationStages
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.ApplicationStages)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.User)
-                                    .Include(x => x.Application)
-                                        .ThenInclude(x => x.JobPosition)
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == stageId);
-            if (stage == null)
-            {
-                _logger.LogError($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with id {stageId} not found.");
-            }
-            if (stage.ResponsibleUserId != userId)
-            {
-                _logger.LogError($"User with ID: {userId} is not responsible for the ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
-                throw new PermissionException($"You are not responsible for the ApplicationStage with ID: {stage.Id}.");
-            }
-
-            return stage;
-        }
+        
 
 
         //GET ViewModelFor
@@ -230,6 +242,12 @@ namespace Recruiter.Services.Implementation
         public async Task<AssingUserToStageViewModel> GetViewModelForAssingUserToStage(string stageId, string userId)
         {
             var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId);
+
+            if (stage.State != ApplicationStageState.Waiting)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} isn't in Waiting state. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in Waiting state.");
+            }
 
             var vm = new AssingUserToStageViewModel()
             {
@@ -773,6 +791,12 @@ namespace Recruiter.Services.Implementation
                                                 .Include(x => x.ResponsibleUser)
                                                 .Where(x => x.ApplicationId == applicationId)
                                                 .AsNoTracking();
+            if (applicationStages == null || applicationStages.Count() == 0)
+            {
+                _logger.LogError($"ApplicationStages in application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStages in application with ID:{applicationId} not found.");
+            }
+
             return applicationStages;
         }
 

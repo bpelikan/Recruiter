@@ -16,9 +16,9 @@ namespace Recruiter.Services
         //GET ApplicationStageBase
         Task<ApplicationStageBase> GetApplicationStageBase(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseToProcessStage(string stageId, string userId);
+        Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeNoTracking(string stageId, string userId);
         Task<ApplicationStageBase> GetApplicationStageBaseWithIncludeOtherStages(string stageId, string userId);
-        Task<ApplicationStageBase> GetApplicationStageBaseToShowInProcessStage(string stageId, string userId);
 
 
         //GET ViewModelFor
