@@ -231,7 +231,10 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessPhoneCall(string stageId, ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false, string returnUrl = null)
+        public async Task<IActionResult> ProcessPhoneCall(string stageId, 
+                                                            ProcessPhoneCallViewModel phoneCallViewModel, 
+                                                            bool accepted = false, 
+                                                            string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             try
@@ -310,7 +313,9 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{stageId?}")]
-        public async Task<IActionResult> AddHomeworkSpecification(string stageId, AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string returnUrl = null)
+        public async Task<IActionResult> AddHomeworkSpecification(string stageId, 
+                                                                    AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, 
+                                                                    string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             try
@@ -353,12 +358,28 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessHomeworkStage(ProcessHomeworkStageViewModel processHomeworkStageViewModel, bool accepted = false)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessHomeworkStage(string stageId, 
+                                                                ProcessHomeworkStageViewModel processHomeworkStageViewModel, 
+                                                                bool accepted = false, 
+                                                                string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
+            try
+            {
+                await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
         #endregion
 

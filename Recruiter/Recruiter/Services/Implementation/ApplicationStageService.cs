@@ -605,8 +605,8 @@ namespace Recruiter.Services.Implementation
             var stage = await GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
             {
-                _logger.LogError($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with id {stage.Id} have not InProgress State.");
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} have not InProgress State. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} have not InProgress State.");
             }
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
@@ -626,8 +626,8 @@ namespace Recruiter.Services.Implementation
             var stage = await GetApplicationStageBaseToProcessStage(phoneCallViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
             {
-                _logger.LogError($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with id {stage.Id} have not InProgress State.");
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} have not InProgress State. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} have not InProgress State.");
             }
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
@@ -647,13 +647,13 @@ namespace Recruiter.Services.Implementation
             var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
             if (stage.State != ApplicationStageState.InProgress)
             {
-                _logger.LogError($"ApplicationStage with id {stage.Id} isn't in InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with id {stage.Id} isn't in InProgress State.");
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
             }
             if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
             {
-                _logger.LogError($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework ApplicationStage with id {stage.Id} have not WaitingForSpecification HomeworkState.");
+                _logger.LogError($"Homework ApplicationStage with ID:{stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
+                throw new InvalidActionException($"Homework ApplicationStage with ID:{stage.Id} have not WaitingForSpecification HomeworkState.");
             }
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
@@ -668,7 +668,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseToProcessStage(processHomeworkStageViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
-                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
+                throw new Exception($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+            }
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
             stage.Rate = processHomeworkStageViewModel.StageToProcess.Rate;

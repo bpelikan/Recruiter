@@ -109,8 +109,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-success" value="Accept" asp-route-accepted="@true" />
-                <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" />
+                <input type="submit" class="btn btn-success" value="Accept" asp-route-accepted="@true" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+                <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
             </div>
             <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
             <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
