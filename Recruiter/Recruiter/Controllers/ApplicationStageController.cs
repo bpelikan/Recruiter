@@ -331,12 +331,25 @@ namespace Recruiter.Controllers
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessHomeworkStage(string stageId)
+        public async Task<IActionResult> ProcessHomeworkStage(string stageId, string returnUrl = null)
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForProcessHomeworkStage(stageId, myId);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            return View(vm);
+            var myId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var vm = await _applicationStageService.GetViewModelForProcessHomeworkStage(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [HttpPost]
