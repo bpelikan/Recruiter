@@ -202,11 +202,6 @@ namespace Recruiter.Controllers
                 return RedirectToLocal(returnUrl);
             else
                 return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
-
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
         #endregion
 
