@@ -142,11 +142,11 @@ namespace Recruiter.Controllers
                 case "ApplicationApproval":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
                 case "PhoneCall":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId, returnUrl });
                 case "Homework":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomework), new { stageId, returnUrl });
                 case "Interview":
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
                 default:
                     TempData["Error"] = $"Couldn't process stage: Unknown Application Stage with ID:{stageId}.";
                     if (returnUrl!=null)
