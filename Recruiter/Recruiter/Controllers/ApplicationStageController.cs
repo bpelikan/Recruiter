@@ -231,12 +231,24 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessPhoneCall(string stageId, ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false)
+        public async Task<IActionResult> ProcessPhoneCall(string stageId, ProcessPhoneCallViewModel phoneCallViewModel, bool accepted = false, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
+            try
+            {
+                await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
+            }
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
         #endregion
 
