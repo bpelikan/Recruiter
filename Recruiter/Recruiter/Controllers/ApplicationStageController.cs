@@ -254,20 +254,32 @@ namespace Recruiter.Controllers
 
         #region Homework
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessHomework(string stageId)
+        public async Task<IActionResult> ProcessHomework(string stageId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Homework;
+            Homework stage = null;
+            try
+            {
+                stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Homework;
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                if (returnUrl != null)
+                    return RedirectToLocal(returnUrl);
+                else
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            }
 
-            switch (stage.HomeworkState) {
+            switch (stage?.HomeworkState) {
                 case HomeworkState.WaitingForSpecification:
-                    return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId = stage.Id, returnUrl });
                 case HomeworkState.WaitingForRead:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
                 case HomeworkState.WaitingForSendHomework:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
                 case HomeworkState.Completed:
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id, returnUrl });
                 default:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
             }
