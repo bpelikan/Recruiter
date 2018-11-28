@@ -164,7 +164,6 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-
             try
             {
                 var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
@@ -181,13 +180,33 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessApplicationApproval(ProcessApplicationApprovalViewModel applicationApprovalViewModel, bool accepted = false)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessApplicationApproval(string stageId, 
+                                                                    ProcessApplicationApprovalViewModel applicationApprovalViewModel, 
+                                                                    bool accepted = false, 
+                                                                    string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
+            try
+            {
+                await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
+            }
 
-            TempData["Success"] = "Success.";
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
+
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
         #endregion
 
@@ -492,13 +511,9 @@ namespace Recruiter.Controllers
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
-            {
                 return Redirect(returnUrl);
-            }
             else
-            {
                 return RedirectToAction(nameof(ApplicationStageController.Index));
-            }
         }
         #endregion
     }

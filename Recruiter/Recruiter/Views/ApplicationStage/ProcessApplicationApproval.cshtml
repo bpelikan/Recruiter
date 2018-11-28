@@ -38,23 +38,19 @@
 
 <hr />
 <h3>Processed Stages</h3>
-<form asp-controller="ApplicationStage" asp-action="ProcessApplicationApproval" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="All" class="text-danger"></div>
+<form asp-controller="ApplicationStage"
+      asp-action="ProcessApplicationApproval" method="post" class="form-horizontal" role="form">
 
-    <div class="form-group" hidden>
-        <label asp-for="Application.Id" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Application.Id" class="form-control" readonly="readonly" />
-            <span asp-validation-for="Application.Id" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group" hidden>
-        <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="StageToProcess.Id" class="form-control" readonly="readonly" />
-            <span asp-validation-for="StageToProcess.Id" class="text-danger"></span>
-        </div>
-    </div>
+    <div asp-validation-summary="All" class="text-danger"></div>
+  
+    @*<div class="form-group" hidden>
+            <label asp-for="Application.Id" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Application.Id" class="form-control" readonly="readonly" />
+                <span asp-validation-for="Application.Id" class="text-danger"></span>
+            </div>
+        </div>*@
+
 
     @*<table class="table table-condensed table-bordered" header header-content="Application Stages Requirement">
             <tr>
@@ -70,7 +66,13 @@
 
             </tr>
         </table>*@
-
+    <div class="form-group" hidden>
+        <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="StageToProcess.Id" class="text-danger"></span>
+        </div>
+    </div>
     <div class="form-group">
         <label asp-for="StageToProcess.Note" class="col-md-2 control-label"></label>
         <div class="col-md-10">
@@ -88,8 +90,8 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Accept" asp-route-accepted="@true" />
-            <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" />
+            <input type="submit" class="btn btn-success" value="Accept" asp-route-accepted="@true" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+            <input type="submit" class="btn btn-danger" value="Reject" asp-route-accepted="@false" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
         </div>
         <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
         <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
@@ -120,7 +122,7 @@
                             <a asp-action="ShowApplicationStageDetails"
                                asp-controller="ApplicationStage"
                                asp-route-stageId="@applicationStage.Id"
-                               asp-route-returnurl="@Context.Request.Path">
+                               asp-route-returnUrl="@Context.Request.Path">
                                 @applicationStage.GetType().Name
                             </a>
                             <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
