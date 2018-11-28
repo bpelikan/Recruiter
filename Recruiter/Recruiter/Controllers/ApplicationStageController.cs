@@ -172,11 +172,12 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                if (returnUrl != null)
-                    return RedirectToLocal(returnUrl);
-                else
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
+
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [HttpPost]
@@ -207,12 +208,25 @@ namespace Recruiter.Controllers
 
         #region PhoneCall
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessPhoneCall(string stageId)
+        public async Task<IActionResult> ProcessPhoneCall(string stageId, string returnUrl = null)
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            return View(vm);
+            var myId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [HttpPost]
