@@ -309,12 +309,25 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddHomeworkSpecification(AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> AddHomeworkSpecification(string stageId, AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
+            try
+            {
+                await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
 
         [Route("{stageId?}")]
