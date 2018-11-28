@@ -242,7 +242,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
+                return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId, returnUrl });
             }
 
             if (returnUrl != null)
