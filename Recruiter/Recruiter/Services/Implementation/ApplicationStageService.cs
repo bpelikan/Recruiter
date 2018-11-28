@@ -604,7 +604,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseToProcessStage(applicationApprovalViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
-                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with id {stage.Id} have not InProgress State.");
+            }
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
             stage.Rate = applicationApprovalViewModel.StageToProcess.Rate;
