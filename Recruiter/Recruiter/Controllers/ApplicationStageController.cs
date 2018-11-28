@@ -281,6 +281,7 @@ namespace Recruiter.Controllers
                 case HomeworkState.Completed:
                     return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id, returnUrl });
                 default:
+                    TempData["Error"] = $"Couldn't process Homework stage: Unknown HomeworkState with ID:{stageId}.";
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
             }
         }
