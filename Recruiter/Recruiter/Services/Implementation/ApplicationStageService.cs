@@ -150,9 +150,15 @@ namespace Recruiter.Services.Implementation
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId);
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with id {stageId} not found.");
+            }
             if (stage.ResponsibleUserId != userId)
-                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID: {userId} is not responsible for the ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+                throw new PermissionException($"You are not responsible for the ApplicationStage with ID: {stage.Id}.");
+            }
 
             return stage;
         }

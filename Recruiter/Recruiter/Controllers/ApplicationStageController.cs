@@ -164,9 +164,20 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
 
-            return View(vm);
+            try
+            {
+                var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                if (returnUrl != null)
+                    return RedirectToLocal(returnUrl);
+                else
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            }
         }
 
         [HttpPost]
