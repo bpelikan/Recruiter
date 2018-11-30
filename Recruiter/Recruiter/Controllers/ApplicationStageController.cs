@@ -97,11 +97,6 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ApplicationStageController.AssingUserToApplicationStage), new { stageId, returnUrl });
-
-                //var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-                //if (users.Count() != 0)
-                //    ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
-                //return View(addResponsibleUserToStageViewModel);
             }
 
             var myId = _userManager.GetUserId(HttpContext.User);
