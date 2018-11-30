@@ -524,12 +524,24 @@ namespace Recruiter.Controllers
         [Route("{stageId?}")]
         public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true, string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            //ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
+            try
+            {
+                await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+                //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [Route("{stageId?}")]
