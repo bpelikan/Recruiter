@@ -511,7 +511,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = "Successfully deleted.";
             }
             catch (CustomException ex)
             {
@@ -649,6 +649,7 @@ namespace Recruiter.Controllers
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             var appointment = await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
+            //await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
 
             return RedirectToLocal(returnUrl);
         }

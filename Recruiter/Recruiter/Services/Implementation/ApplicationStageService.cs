@@ -728,7 +728,7 @@ namespace Recruiter.Services.Implementation
             return appointment;
         }
 
-        public async Task<InterviewAppointment> RemoveAppointmentsFromInterview(string appointmentId, string userId)
+        public async Task RemoveAppointmentsFromInterview(string appointmentId, string userId)
         {
             _logger.LogInformation($"Executing RemoveAppointmentsFromInterview with appointmentId={appointmentId}. (UserID: {userId})");
 
@@ -748,7 +748,7 @@ namespace Recruiter.Services.Implementation
             _context.InterviewAppointments.Remove(appointment);
             await _context.SaveChangesAsync();
 
-            return appointment;
+            //return appointment;
 
             //throw new NotImplementedException();
         }
