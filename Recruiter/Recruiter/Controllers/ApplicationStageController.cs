@@ -305,6 +305,7 @@ namespace Recruiter.Controllers
             }
         }
 
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> AddHomeworkSpecification(string stageId, string returnUrl = null)
         {
@@ -328,6 +329,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> AddHomeworkSpecification(string stageId, 
                                                                     AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, 
@@ -337,10 +339,11 @@ namespace Recruiter.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ReturnUrl"] = returnUrl;
+                return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId, returnUrl });
 
-                var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
-                return View(vm);
+                //ViewData["ReturnUrl"] = returnUrl;
+                //var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
+                //return View(vm);
             }
 
             try
