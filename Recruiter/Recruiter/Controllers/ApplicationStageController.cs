@@ -524,8 +524,6 @@ namespace Recruiter.Controllers
         [Route("{stageId?}")]
         public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true, string returnUrl = null)
         {
-            //ViewData["ReturnUrl"] = returnUrl;
-
             var myId = _userManager.GetUserId(HttpContext.User);
             try
             {
@@ -541,7 +539,6 @@ namespace Recruiter.Controllers
                 return RedirectToLocal(returnUrl);
             else
                 return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
-                //return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [Route("{stageId?}")]
