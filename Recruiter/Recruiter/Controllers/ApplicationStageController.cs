@@ -741,10 +741,20 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> RemoveAssignedAppointment(string appointmentId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var appointment = await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
-            //await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
+            try
+            {
+                await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
+                TempData["Success"] = "Appointment successfully removed.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToLocal(returnUrl);
+            return RedirectToLocalOrToHomeIndex(returnUrl);
+            
+            //await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
+            //return RedirectToLocal(returnUrl);
         }
 
         #region Helpers
