@@ -568,9 +568,30 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ProcessInterviewStage(string stageId, ProcessInterviewViewModel interviewViewModel, bool accepted = false, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);
 
-            return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+
+                var vm = await _applicationStageService.GetViewModelForProcessInterviewStage(stageId, myId);
+                return View(vm);
+            }
+
+            try
+            {
+                await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
+
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
         #endregion
