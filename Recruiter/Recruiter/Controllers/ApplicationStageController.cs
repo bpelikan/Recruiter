@@ -705,14 +705,24 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Interview;
+            try
+            {
+                var vm = await _applicationStageService.GetViewModelForInterviewStageDetails(stageId, myId);
+                return View(vm);
 
-            stage.InterviewAppointments = _context.InterviewAppointments
-                                            .Where(x => x.InterviewId == stage.Id)
-                                            .OrderBy(x => x.StartTime)
-                                            .ToList();
+                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Interview;
+                //stage.InterviewAppointments = _context.InterviewAppointments
+                //                                .Where(x => x.InterviewId == stage.Id)
+                //                                .OrderBy(x => x.StartTime)
+                //                                .ToList();
+                //return View(stage);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(stage);
+            return RedirectToLocalOrToHomeIndex(returnUrl);
         }
         #endregion
 
