@@ -246,6 +246,15 @@ namespace Recruiter.Controllers
                                                             string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+
+                var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
+                return View(vm);
+            }
+
             try
             {
                 await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
