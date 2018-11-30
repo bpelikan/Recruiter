@@ -635,10 +635,6 @@ namespace Recruiter.Controllers
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
             }
 
-            stage = new ApplicationStageBase() {
-                Id = stageId,
-            };
-
             switch (stage?.GetType().Name)
             {
                 case "ApplicationApproval":
@@ -668,8 +664,6 @@ namespace Recruiter.Controllers
                         else
                             return RedirectToAction(nameof(HomeController.Index), "Home");
                     }
-                    //return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails),
-                    //                            new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
             }
         }
 
