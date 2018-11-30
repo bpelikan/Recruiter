@@ -585,10 +585,6 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ApplicationStageController.ProcessInterviewStage), new { stageId, returnUrl });
-
-                //ViewData["ReturnUrl"] = returnUrl;
-                //var vm = await _applicationStageService.GetViewModelForProcessInterviewStage(stageId, myId);
-                //return View(vm);
             }
 
             try
