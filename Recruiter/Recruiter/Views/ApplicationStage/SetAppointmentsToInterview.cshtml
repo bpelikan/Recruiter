@@ -35,7 +35,8 @@
         </dd>
     </dl>
 </div>
-<a class="btn btn-sm btn-default" asp-action="ApplicationsStagesToReview" asp-route-stageId="@Model.StageToProcess.Id">Back</a>
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
 
 <hr />
 <h3>Appointments</h3>
@@ -60,15 +61,13 @@
             <span asp-validation-for="NewInterviewAppointment.InterviewId" class="text-danger"></span>
         </div>
     </div>
-
     <div class="form-group">
         <label asp-for="NewInterviewAppointment.StartTime" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="NewInterviewAppointment.StartTime" class="form-control" />
+            <input asp-for="NewInterviewAppointment.StartTime" class="form-control" value="@Model.NewInterviewAppointment.StartTime.ToString("s")"/>
             <span asp-validation-for="NewInterviewAppointment.StartTime" class="text-danger"></span>
         </div>
     </div>
-
     <div class="form-group">
         <label asp-for="NewInterviewAppointment.Duration" class="col-md-2 control-label"></label>
         <div class="col-md-10">
