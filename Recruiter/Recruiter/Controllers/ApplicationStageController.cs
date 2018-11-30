@@ -552,6 +552,7 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessInterviewStage(string stageId, string returnUrl = null)
         {
@@ -575,6 +576,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessInterviewStage(string stageId, ProcessInterviewViewModel interviewViewModel, bool accepted = false, string returnUrl = null)
         {
@@ -582,10 +584,11 @@ namespace Recruiter.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ReturnUrl"] = returnUrl;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessInterviewStage), new { stageId, returnUrl });
 
-                var vm = await _applicationStageService.GetViewModelForProcessInterviewStage(stageId, myId);
-                return View(vm);
+                //ViewData["ReturnUrl"] = returnUrl;
+                //var vm = await _applicationStageService.GetViewModelForProcessInterviewStage(stageId, myId);
+                //return View(vm);
             }
 
             try
