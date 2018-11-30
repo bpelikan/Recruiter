@@ -79,7 +79,7 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Send" />
+            <input type="submit" class="btn btn-primary" value="Send" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
         </div>
         @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
             <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>*@
@@ -130,7 +130,9 @@
                         <td>
                             <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd" 
                                 class="btn btn-default" asp-action="RemoveAppointmentsFromInterview" 
-                                                        asp-route-appointmentId="@appointment.Id">
+                                                        asp-route-appointmentId="@appointment.Id"
+                                                        asp-route-stageId="@appointment.InterviewId"
+                                                        asp-route-returnUrl="@ViewData["ReturnUrl"]">
                                     <span class="glyphicon glyphicon-minus small">
                                     </span>
                             </a>

@@ -670,7 +670,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
-                throw new Exception($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
             }
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
@@ -735,12 +735,18 @@ namespace Recruiter.Services.Implementation
             var appointment = await _context.InterviewAppointments
                                             .FirstOrDefaultAsync(x => x.Id == appointmentId);
             if (appointment == null)
-                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
-            if (appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd)
             {
-                _context.InterviewAppointments.Remove(appointment);
-                await _context.SaveChangesAsync();
+                _logger.LogError($"InterviewAppointment with ID:{appointmentId} not found. (UserID: {userId})");
+                throw new NotFoundException($"InterviewAppointment with ID:{appointmentId} not found.");
             }
+            if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
+            {
+                _logger.LogError($"Can't remove InterviewAppointment with ID:{appointmentId} this is possible only in WaitingToAdd state. (UserID: {userId})");
+                throw new InvalidActionException($"Can't remove InterviewAppointment with ID:{appointmentId} this is possible only in WaitingToAdd state.");
+            }
+
+            _context.InterviewAppointments.Remove(appointment);
+            await _context.SaveChangesAsync();
 
             return appointment;
 

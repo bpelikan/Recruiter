@@ -58,6 +58,8 @@ namespace Recruiter.Models
         public HomeworkState HomeworkState { get; set; }
 
         public string Description { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Duration must be greater than 0")]
         public int Duration { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]

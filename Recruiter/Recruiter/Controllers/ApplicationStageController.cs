@@ -318,6 +318,15 @@ namespace Recruiter.Controllers
                                                                     string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+
+                var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
+                return View(vm);
+            }
+
             try
             {
                 await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
@@ -365,6 +374,15 @@ namespace Recruiter.Controllers
                                                                 string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+
+                var vm = await _applicationStageService.GetViewModelForProcessHomeworkStage(stageId, myId);
+                return View(vm);
+            }
+
             try
             {
                 await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
@@ -385,37 +403,66 @@ namespace Recruiter.Controllers
 
         #region Interview
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessInterview(string stageId)
+        public async Task<IActionResult> ProcessInterview(string stageId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Interview;
+            Interview stage = null;
+            try
+            {
+                stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Interview;
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                if (returnUrl != null)
+                    return RedirectToLocal(returnUrl);
+                else
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            }
 
-            switch (stage.InterviewState)
+            switch (stage?.InterviewState)
             {
                 case InterviewState.WaitingForSettingAppointments:
-                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id, returnUrl });
                 case InterviewState.RequestForNewAppointments:
-                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId = stage.Id, returnUrl });
                 case InterviewState.WaitingForConfirmAppointment:
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
                 case InterviewState.AppointmentConfirmed:
-                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterviewStage), new { stageId = stage.Id });
+                    return RedirectToAction(nameof(ApplicationStageController.ProcessInterviewStage), new { stageId = stage.Id, returnUrl });
                 default:
+                    TempData["Error"] = $"Couldn't process Interview stage: Unknown InterviewState with ID:{stageId}.";
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
             }
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> SetAppointmentsToInterview(string stageId)
+        public async Task<IActionResult> SetAppointmentsToInterview(string stageId, string returnUrl = null)
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(stageId, myId);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            return View(vm);
+            var myId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            if (returnUrl != null)
+                return RedirectToLocal(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetAppointmentsToInterview(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> SetAppointmentsToInterview(string stageId, 
+                                                                    SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel,
+                                                                    string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
@@ -435,29 +482,73 @@ namespace Recruiter.Controllers
             }
             if (!ModelState.IsValid)
             {
+                ViewData["ReturnUrl"] = returnUrl;
+
                 var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
                 vm.NewInterviewAppointment = setAppointmentsToInterviewViewModel.NewInterviewAppointment;
                 return View(vm);
             }
-            await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
 
-            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-                                       new { stageId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
+            try
+            {
+                await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                //return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
+
+            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
+
+            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
+
+
+            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
+            //                           new { stageId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
+
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
 
         [Route("{appointmentId?}")]
-        public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId)
+        public async Task<IActionResult> RemoveAppointmentsFromInterview(string appointmentId, string stageId, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+            
             var myId = _userManager.GetUserId(HttpContext.User);
-            var appointment = await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
+            try
+            {
+                await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
+                TempData["Success"] = "Success.";
+                //var appointment = await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
+                //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = appointment.InterviewId, returnUrl });
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-                                        new { stageId = appointment.InterviewId });
+            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
+
+
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+
+            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
+            //                            new { stageId = appointment.InterviewId });
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true)
+        public async Task<IActionResult> SendInterviewAppointmentsToConfirm(string stageId, bool accepted = true, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
 
@@ -487,7 +578,8 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessInterviewStage(ProcessInterviewViewModel interviewViewModel, bool accepted = false)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ProcessInterviewStage(string stageId, ProcessInterviewViewModel interviewViewModel, bool accepted = false, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);

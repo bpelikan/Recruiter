@@ -52,7 +52,7 @@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().EndTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>*@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
                     @*<th>
                         - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)
@@ -68,8 +68,11 @@
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>*@
+                        <td>
+                            <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
+                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)
+                        </td>
                         @*<td>
                             - @Html.DisplayFor(model => appointment.InterviewId)
                             <br />

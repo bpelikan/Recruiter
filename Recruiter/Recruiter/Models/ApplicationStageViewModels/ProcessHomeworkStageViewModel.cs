@@ -19,8 +19,9 @@ namespace Recruiter.Models.ApplicationStageViewModels
     {
         public string Id { get; set; }
         public string Note { get; set; }
-        public int Rate { get; set; }
 
+        [Range(1, 5, ErrorMessage = "Rate must be beetween 1 and 5")]
+        public int Rate { get; set; }
         public string Description { get; set; }
         public int Duration { get; set; }
 
