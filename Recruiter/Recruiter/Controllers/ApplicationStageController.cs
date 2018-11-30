@@ -207,10 +207,6 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "ApplicationApproval");
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
         #endregion
 
@@ -343,12 +339,8 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
-            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
         [ImportModelState]
         [Route("{stageId?}")]
@@ -395,12 +387,8 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
-            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
         #endregion
 
@@ -529,12 +517,8 @@ namespace Recruiter.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
-            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
         [ImportModelState]
@@ -580,10 +564,7 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
         }
 
         #endregion
