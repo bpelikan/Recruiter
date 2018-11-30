@@ -53,11 +53,20 @@ namespace Recruiter.Controllers
         [Route("{stageName?}")]
         public IActionResult ApplicationsStagesToReview(string stageName = "")
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
-            vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
+            try
+            {
+                var myId = _userManager.GetUserId(HttpContext.User);
+                var vm = _applicationStageService.GetViewModelForApplicationsStagesToReview(stageName, myId);
+                vm.AsignedStages = vm.AsignedStages.OrderBy(x => x.Application.CreatedAt).ToList();
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         #endregion
 
