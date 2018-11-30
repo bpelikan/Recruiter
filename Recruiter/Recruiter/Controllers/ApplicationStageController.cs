@@ -251,10 +251,6 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId, returnUrl });
-                //ViewData["ReturnUrl"] = returnUrl;
-
-                //var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
-                //return View(vm);
             }
 
             try
