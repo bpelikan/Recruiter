@@ -498,11 +498,6 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId, returnUrl });
-
-                //ViewData["ReturnUrl"] = returnUrl;
-                //var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
-                //vm.NewInterviewAppointment = setAppointmentsToInterviewViewModel.NewInterviewAppointment;
-                //return View(vm);
             }
 
             try
