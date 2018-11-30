@@ -62,6 +62,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region AssingUserToApplicationStage()
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId, string returnUrl = null)
         {
@@ -87,6 +88,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> AssingUserToApplicationStage(string stageId, 
                                                                         AssingUserToStageViewModel addResponsibleUserToStageViewModel, 
@@ -94,10 +96,12 @@ namespace Recruiter.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-                if (users.Count() != 0)
-                    ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
-                return View(addResponsibleUserToStageViewModel);
+                return RedirectToAction(nameof(ApplicationStageController.AssingUserToApplicationStage), new { stageId, returnUrl });
+
+                //var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+                //if (users.Count() != 0)
+                //    ViewData["UsersToAssingToStage"] = new SelectList(users, "Id", "Email");
+                //return View(addResponsibleUserToStageViewModel);
             }
 
             var myId = _userManager.GetUserId(HttpContext.User);
