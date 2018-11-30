@@ -459,6 +459,19 @@ namespace Recruiter.Services.Implementation
             return myAppointments;
         }
 
+        public async Task<Interview> GetViewModelForInterviewStageDetails(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForInterviewStageDetails with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId) as Interview;
+            stage.InterviewAppointments = _context.InterviewAppointments
+                                            .Where(x => x.InterviewId == stage.Id)
+                                            .OrderBy(x => x.StartTime)
+                                            .ToList();
+            return stage;
+
+            //throw new NotImplementedException();
+        }
 
         //ADD
         public async Task<bool> AddRequiredStagesToApplication(string applicationId)
@@ -842,6 +855,6 @@ namespace Recruiter.Services.Implementation
             return stagesSortedByName;
         }
 
-
+        
     }
 }

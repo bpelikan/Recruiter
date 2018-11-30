@@ -31,6 +31,7 @@ namespace Recruiter.Services
         Task<SetAppointmentsToInterviewViewModel> GetViewModelForSetAppointmentsToInterview(string stageId, string userId);
         Task<ProcessInterviewViewModel> GetViewModelForProcessInterviewStage(string stageId, string userId);
         Task<IEnumerable<InterviewAppointment>> GetViewModelForShowAssignedAppointments(string userId);
+        Task<Interview> GetViewModelForInterviewStageDetails(string stageId, string userId);
 
 
         //ADD
