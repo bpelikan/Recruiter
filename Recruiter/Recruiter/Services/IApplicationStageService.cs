@@ -53,7 +53,7 @@ namespace Recruiter.Services
 
 
         //REMOVE
-        Task<InterviewAppointment> RemoveAssignedAppointment(string appointmentId, string userId);
+        Task RemoveAssignedAppointment(string appointmentId, string userId);
         Task RemoveAppointmentsFromInterview(string appointmentId, string userId);
         
 

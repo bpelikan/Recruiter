@@ -465,8 +465,6 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId);
             return stage;
-
-            //throw new NotImplementedException();
         }
 
         public async Task<Homework> GetViewModelForHomeworkStageDetails(string stageId, string userId)
@@ -475,8 +473,6 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId) as Homework;
             return stage;
-
-            //throw new NotImplementedException();
         }
 
         public async Task<Interview> GetViewModelForInterviewStageDetails(string stageId, string userId)
@@ -489,8 +485,6 @@ namespace Recruiter.Services.Implementation
                                             .OrderBy(x => x.StartTime)
                                             .ToList();
             return stage;
-
-            //throw new NotImplementedException();
         }
 
         //ADD
@@ -740,7 +734,7 @@ namespace Recruiter.Services.Implementation
 
 
         //REMOVE
-        public async Task<InterviewAppointment> RemoveAssignedAppointment(string appointmentId, string userId)
+        public async Task RemoveAssignedAppointment(string appointmentId, string userId)
         {
             _logger.LogInformation($"Executing RemoveAppointmentsAssignToMe with appointmentId={appointmentId}. (UserID: {userId})");
 
@@ -757,8 +751,6 @@ namespace Recruiter.Services.Implementation
 
             _context.InterviewAppointments.Remove(appointment);
             await _context.SaveChangesAsync();
-
-            return appointment;
         }
 
         public async Task RemoveAppointmentsFromInterview(string appointmentId, string userId)
