@@ -459,6 +459,26 @@ namespace Recruiter.Services.Implementation
             return myAppointments;
         }
 
+        public async Task<ApplicationStageBase> GetViewModelForApplicationStageBaseDatails(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForApplicationStageBaseDatails with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId);
+            return stage;
+
+            //throw new NotImplementedException();
+        }
+
+        public async Task<Homework> GetViewModelForHomeworkStageDetails(string stageId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForInterviewStageDetails with stageId={stageId}. (UserID: {userId})");
+
+            var stage = await GetApplicationStageBaseWithIncludeNoTracking(stageId, userId) as Homework;
+            return stage;
+
+            //throw new NotImplementedException();
+        }
+
         public async Task<Interview> GetViewModelForInterviewStageDetails(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForInterviewStageDetails with stageId={stageId}. (UserID: {userId})");

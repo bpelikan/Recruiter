@@ -669,8 +669,10 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             try
             {
-                var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
-                return View(stage);
+                var vm = await _applicationStageService.GetViewModelForApplicationStageBaseDatails(stageId, myId);
+                return View(vm);
+                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
+                //return View(stage);
             }
             catch (CustomException ex)
             {
@@ -688,8 +690,10 @@ namespace Recruiter.Controllers
             var myId = _userManager.GetUserId(HttpContext.User);
             try
             {
-                var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
-                return View(stage);
+                var vm = await _applicationStageService.GetViewModelForHomeworkStageDetails(stageId, myId);
+                return View(vm);
+                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
+                //return View(stage);
             }
             catch (CustomException ex)
             {
