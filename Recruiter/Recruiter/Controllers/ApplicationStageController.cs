@@ -340,10 +340,6 @@ namespace Recruiter.Controllers
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId, returnUrl });
-
-                //ViewData["ReturnUrl"] = returnUrl;
-                //var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
-                //return View(vm);
             }
 
             try
