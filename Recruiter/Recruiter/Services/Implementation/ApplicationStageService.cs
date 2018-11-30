@@ -772,10 +772,6 @@ namespace Recruiter.Services.Implementation
 
             _context.InterviewAppointments.Remove(appointment);
             await _context.SaveChangesAsync();
-
-            //return appointment;
-
-            //throw new NotImplementedException();
         }
         
 
