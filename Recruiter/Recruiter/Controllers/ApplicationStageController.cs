@@ -621,25 +621,55 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
+            ApplicationStageBase stage = null;
+            try
+            {
+                stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                if (returnUrl != null)
+                    return RedirectToLocal(returnUrl);
+                else
+                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            }
 
-            switch (stage.GetType().Name)
+            stage = new ApplicationStageBase() {
+                Id = stageId,
+            };
+
+            switch (stage?.GetType().Name)
             {
                 case "ApplicationApproval":
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), 
-                                                new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                                                new { stageId = stage.Id, returnUrl });
                 case "PhoneCall":
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), 
-                                                new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                                                new { stageId = stage.Id, returnUrl });
                 case "Homework":
                     return RedirectToAction(nameof(ApplicationStageController.HomeworkStageDetails), 
-                                                new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                                                new { stageId = stage.Id, returnUrl });
                 case "Interview":
                     return RedirectToAction(nameof(ApplicationStageController.InterviewStageDetails), 
-                                                new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                                                new { stageId = stage.Id, returnUrl });
                 default:
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails), 
-                                                new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
+                    if (stage != null)
+                    {
+                        TempData["Warning"] = $"Couldn't find well known application stage type with ID:{stageId}, below showed primary ApplicationStageBase.";
+                        return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails),
+                                                    new { stageId = stage.Id, returnUrl });
+                    }
+                    else
+                    {
+                        TempData["Error"] = $"Couldn't find application stage details: Unknown stage with ID:{stageId}.";
+                        if (Url.IsLocalUrl(returnUrl))
+                            return Redirect(returnUrl);
+                        else
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                    }
+                    //return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails),
+                    //                            new { stageId = stage.Id, returnUrl = ViewData["ReturnUrl"] });
             }
         }
 

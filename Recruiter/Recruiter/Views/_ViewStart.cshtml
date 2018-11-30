@@ -4,11 +4,19 @@
 
 @if (@TempData["Error"] != null)
 {
-    <div class="alert alert-danger fade in" id="success-alert">
+    <div class="alert alert-danger fade in" id="danger-alert">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
         @*@TempData["Error"]
-        <br />*@
+            <br />*@
         @Html.Raw(TempData["Error"])
+    </div>
+}
+@if (@TempData["Warning"] != null)
+{
+    <div class="alert alert-warning fade in" id="warning-alert">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @*@TempData["Warning"]*@
+        @Html.Raw(TempData["Warning"])
     </div>
 }
 @if (@TempData["Success"] != null)
