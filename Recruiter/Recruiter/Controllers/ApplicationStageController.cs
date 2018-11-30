@@ -709,13 +709,6 @@ namespace Recruiter.Controllers
             {
                 var vm = await _applicationStageService.GetViewModelForInterviewStageDetails(stageId, myId);
                 return View(vm);
-
-                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Interview;
-                //stage.InterviewAppointments = _context.InterviewAppointments
-                //                                .Where(x => x.InterviewId == stage.Id)
-                //                                .OrderBy(x => x.StartTime)
-                //                                .ToList();
-                //return View(stage);
             }
             catch (CustomException ex)
             {
