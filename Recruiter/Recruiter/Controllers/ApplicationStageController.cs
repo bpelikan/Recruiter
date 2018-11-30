@@ -674,6 +674,7 @@ namespace Recruiter.Controllers
         }
         #endregion
 
+        #region ShowAssignedAppointments()
         public async Task<IActionResult> ShowAssignedAppointments(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -691,7 +692,9 @@ namespace Recruiter.Controllers
 
             return RedirectToLocalOrToHomeIndex(returnUrl);
         }
+        #endregion
 
+        #region RemoveAssignedAppointment()
         [Route("{appointmentId?}")]
         public async Task<IActionResult> RemoveAssignedAppointment(string appointmentId, string returnUrl = null)
         {
@@ -708,6 +711,7 @@ namespace Recruiter.Controllers
 
             return RedirectToLocalOrToHomeIndex(returnUrl);
         }
+        #endregion
 
         #region Helpers
         private IActionResult RedirectToLocal(string returnUrl)
