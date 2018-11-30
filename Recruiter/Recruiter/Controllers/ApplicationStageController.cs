@@ -93,7 +93,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            return RedirectToLocal(returnUrl);
+            return RedirectToLocalOrToHomeIndex(returnUrl);
         }
 
         [HttpPost]
@@ -139,10 +139,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                if (returnUrl != null)
-                    return RedirectToLocal(returnUrl);
-                else
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
 
             switch (stage?.GetType().Name)
@@ -156,11 +153,8 @@ namespace Recruiter.Controllers
                 case "Interview":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
                 default:
-                    TempData["Error"] = $"Couldn't process stage: Unknown Application Stage with ID:{stageId}.";
-                    if (returnUrl!=null)
-                        return RedirectToLocal(returnUrl);
-                    else
-                        return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                    TempData["Error"] = $"Couldn't process stage: Unknown Application Stage type with ID:{stageId}.";
+                    return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
         }
         #endregion
@@ -183,10 +177,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -215,10 +206,11 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "ApplicationApproval");
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "ApplicationApproval" });
         }
         #endregion
 
@@ -240,10 +232,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -271,11 +260,11 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
-
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "PhoneCall");
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
         #endregion
 
@@ -292,10 +281,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                if (returnUrl != null)
-                    return RedirectToLocal(returnUrl);
-                else
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
 
             switch (stage?.HomeworkState) {
@@ -330,10 +316,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -360,11 +343,12 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
-
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
+            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
         [ImportModelState]
         [Route("{stageId?}")]
@@ -383,10 +367,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -414,11 +395,12 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
-
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
+            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
         #endregion
 
@@ -435,10 +417,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                if (returnUrl != null)
-                    return RedirectToLocal(returnUrl);
-                else
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
 
             switch (stage?.InterviewState)
@@ -474,10 +453,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -553,11 +529,12 @@ namespace Recruiter.Controllers
             {
                 TempData["Error"] = ex.Message;
             }
-
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
+            //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
+            //if (returnUrl != null)
+            //    return RedirectToLocal(returnUrl);
+            //else
+            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
         }
 
         [ImportModelState]
@@ -577,10 +554,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            if (returnUrl != null)
-                return RedirectToLocal(returnUrl);
-            else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+            return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
@@ -752,9 +726,6 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToLocalOrToHomeIndex(returnUrl);
-            
-            //await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
-            //return RedirectToLocal(returnUrl);
         }
 
         #region Helpers
@@ -766,12 +737,12 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.Index));
         }
 
-        private IActionResult RedirectToLocalOrToApplicationsStagesToReview(string returnUrl)
+        private IActionResult RedirectToLocalOrToApplicationsStagesToReview(string returnUrl, string stageName = "")
         {
             if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName });
         }
 
         private IActionResult RedirectToLocalOrToHomeIndex(string returnUrl)
