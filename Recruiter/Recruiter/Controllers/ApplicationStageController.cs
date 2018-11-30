@@ -158,6 +158,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region ApplicationApproval
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessApplicationApproval(string stageId, string returnUrl = null)
         {
@@ -181,6 +182,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessApplicationApproval(string stageId, 
                                                                     ProcessApplicationApprovalViewModel applicationApprovalViewModel, 
@@ -191,10 +193,7 @@ namespace Recruiter.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ReturnUrl"] = returnUrl;
-
-                var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
-                return View(vm);
+                return RedirectToAction(nameof(ApplicationStageController.ProcessApplicationApproval), new { stageId, returnUrl });
             }
 
             try
