@@ -497,21 +497,9 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                //return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
-
-            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
-
-
-            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-            //                           new { stageId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId });
-
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
         }
 
         [Route("{appointmentId?}")]
