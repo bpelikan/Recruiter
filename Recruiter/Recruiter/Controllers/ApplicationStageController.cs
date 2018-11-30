@@ -188,6 +188,15 @@ namespace Recruiter.Controllers
                                                                     string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+
+                var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
+                return View(vm);
+            }
+
             try
             {
                 await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
