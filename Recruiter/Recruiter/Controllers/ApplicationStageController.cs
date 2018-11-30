@@ -449,6 +449,7 @@ namespace Recruiter.Controllers
             }
         }
 
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> SetAppointmentsToInterview(string stageId, string returnUrl = null)
         {
@@ -472,6 +473,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> SetAppointmentsToInterview(string stageId, 
                                                                     SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel,
@@ -495,11 +497,12 @@ namespace Recruiter.Controllers
             }
             if (!ModelState.IsValid)
             {
-                ViewData["ReturnUrl"] = returnUrl;
+                return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId, returnUrl });
 
-                var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
-                vm.NewInterviewAppointment = setAppointmentsToInterviewViewModel.NewInterviewAppointment;
-                return View(vm);
+                //ViewData["ReturnUrl"] = returnUrl;
+                //var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId, myId);
+                //vm.NewInterviewAppointment = setAppointmentsToInterviewViewModel.NewInterviewAppointment;
+                //return View(vm);
             }
 
             try
