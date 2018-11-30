@@ -671,8 +671,6 @@ namespace Recruiter.Controllers
             {
                 var vm = await _applicationStageService.GetViewModelForApplicationStageBaseDatails(stageId, myId);
                 return View(vm);
-                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
-                //return View(stage);
             }
             catch (CustomException ex)
             {
@@ -692,8 +690,6 @@ namespace Recruiter.Controllers
             {
                 var vm = await _applicationStageService.GetViewModelForHomeworkStageDetails(stageId, myId);
                 return View(vm);
-                //var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
-                //return View(stage);
             }
             catch (CustomException ex)
             {
@@ -728,9 +724,17 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var myAppointments = await _applicationStageService.GetViewModelForShowAssignedAppointments(myId);
+            try
+            {
+                var myAppointments = await _applicationStageService.GetViewModelForShowAssignedAppointments(myId);
+                return View(myAppointments);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(myAppointments);
+            return RedirectToLocalOrToHomeIndex(returnUrl);
         }
 
         [Route("{appointmentId?}")]
