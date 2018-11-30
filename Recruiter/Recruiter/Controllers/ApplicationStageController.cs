@@ -215,6 +215,7 @@ namespace Recruiter.Controllers
         #endregion
 
         #region PhoneCall
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessPhoneCall(string stageId, string returnUrl = null)
         {
@@ -238,6 +239,7 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
+        [ExportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessPhoneCall(string stageId, 
                                                             ProcessPhoneCallViewModel phoneCallViewModel, 
@@ -248,10 +250,11 @@ namespace Recruiter.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["ReturnUrl"] = returnUrl;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessPhoneCall), new { stageId, returnUrl });
+                //ViewData["ReturnUrl"] = returnUrl;
 
-                var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
-                return View(vm);
+                //var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
+                //return View(vm);
             }
 
             try
