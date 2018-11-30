@@ -512,8 +512,6 @@ namespace Recruiter.Controllers
             {
                 await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
                 TempData["Success"] = "Success.";
-                //var appointment = await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
-                //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId = appointment.InterviewId, returnUrl });
             }
             catch (CustomException ex)
             {
@@ -521,15 +519,6 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
-
-
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
-
-            //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview),
-            //                            new { stageId = appointment.InterviewId });
         }
 
         [Route("{stageId?}")]
