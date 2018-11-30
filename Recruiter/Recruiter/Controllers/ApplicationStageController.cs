@@ -629,10 +629,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                if (returnUrl != null)
-                    return RedirectToLocal(returnUrl);
-                else
-                    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+                return RedirectToLocalOrToHomeIndex(returnUrl);
             }
 
             switch (stage?.GetType().Name)
@@ -659,10 +656,7 @@ namespace Recruiter.Controllers
                     else
                     {
                         TempData["Error"] = $"Couldn't find application stage details: Unknown stage with ID:{stageId}.";
-                        if (Url.IsLocalUrl(returnUrl))
-                            return Redirect(returnUrl);
-                        else
-                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                        return RedirectToLocalOrToHomeIndex(returnUrl);
                     }
             }
         }
@@ -673,9 +667,17 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
-            
-            return View(stage);
+            try
+            {
+                var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId);
+                return View(stage);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocalOrToHomeIndex(returnUrl);
         }
 
         [Route("{stageId?}")]
@@ -684,9 +686,17 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
-            
-            return View(stage);
+            try
+            {
+                var stage = await _applicationStageService.GetApplicationStageBaseWithIncludeNoTracking(stageId, myId) as Homework;
+                return View(stage);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocalOrToHomeIndex(returnUrl);
         }
 
         [Route("{stageId?}")]
@@ -733,6 +743,22 @@ namespace Recruiter.Controllers
                 return Redirect(returnUrl);
             else
                 return RedirectToAction(nameof(ApplicationStageController.Index));
+        }
+
+        private IActionResult RedirectToLocalOrToApplicationsStagesToReview(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));
+        }
+
+        private IActionResult RedirectToLocalOrToHomeIndex(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction(nameof(HomeController.Index), "Home");
         }
         #endregion
     }
