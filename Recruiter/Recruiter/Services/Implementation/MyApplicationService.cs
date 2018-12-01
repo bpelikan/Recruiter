@@ -163,21 +163,33 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing ApplyMyApplication. (UserID: {userId})");
 
             if (cv == null)
-                throw new ApplicationException($"CV file not found.");
+            {
+                _logger.LogError($"CV file not found. (UserID: {userId})");
+                throw new NotFoundException($"CV file not found.");
+            }
 
             using (var stream = cv.OpenReadStream())
             {
-                var CvFileName = await _cvStorageService.SaveCvAsync(stream, userId, cv.FileName);
+                var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
                 applyApplicationViewModel.CvFileName = CvFileName;
             }
 
             if (Path.GetExtension(cv.FileName) != ".pdf")
-                throw new ApplicationException($"CV must have .pdf extension.");
+            {
+                _logger.LogWarning($"CV must have .pdf extension. FileName:{cv.FileName} (UserID: {userId})");
+                throw new InvalidFileExtensionException($"CV must have .pdf extension.");
+            }
             if (applyApplicationViewModel.CvFileName == null)
-                throw new ApplicationException($"Something went wrong during uploading CV, try again or contact with admin.");
+            {
+                _logger.LogError($"CvFileName in applyApplicationViewModel equals NULL. (UserID: {userId})");
+                throw new NotFoundException($"Something went wrong during uploading CV.");
+            }
             if (await _context.Applications
                                 .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
-                throw new ApplicationException($"You have already sent application to this offer.");
+            {
+                _logger.LogWarning($"User with ID:{userId} already send application to offer with ID:{applyApplicationViewModel.JobPositionId}. (UserID: {userId})");
+                throw new InvalidActionException($"You have already sent application to this offer.");
+            }
 
             var application = new Application()
             {

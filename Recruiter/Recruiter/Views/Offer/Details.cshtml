@@ -29,11 +29,18 @@
         </dl>*@
 </div>
 <div>
-    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
-        <a class="btn btn-sm btn-primary" condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruit))" asp-controller="MyApplication" asp-action="Apply" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>
-        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
-    </form>
+    <a class="btn btn-sm btn-primary"
+       condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruit))"
+       asp-controller="MyApplication"
+       asp-action="Apply"
+       asp-route-jobPositionId="@Model.Id"
+       asp-route-returnurl="@Context.Request.Path">
+        Apply
+    </a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
+
+    @*<form asp-action="Delete" asp-route-id="@Model.Id" method="post"></form>*@
 </div>
 
 

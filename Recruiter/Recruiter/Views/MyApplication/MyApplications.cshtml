@@ -23,7 +23,11 @@ else
         {
             <tr>
                 <td>
-                    <a asp-action="MyApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">@application.JobPosition.Name</a>
+                    <a asp-action="MyApplicationDetails" 
+                        asp-route-applicationId="@application.Id" 
+                        asp-route-returnurl="@Context.Request.Path">
+                            @application.JobPosition.Name
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(model => application.CreatedAt)

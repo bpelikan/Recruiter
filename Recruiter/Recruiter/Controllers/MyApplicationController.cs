@@ -20,6 +20,7 @@ using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {
+    [Route("[controller]/[action]")]
     [Authorize(Roles = RoleCollection.Recruit)]
     public class MyApplicationController : Controller
     {
@@ -68,14 +69,15 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        public async Task<IActionResult> MyApplicationDetails(string id, string returnUrl = null)
+        [Route("{applicationId?}")]
+        public async Task<IActionResult> MyApplicationDetails(string applicationId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             try
             {
                 var userId = _userManager.GetUserId(HttpContext.User);
-                var vm = await _myApplicationService.GetMyApplicationDetails(id, userId);
+                var vm = await _myApplicationService.GetMyApplicationDetails(applicationId, userId);
 
                 return View(vm);
             }
@@ -88,12 +90,13 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteMyApplication(string id, string returnUrl = null)
+        [Route("{applicationId?}")]
+        public async Task<IActionResult> DeleteMyApplication(string applicationId, string returnUrl = null)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
             try
             {
-                await _myApplicationService.DeleteMyApplication(id, userId);
+                await _myApplicationService.DeleteMyApplication(applicationId, userId);
                 TempData["Success"] = "Successfully deleted your application.";
                 return RedirectToAction(nameof(MyApplicationController.MyApplications));
             }
@@ -105,14 +108,16 @@ namespace Recruiter.Controllers
             return RedirectToLocalOrToMyApplications(returnUrl);
         }
 
-        public async Task<IActionResult> Apply(string id, string returnUrl = null)
+        [ImportModelState]
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Apply(string jobPositionId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             var userId = _userManager.GetUserId(HttpContext.User);
             try
             {
-                var vm = await _myApplicationService.GetApplyApplicationViewModel(id, userId);
+                var vm = await _myApplicationService.GetApplyApplicationViewModel(jobPositionId, userId);
                 return View(vm);
             }
             catch (CustomException ex)
@@ -124,28 +129,35 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Apply(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel)
+        [ExportModelState]
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Apply(string jobPositionId, IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel, string returnUrl = null)
         {
             if (!ModelState.IsValid)
-                return View(applyApplicationViewModel);
-           
-            var userId = _userManager.GetUserId(HttpContext.User);
+                return RedirectToAction(nameof(MyApplicationController.Apply), new { jobPositionId, returnUrl });
+                //return View(applyApplicationViewModel);
 
+            var userId = _userManager.GetUserId(HttpContext.User);
             try
             {
                 var application = await _myApplicationService.ApplyMyApplication(cv, applyApplicationViewModel, userId);
-                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = application.Id });
+                TempData["Success"] = "Successfully added.";
+                return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = application.Id });
             }
-            catch (ApplicationException applicationException)
+            catch (CustomException ex)
             {
-                ModelState.AddModelError("", applicationException.Message);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError("", "Something went wrong, please try again.");
+                TempData["Error"] = ex.Message;
             }
 
-            return View(applyApplicationViewModel);
+            //return RedirectToLocalOrToHomeIndex(returnUrl);
+            return RedirectToAction(nameof(MyApplicationController.Apply), new { jobPositionId, returnUrl });
+
+            //catch (Exception e)
+            //{
+            //    ModelState.AddModelError("", "Something went wrong, please try again.");
+            //}
+            //return View(applyApplicationViewModel);
+
         }
 
         public async Task<IActionResult> ProcessMyHomework(string stageId)
@@ -278,6 +290,17 @@ namespace Recruiter.Controllers
             else
             {
                 return RedirectToAction(nameof(MyApplicationController.MyApplications));
+            }
+        }
+        private IActionResult RedirectToLocalOrToHomeIndex(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
         #endregion
