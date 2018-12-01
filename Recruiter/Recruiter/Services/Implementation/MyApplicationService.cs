@@ -144,7 +144,10 @@ namespace Recruiter.Services.Implementation
 
             var offer = await _context.JobPositions.SingleOrDefaultAsync(x => x.Id == jobPositionId);
             if (offer == null)
-                throw new Exception($"JobPosition with id: {jobPositionId} doesn't exist. (UserID: {userId})");
+            {
+                _logger.LogError($"JobPosition with ID:{jobPositionId} doesn't exist. (UserID: {userId})");
+                throw new NotFoundException($"JobPosition with ID:{jobPositionId} doesn't exist.");
+            }
 
             var vm = new ApplyApplicationViewModel()
             {

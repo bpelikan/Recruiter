@@ -110,9 +110,17 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _myApplicationService.GetApplyApplicationViewModel(id, userId);
+            try
+            {
+                var vm = await _myApplicationService.GetApplyApplicationViewModel(id, userId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(vm);
+            return RedirectToLocalOrToMyApplications(returnUrl);
         }
 
         [HttpPost]
