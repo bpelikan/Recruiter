@@ -13,7 +13,7 @@ namespace Recruiter.Services.Implementation
             return Task.FromResult(true);
         }
 
-        public Task<string> SaveCvAsync(Stream CvStream, string userId, string ext)
+        public Task<string> SaveCvAsync(Stream CvStream, string fileName, string userId)
         {
             return Task.FromResult("FakeCv");
         }

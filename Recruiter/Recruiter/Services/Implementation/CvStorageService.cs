@@ -38,7 +38,7 @@ namespace Recruiter.Services.Implementation
             return result;
         }
 
-        public async Task<string> SaveCvAsync(Stream CvStream, string userId, string fileName)
+        public async Task<string> SaveCvAsync(Stream CvStream, string fileName, string userId)
         {
             var cvId = userId + "." + Guid.NewGuid().ToString() + "." + Path.GetFileNameWithoutExtension(fileName) + Path.GetExtension(fileName);
             var container = blobClient.GetContainerReference("cvstorage");
