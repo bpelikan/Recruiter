@@ -27,7 +27,6 @@ namespace Recruiter.Controllers
         private readonly IMyApplicationService _myApplicationService;
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
-        //private readonly IApplicationStageService _applicationStageService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
@@ -35,14 +34,12 @@ namespace Recruiter.Controllers
             IMyApplicationService myApplicationService,
             ICvStorageService cvStorageService, 
             IMapper mapper,
-            //IApplicationStageService applicationStageService,
             UserManager<ApplicationUser> userManager, 
             ApplicationDbContext context)
         {
             _myApplicationService = myApplicationService;
             _cvStorageService = cvStorageService;
             _mapper = mapper;
-            //_applicationStageService = applicationStageService;
             _userManager = userManager;
             _context = context;
         }
