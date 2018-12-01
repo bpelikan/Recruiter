@@ -46,7 +46,8 @@ namespace Recruiter.Services.Implementation
 
         }
 
-        public async Task<bool> DeleteCvAsync(string cvId)
+        //delete return bool
+        public async Task<bool> DeleteCvAsync(string cvId) 
         {
             _logger.LogInformation($"Starting deleting CV with ID: {cvId}.");
 
