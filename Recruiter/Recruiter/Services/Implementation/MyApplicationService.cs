@@ -134,13 +134,6 @@ namespace Recruiter.Services.Implementation
 
             await _cvStorageService.DeleteCvAsync(application.CvFileName);
 
-            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            //if (!delete)
-            //{
-            //    _logger.LogError($"Message. (UserID: {userId})");
-            //    throw new InvalidActionException($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
-            //}
-
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
         }
