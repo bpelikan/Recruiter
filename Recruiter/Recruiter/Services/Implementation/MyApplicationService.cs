@@ -178,7 +178,7 @@ namespace Recruiter.Services.Implementation
             await _context.Applications.AddAsync(application);
             await _context.SaveChangesAsync();
 
-            await _applicationStageService.AddRequiredStagesToApplication(application.Id);
+            await _applicationStageService.AddRequiredStagesToApplication(application.Id, userId);
 
             return application;
         }

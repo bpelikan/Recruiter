@@ -488,17 +488,23 @@ namespace Recruiter.Services.Implementation
         }
 
         //ADD
-        public async Task<bool> AddRequiredStagesToApplication(string applicationId)
+        public async Task<bool> AddRequiredStagesToApplication(string applicationId, string userId)
         {
             _logger.LogInformation($"Executing AddRequiredStagesToApplication with applicationId={applicationId}");
 
             var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
             if (application == null)
-                throw new Exception($"Application with id: {applicationId} not found.");
+            {
+                _logger.LogError($"Application with ID:{applicationId} not found.. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+            }
 
             var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
             if (applicationStagesRequirements == null)
-                throw new Exception($"Application Stages Requirements with id: {application.JobPositionId} not found.");
+            {
+                _logger.LogError($"Application Stages Requirements with ID:{application.JobPositionId} not found.. (UserID: {userId})");
+                throw new NotFoundException($"Application Stages Requirements with ID:{application.JobPositionId} not found.");
+            }
 
             List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
             if (applicationStagesRequirements.IsApplicationApprovalRequired)
@@ -716,7 +722,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetApplicationStageBaseToProcessStage(interviewViewModel.StageToProcess.Id, userId);
             if (stage.State != ApplicationStageState.InProgress)
-                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+            }
 
             var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
             foreach (var appointment in appointments)
@@ -742,12 +751,21 @@ namespace Recruiter.Services.Implementation
                                             .Include(x => x.Interview)
                                             .FirstOrDefaultAsync(x => x.Id == appointmentId);
             if (appointment == null)
-                throw new Exception($"InterviewAppointment with id {appointmentId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"InterviewAppointment with ID:{appointmentId} not found. (UserID: {userId})");
+                throw new NotFoundException($"InterviewAppointment with ID:{appointmentId} not found.");
+            }
             if (appointment.Interview.ResponsibleUserId != userId)
-                throw new Exception($"User with id {userId} is not allowed to delete InterviewAppointment with id {appointmentId}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to delete InterviewAppointment with ID:{appointmentId}. (UserID: {userId})");
+                throw new PermissionException($"User with ID:{userId} is not allowed to delete InterviewAppointment with ID:{appointmentId}.");
+            }
 
             if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
-                throw new Exception($"InterviewAppointment with id {appointmentId} is not in WaitingToAdd state. (UserID: {userId})");
+            {
+                _logger.LogError($"InterviewAppointment with ID:{appointmentId} isn't in WaitingToAdd state. (UserID: {userId})");
+                throw new InvalidActionException($"InterviewAppointment with ID:{appointmentId} isn't in WaitingToAdd state.");
+            }
 
             _context.InterviewAppointments.Remove(appointment);
             await _context.SaveChangesAsync();
@@ -781,13 +799,22 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing AddAppointmentsToInterview. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(stageId, userId) as Interview;
-            if (stage.State != ApplicationStageState.InProgress)
-                throw new Exception($"ApplicationStage with id {stage.Id} have not InProgress State. (UserID: {userId})");
             if (stage.ResponsibleUserId != userId)
-                throw new Exception($"User with ID: {userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
+                throw new PermissionException($"User with ID:{userId} is not responsible user of ApplicationStage with ID: {stage.Id}.");
+            }
+            if (stage.State != ApplicationStageState.InProgress)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
+                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+            }
             if (stage.InterviewState != InterviewState.WaitingForSettingAppointments &&
                     stage.InterviewState != InterviewState.RequestForNewAppointments)
-                throw new Exception($"Interview ApplicationStage with id {stage.Id} have not WaitingForSettingAppointments or RequestForNewAppointments InterviewState. (UserID: {userId})");
+            {
+                _logger.LogError($"Message. (UserID: {userId})");
+                throw new InvalidActionException($"Interview ApplicationStage with ID:{stage.Id} isn't in WaitingForSettingAppointments or RequestForNewAppointments InterviewState.");
+            }
 
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&
