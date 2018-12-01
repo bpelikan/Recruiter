@@ -48,20 +48,26 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
-            //return View();
             return RedirectToAction(nameof(MyApplicationController.MyApplications));
         }
 
-        //[Authorize(Roles = RoleCollection.Recruit)]
         public IActionResult MyApplications()
         {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = _myApplicationService.GetMyApplications(userId);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = _myApplicationService.GetMyApplications(userId);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        //[Authorize(Roles = RoleCollection.Recruit)]
         public async Task<ActionResult> MyApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -73,7 +79,6 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> DeleteMyApplication(string id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
@@ -82,7 +87,6 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(MyApplicationController.MyApplications));
         }
 
-        //[Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> Apply(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -94,7 +98,6 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = RoleCollection.Recruit)]
         public async Task<IActionResult> Apply(IFormFile cv, ApplyApplicationViewModel applyApplicationViewModel)
         {
             if (!ModelState.IsValid)
