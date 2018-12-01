@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Recruiter.CustomExceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,27 +48,41 @@ namespace Recruiter.Services.Implementation
 
         public async Task<bool> DeleteCvAsync(string cvId)
         {
-            _logger.LogInformation($"Starting deleting CV with ID: {cvId}");
+            _logger.LogInformation($"Starting deleting CV with ID: {cvId}.");
 
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
 
-            _logger.LogInformation("Starting deleting CV from blob");
+            if (await blob.ExistsAsync())
+                _logger.LogInformation($"Before operation: CV file with ID:{cvId} exist.");
+            else
+                _logger.LogWarning($"Before operation: CV file with ID:{cvId} not exist.");
+
+            _logger.LogInformation("Starting deleting CV from blob.");
             try
             {
                 await blob.DeleteIfExistsAsync();
-                _logger.LogInformation("Deleting CV from blob completed");
+                _logger.LogInformation("Deleting CV from blob completed.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                _logger.LogInformation("Deleting CV from blob failed");
-                return false;
+                _logger.LogError($"Something went wrong while deleting cv with FILENAME:{cvId} in Blob.");
+                _logger.LogInformation("Deleting CV from blob failed.");
+                throw new InvalidActionException($"Something went wrong while deleting CV file from server.");
             }
             finally
             {
-                _logger.LogInformation("Completed operation: Deleting CV from blob");
+                _logger.LogInformation("Completed operation: Deleting CV from blob.");
             }
+
+            if (await blob.ExistsAsync())
+            {
+                _logger.LogError($"After operation: CV file with ID:{cvId} still exist.");
+                throw new InvalidActionException($"Something went wrong while deleting CV file from server.");
+            }
+            else
+                _logger.LogInformation($"After operation: CV file with ID:{cvId} not exist.");
 
             return true;
         }
