@@ -120,7 +120,6 @@ namespace Recruiter.Services.Implementation
                 _logger.LogError($"Something went wrong while uploading CV with FILENAME:{cvId} to Blob. (UserID: {userId})");
                 _logger.LogInformation("Uploading CV failed.");
                 throw new BlobOperationException($"Something went wrong while uploading CV file to server.");
-                //return null;
             }
             finally
             {
@@ -162,7 +161,6 @@ namespace Recruiter.Services.Implementation
                 _logger.LogError(ex.Message);
                 _logger.LogError($"Something went wrong while uploading cv with FILENAME:{cvId} to archieve Blob. (UserID: {userId})");
                 _logger.LogInformation("Copy to archieve failed");
-                //throw new InvalidActionException($"Something went wrong while uploading CV file to server-2.");
             }
             finally
             {
