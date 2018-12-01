@@ -67,9 +67,15 @@ namespace Recruiter.Services.Implementation
                                         .FirstOrDefault(x => x.Id == applicationId);
 
             if (application == null)
-                throw new Exception($"Application with id {applicationId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+            }
             if (userId != application.UserId)
-                throw new Exception($"User with id {userId} aren't owner of application with id {applicationId}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} aren't owner of application with ID:{applicationId}. (UserID: {userId})");
+                throw new PermissionException($"You aren't owner of application with ID:{applicationId}.");
+            }
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
 
@@ -115,15 +121,25 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing DeleteMyApplication with applicationId={applicationId}. (UserID: {userId})");
 
             var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == applicationId);
-
             if (application == null)
-                throw new Exception($"Application with id: {applicationId} doesn't exist. (UserID: {userId})");
+            {
+                _logger.LogError($"Application with ID:{applicationId} doesn't exist. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} doesn't exist.");
+            }
             if (application.UserId != userId)
-                throw new Exception($"User with id: {userId} aren't owner of application with id: {application.Id}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} aren't owner of application with ID:{application.Id}. (UserID: {userId})");
+                throw new PermissionException($"You aren't owner of application with ID:{application.Id}.");
+            }
 
-            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            if (!delete)
-                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}. (UserID: {userId})");
+            await _cvStorageService.DeleteCvAsync(application.CvFileName);
+
+            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            //if (!delete)
+            //{
+            //    _logger.LogError($"Message. (UserID: {userId})");
+            //    throw new InvalidActionException($"Something went wrong while deleting cv in Blob: {application.CvFileName}.");
+            //}
 
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
@@ -445,7 +461,6 @@ namespace Recruiter.Services.Implementation
 
             //throw new NotImplementedException();
         }
-
         
     }
 }

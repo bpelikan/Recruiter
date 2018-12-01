@@ -68,23 +68,41 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        public async Task<ActionResult> MyApplicationDetails(string id, string returnUrl = null)
+        public async Task<IActionResult> MyApplicationDetails(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _myApplicationService.GetMyApplicationDetails(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = await _myApplicationService.GetMyApplicationDetails(id, userId);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocalOrToMyApplications(returnUrl);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteMyApplication(string id)
+        public async Task<IActionResult> DeleteMyApplication(string id, string returnUrl = null)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.DeleteMyApplication(id, userId);
+            try
+            {
+                await _myApplicationService.DeleteMyApplication(id, userId);
+                TempData["Success"] = "Successfully deleted your application.";
+                return RedirectToAction(nameof(MyApplicationController.MyApplications));
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToAction(nameof(MyApplicationController.MyApplications));
+            return RedirectToLocalOrToMyApplications(returnUrl);
         }
 
         public async Task<IActionResult> Apply(string id, string returnUrl = null)
@@ -241,6 +259,17 @@ namespace Recruiter.Controllers
             else
             {
                 return RedirectToAction(nameof(MyApplicationController.Index));
+            }
+        }
+        private IActionResult RedirectToLocalOrToMyApplications(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(MyApplicationController.MyApplications));
             }
         }
         #endregion
