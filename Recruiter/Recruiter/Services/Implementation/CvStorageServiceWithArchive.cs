@@ -55,9 +55,9 @@ namespace Recruiter.Services.Implementation
             var blob = container.GetBlockBlobReference(cvId);
 
             if (await blob.ExistsAsync())
-                _logger.LogInformation($"Before operation: CV file with ID:{cvId} exist.");
+                _logger.LogInformation($"Before delete operation: CV file with ID:{cvId} exist.");
             else
-                _logger.LogWarning($"Before operation: CV file with ID:{cvId} not exist.");
+                _logger.LogWarning($"Before delete operation: CV file with ID:{cvId} not exist.");
 
             _logger.LogInformation("Starting deleting CV from blob.");
             try
@@ -70,7 +70,7 @@ namespace Recruiter.Services.Implementation
                 _logger.LogError(ex.Message);
                 _logger.LogError($"Something went wrong while deleting cv with FILENAME:{cvId} in Blob.");
                 _logger.LogInformation("Deleting CV from blob failed.");
-                throw new InvalidActionException($"Something went wrong while deleting CV file from server.");
+                throw new BlobOperationException($"Something went wrong while deleting CV file from server.");
             }
             finally
             {
@@ -79,16 +79,16 @@ namespace Recruiter.Services.Implementation
 
             if (await blob.ExistsAsync())
             {
-                _logger.LogError($"After operation: CV file with ID:{cvId} still exist.");
-                throw new InvalidActionException($"Something went wrong while deleting CV file from server.");
+                _logger.LogError($"After delete operation: CV file with ID:{cvId} still exist on server.");
+                throw new BlobOperationException($"Something went wrong while deleting CV file from server - file still exist on server.");
             }
             else
-                _logger.LogInformation($"After operation: CV file with ID:{cvId} not exist.");
+                _logger.LogInformation($"After delete operation: CV file with ID:{cvId} not exist.");
 
             return true;
         }
 
-        public async Task<string> SaveCvAsync(Stream CvStream, string userId, string fileName)
+        public async Task<string> SaveCvAsync(Stream CvStream, string fileName, string userId)
         {
             _logger.LogInformation($"Starting uploading CV \nFilename: {fileName} \nUser: {userId}");
             var cvId = userId + "." + Guid.NewGuid().ToString() + "." + Path.GetFileNameWithoutExtension(fileName) + Path.GetExtension(fileName);
@@ -97,6 +97,16 @@ namespace Recruiter.Services.Implementation
             var container = blobClient.GetContainerReference("cvstorage");
             var blob = container.GetBlockBlobReference(cvId);
             blob.Properties.ContentType = "application/pdf";
+
+            if (await blob.ExistsAsync())
+            {
+                _logger.LogError($"Before upload operation: CV file with ID:{cvId} already exist on Blob. (UserID: {userId})");
+                throw new BlobOperationException($"Something went wrong while upload CV file to server.");
+            }
+            else
+            {
+                _logger.LogInformation($"Before upload operation: CV file with ID:{cvId} not exist. (UserID: {userId})");
+            }
 
             _logger.LogInformation("Starting upload");
             try
@@ -107,17 +117,37 @@ namespace Recruiter.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                _logger.LogInformation("Uploading CV failed");
-                return null;
+                _logger.LogError($"Something went wrong while uploading CV with FILENAME:{cvId} to Blob. (UserID: {userId})");
+                _logger.LogInformation("Uploading CV failed.");
+                throw new BlobOperationException($"Something went wrong while uploading CV file to server.");
+                //return null;
             }
             finally
             {
-                _logger.LogInformation("Completed operation: Uploading CV");
+                _logger.LogInformation("Completed operation: Uploading CV. (UserID: {userId})");
+            }
+
+            if (await blob.ExistsAsync())
+            {
+                _logger.LogInformation($"After upload operation: CV file with ID:{cvId} exist on Blob. (UserID: {userId})");
+            }
+            else
+            {
+                _logger.LogError($"After upload operation: CV file with ID:{cvId} not exist on Blob. (UserID: {userId})");
+                throw new BlobOperationException($"Something went wrong while upload CV file to server.");
             }
 
             var containerArchive = blobClientArchive.GetContainerReference("cvstoragearchieve");
             var blobArchive = containerArchive.GetBlockBlobReference(cvId);
             blobArchive.Properties.ContentType = "application/pdf";
+
+            int i = 0;
+            while (await blobArchive.ExistsAsync())
+            {
+                _logger.LogWarning($"---------cvstoragearchieve/{blobArchive.Name} exist---------");
+                blobArchive = containerArchive.GetBlockBlobReference(Path.GetFileNameWithoutExtension(cvId) + $" ({i.ToString()})" + Path.GetExtension(cvId));
+                i++;
+            }
 
             _logger.LogInformation("Starting copy to archieve");
             try
@@ -130,7 +160,9 @@ namespace Recruiter.Services.Implementation
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                _logger.LogError($"Something went wrong while uploading cv with FILENAME:{cvId} to archieve Blob. (UserID: {userId})");
                 _logger.LogInformation("Copy to archieve failed");
+                //throw new InvalidActionException($"Something went wrong while uploading CV file to server-2.");
             }
             finally
             {
