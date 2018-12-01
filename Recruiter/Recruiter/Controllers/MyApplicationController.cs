@@ -135,7 +135,6 @@ namespace Recruiter.Controllers
         {
             if (!ModelState.IsValid)
                 return RedirectToAction(nameof(MyApplicationController.Apply), new { jobPositionId, returnUrl });
-                //return View(applyApplicationViewModel);
 
             var userId = _userManager.GetUserId(HttpContext.User);
             try
@@ -149,15 +148,7 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            //return RedirectToLocalOrToHomeIndex(returnUrl);
             return RedirectToAction(nameof(MyApplicationController.Apply), new { jobPositionId, returnUrl });
-
-            //catch (Exception e)
-            //{
-            //    ModelState.AddModelError("", "Something went wrong, please try again.");
-            //}
-            //return View(applyApplicationViewModel);
-
         }
 
         public async Task<IActionResult> ProcessMyHomework(string stageId)
