@@ -161,8 +161,6 @@ namespace Recruiter.Controllers
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToMyApplications(returnUrl);
-                //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = stage.ApplicationId });
-                //return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
 
             switch (stage?.HomeworkState)
@@ -170,9 +168,6 @@ namespace Recruiter.Controllers
                 case HomeworkState.WaitingForSpecification:
                     TempData["Error"] = $"Waiting for specification...";
                     return RedirectToLocalOrToMyApplicationDetails(returnUrl, stage?.ApplicationId);
-                    //TempData["Error"] = $"Waiting for specification for homework with ID:{stageId}.";
-                    //return RedirectToLocalOrToMyApplicationDetails(returnUrl, stage.ApplicationId);
-                    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = stage.ApplicationId });
                 case HomeworkState.WaitingForRead:
                     return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id, returnUrl });
                 case HomeworkState.WaitingForSendHomework:
@@ -182,7 +177,6 @@ namespace Recruiter.Controllers
                 default:
                     TempData["Error"] = $"Couldn't process Homework stage: Unknown HomeworkState with ID:{stageId}.";
                     return RedirectToLocalOrToMyApplicationDetails(returnUrl, stage?.ApplicationId);
-                    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = stage.ApplicationId });
             }
         }
 
@@ -323,7 +317,6 @@ namespace Recruiter.Controllers
             else
             {
                 return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId });
-                //return RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
         #endregion
