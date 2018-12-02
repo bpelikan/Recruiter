@@ -39,10 +39,10 @@
                             <form asp-action="ConfirmInterviewAppointments" 
                                     asp-route-interviewAppointmentId="@appointment.Id"
                                     asp-route-stageId="@appointment.InterviewId"
-                                    asp-route-applicationId="@appointment.Interview.ApplicationId"
+                                    asp-route-applicationId="@Model.ApplicationId"
                                     asp-route-returnurl="@ViewData["ReturnUrl"]" 
                                     method="post">
-                                        <button class="btn btn-sm btn-success btn-block" type="submit" onclick="return confirm('Do you really want to confirm this appointment?');" class="btn btn-sm btn-block">
+                                        <button class="btn btn-sm btn-success btn-block" type="submit" onclick="return confirm('Do you really want to confirm this appointment?');">
                                             Confirm
                                         </button>
                             </form>
@@ -55,18 +55,31 @@
                 }
             </tbody>
         </table>
+
     }
     else
     {
         @:Interview Appointments not found.
         <hr />
     }
-    <a class="btn btn-sm btn-primary"
+    @*<a class="btn btn-sm btn-primary"
        asp-action="RequestForNewAppointmentsInInterview"
        asp-route-interviewId="@Model.Id"
        asp-route-returnurl="@ViewData["ReturnUrl"]">
         Request for new appointment
-    </a>
+    </a>*@
+    <form asp-action="RequestForNewAppointmentsInInterview"
+            asp-route-interviewId="@Model.Id"
+            asp-route-applicationId="@Model.ApplicationId"
+            asp-route-returnurl="@ViewData["ReturnUrl"]"
+            method="post">
+        <button class="btn btn-sm btn-primary glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Do you really want to request for new appointment?');" class="btn btn-sm btn-block">
+            Request for new appointment
+        </button>
+    </form>
+
+    <hr />
+
     <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
     <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
 </div>

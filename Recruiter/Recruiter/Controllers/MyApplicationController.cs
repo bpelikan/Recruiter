@@ -321,12 +321,23 @@ namespace Recruiter.Controllers
 
         }
 
-        public async Task<IActionResult> RequestForNewAppointmentsInInterview(string interviewId, string returnUrl = null)
+        [HttpPost]
+        [Route("{interviewId?}")]
+        public async Task<IActionResult> RequestForNewAppointmentsInInterview(string interviewId, string applicationId = null, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.RequestForNewAppointmentsInInterview(interviewId, myId);
+            try
+            {
+                await _myApplicationService.RequestForNewAppointmentsInInterview(interviewId, myId);
+                TempData["Success"] = "Success.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToLocal(returnUrl);
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+            
             //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
         }
 
