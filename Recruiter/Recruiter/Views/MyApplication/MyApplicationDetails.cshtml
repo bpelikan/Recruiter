@@ -98,8 +98,13 @@
                     }
                     else if (stage.State == ApplicationStageState.Finished)
                     {
-                        <a Condition="(stage as Homework).HomeworkState == HomeworkState.Completed" asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id">
-                            <b> - Show my homework</b>
+                        <a Condition="(stage as Homework).HomeworkState == HomeworkState.Completed" 
+                            asp-controller="MyApplication" 
+                            asp-action="ProcessMyHomework" 
+                            asp-route-stageId="@stage.Id"
+                            asp-route-applicationId="@stage.ApplicationId"
+                            asp-route-returnUrl="@Context.Request.Path" >
+                                <b> - Show my homework</b>
                         </a>
                     }
                     @*<a asp-controller="MyApplication" 

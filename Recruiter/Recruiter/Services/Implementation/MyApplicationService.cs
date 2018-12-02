@@ -246,7 +246,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState. (UserID: {userId})");
-                throw new Exception($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
+                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
             }
 
             stage.StartTime = DateTime.UtcNow;
@@ -297,7 +297,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.Completed)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in Completed HomeworkState. (UserID: {userId})");
-                throw new Exception($"Homework with ID:{stageId} is not in Completed HomeworkState.");
+                throw new InvalidActionException($"Homework with ID:{stageId} is not in Completed HomeworkState.");
             }
 
             return stage;
@@ -395,6 +395,7 @@ namespace Recruiter.Services.Implementation
             stage.InterviewAppointments = appointments.ToList();
 
             return stage;
+            #region del
             //foreach (var appointment in appointments)
             //{
             //    appointment.InterviewAppointmentState = InterviewAppointmentState.WaitingForConfirm;
@@ -422,6 +423,7 @@ namespace Recruiter.Services.Implementation
             //return stage;
 
             //throw new NotImplementedException();
+            #endregion
         }
 
         public async Task ConfirmAppointmentInInterview(string interviewAppointmentId, string userId)
@@ -481,12 +483,12 @@ namespace Recruiter.Services.Implementation
             if (interview == null)
             {
                 _logger.LogError($"Interview with ID:{interviewId} not found. (UserID: {userId})");
-                throw new Exception($"Interview with ID:{interviewId} not found.");
+                throw new NotFoundException($"Interview with ID:{interviewId} not found.");
             }
             if (interview.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to request for new appointments in this interview with ID:{interviewId}. (UserID: {userId})");
-                throw new Exception($"You are not allowed to request for new appointments in Interview with ID:{interviewId}.");
+                throw new PermissionException($"You are not allowed to request for new appointments in Interview with ID:{interviewId}.");
             }
 
             foreach (var appointment in interview.InterviewAppointments)
@@ -496,6 +498,7 @@ namespace Recruiter.Services.Implementation
             interview.InterviewState = InterviewState.RequestForNewAppointments;
             await _context.SaveChangesAsync();
 
+            #region del
             //var appointmentToConfirm = await _context.InterviewAppointments
             //                            .Include(x => x.Interview)
             //                                .ThenInclude(x => x.InterviewAppointments)
@@ -515,7 +518,8 @@ namespace Recruiter.Services.Implementation
             //await _context.SaveChangesAsync();
 
             //throw new NotImplementedException();
+            #endregion
         }
-        
+
     }
 }
