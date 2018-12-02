@@ -285,8 +285,6 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string applicationId = null, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            //if (stageId == null)
-            //    return RedirectToLocal(returnUrl);
 
             var myId = _userManager.GetUserId(HttpContext.User);
             try
