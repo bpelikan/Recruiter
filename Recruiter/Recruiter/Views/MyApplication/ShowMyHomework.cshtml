@@ -11,11 +11,11 @@
     <hr />
     <dl class="dl-horizontal">
         @*<dt>
-            @Html.DisplayNameFor(model => model.Duration)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Duration)
-        </dd>*@
+                @Html.DisplayNameFor(model => model.Duration)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Duration)
+            </dd>*@
         <dt>
             @Html.DisplayNameFor(model => model.StartTime)
         </dt>
@@ -50,4 +50,6 @@
     </dl>
 </div>
 
-<a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>
+@*<a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>*@
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>

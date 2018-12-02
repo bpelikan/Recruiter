@@ -249,6 +249,7 @@ namespace Recruiter.Controllers
                 try
                 {
                     await _myApplicationService.SendMyHomework(homework, myId);
+                    TempData["Success"] = "Homework sended successfully.";
                     return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id, applicationId, returnUrl });
                 }
                 catch (CustomException ex)
@@ -266,9 +267,17 @@ namespace Recruiter.Controllers
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _myApplicationService.GetViewModelForShowMyHomework(stageId, myId);
+            try
+            {
+                var stage = await _myApplicationService.GetViewModelForShowMyHomework(stageId, myId);
+                return View(stage);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(stage);
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
         }
 
         [ImportModelState]

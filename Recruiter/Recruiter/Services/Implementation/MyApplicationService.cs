@@ -295,7 +295,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
             if (stage.HomeworkState != HomeworkState.Completed)
-                throw new Exception($"Homework stage with ID: {stageId} is not in Completed state. (UserID: {userId})");
+            {
+                _logger.LogError($"Homework with ID:{stageId} is not in Completed HomeworkState. (UserID: {userId})");
+                throw new Exception($"Homework with ID:{stageId} is not in Completed HomeworkState.");
+            }
 
             return stage;
         }
