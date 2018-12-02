@@ -381,7 +381,6 @@ namespace Recruiter.Services.Implementation
             }
 
             var appointments = _context.InterviewAppointments
-                                            .Include(x => x.Interview)
                                             .Where(x => x.InterviewId == stage.Id &&
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm &&
                                                         DateTime.UtcNow <= x.StartTime)
