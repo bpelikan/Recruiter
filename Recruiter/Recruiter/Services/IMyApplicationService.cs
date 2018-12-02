@@ -18,8 +18,8 @@ namespace Recruiter.Services
         Task<Homework> GetHomeworkStageToShowInProcessMyHomework(string stageId, string userId);
         Task<Homework> GetViewModelForBeforeReadMyHomework(string stageId, string userId);
         Task UpdateMyHomeworkAsReaded(string stageId, string userId);
-        Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId);
-        Task SendMyHomework(Homework homework, string userId);
+        Task<ReadMyHomeworkViewModel> GetViewModelForReadMyHomework(string stageId, string userId);
+        Task SendMyHomework(ReadMyHomeworkViewModel homework, string userId);
         Task<Homework> GetViewModelForShowMyHomework(string stageId, string userId);
         Task<Interview> GetViewModelForConfirmInterviewAppointments(string stageId, string userId);
         Task ConfirmAppointmentInInterview(string interviewAppointmentId, string userId);

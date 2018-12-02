@@ -256,24 +256,32 @@ namespace Recruiter.Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Homework> GetViewModelForReadMyHomework(string stageId, string userId)
+        public async Task<ReadMyHomeworkViewModel> GetViewModelForReadMyHomework(string stageId, string userId)
         {
             _logger.LogInformation($"Executing GetViewModelForReadMyHomework with stageId={stageId}. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
-                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForSendHomework state. (UserID: {userId})");
+            {
+                _logger.LogError($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
+                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
+            }
 
-            return stage;
+            var vm = _mapper.Map<Homework, ReadMyHomeworkViewModel>(stage);
+
+            return vm;
         }
 
-        public async Task SendMyHomework(Homework homework, string userId)
+        public async Task SendMyHomework(ReadMyHomeworkViewModel homework, string userId)
         {
             _logger.LogInformation($"Executing SendMyHomework. (UserID: {userId})");
 
             var stage = await GetHomeworkStageToProcess(homework.Id, userId);
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
-                throw new Exception($"Homework stage with ID: {homework.Id} is not in WaitingForSendHomework state. (UserID: {userId})");
+            {
+                _logger.LogError($"Homework with ID:{homework.Id} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
+                throw new InvalidActionException($"Homework with ID:{homework.Id} is not in WaitingForSendHomework HomeworkState.");
+            }
 
             stage.SendingTime = DateTime.UtcNow;
             stage.Url = homework.Url;

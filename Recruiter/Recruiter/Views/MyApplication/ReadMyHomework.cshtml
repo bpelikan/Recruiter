@@ -1,5 +1,5 @@
-﻿@using Recruiter.Models
-@model Homework
+﻿@using Recruiter.Models.MyApplicationViewModels
+@model ReadMyHomeworkViewModel
 
 @{
     ViewData["Title"] = "My Homework";
@@ -40,8 +40,12 @@
 </div>
 
 <div>
-    <form asp-action="SendMyHomework" asp-route-id="@Model.Id" method="post">
+    <form asp-action="ReadMyHomework" asp-route-stageId="@Model.Id" asp-route-applicationId="@Model.ApplicationId" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
         <input type="hidden" name="Id" value="@Model.Id" />
+        @*<input type="hidden" name="ApplicationId" value="@Model.ApplicationId" />
+        <input type="hidden" name="StartTime" value="@Model.StartTime" />
+        <input type="hidden" name="EndTime" value="@Model.EndTime" />
+        <input type="hidden" name="Description" value="@Model.Description" />*@
 
         <div class="form-group">
             <label asp-for="Url" class="col-md-1 control-label"></label>
@@ -53,7 +57,7 @@
 
         <br />
         <br />
-        
+
         @*<div class="form-group">
             <input type="submit" onclick="return confirm('Do you really want to send homework?');" class="btn btn-block" value="Create" />
             <a asp-action="Index" class="btn btn-block">Cancel</a>
@@ -63,11 +67,10 @@
             <button type="submit" onclick="return confirm('Do you really want to send homework?');" class="btn btn-sm btn-block">
                 Send homework
             </button>
-            <a class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>
+            @*<a class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>*@
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
         </div>
-
-
-
 
         @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
         <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Back</a>*@

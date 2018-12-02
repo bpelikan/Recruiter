@@ -218,24 +218,46 @@ namespace Recruiter.Controllers
 
         }
 
+        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ReadMyHomework(string stageId, string applicationId = null, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var stage = await _myApplicationService.GetViewModelForReadMyHomework(stageId, myId);
+            try
+            {
+                var vm = await _myApplicationService.GetViewModelForReadMyHomework(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(stage);
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendMyHomework(Homework homework, string returnUrl = null)
+        [ExportModelState]
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ReadMyHomework(string stageId, ReadMyHomeworkViewModel homework, string applicationId = null, string returnUrl = null)
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.SendMyHomework(homework, myId);
+            if (ModelState.IsValid)
+            {
+                var myId = _userManager.GetUserId(HttpContext.User);
+                try
+                {
+                    await _myApplicationService.SendMyHomework(homework, myId);
+                    return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id, applicationId, returnUrl });
+                }
+                catch (CustomException ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
+            }
 
-            return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id });
+            return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId, applicationId, returnUrl });
         }
 
         [Route("{stageId?}")]
