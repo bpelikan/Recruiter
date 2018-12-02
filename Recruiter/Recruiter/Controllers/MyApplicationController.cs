@@ -149,7 +149,7 @@ namespace Recruiter.Controllers
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> ProcessMyHomework(string stageId, string returnUrl = null)
+        public async Task<IActionResult> ProcessMyHomework(string stageId, string applicationId = null, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             Homework stage = null;
@@ -160,47 +160,69 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToLocalOrToMyApplications(returnUrl);
+                return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
             }
 
             switch (stage?.HomeworkState)
             {
                 case HomeworkState.WaitingForSpecification:
                     TempData["Error"] = $"Waiting for specification...";
-                    return RedirectToLocalOrToMyApplicationDetails(returnUrl, stage?.ApplicationId);
+                    return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 case HomeworkState.WaitingForRead:
-                    return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id, returnUrl });
+                    return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id, applicationId, returnUrl });
                 case HomeworkState.WaitingForSendHomework:
-                    return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id, returnUrl });
+                    return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = stage.Id, applicationId, returnUrl });
                 case HomeworkState.Completed:
-                    return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id, returnUrl });
+                    return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id, applicationId, returnUrl });
                 default:
                     TempData["Error"] = $"Couldn't process Homework stage: Unknown HomeworkState with ID:{stageId}.";
-                    return RedirectToLocalOrToMyApplicationDetails(returnUrl, stage?.ApplicationId);
+                    return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
             }
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> BeforeReadMyHomework(string stageId, string returnUrl = null)
+        public async Task<IActionResult> BeforeReadMyHomework(string stageId, string applicationId = null, string returnUrl = null)
         {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _myApplicationService.GetViewModelForBeforeReadMyHomework(stageId, myId);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            return View(vm);
+            var myId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var vm = await _myApplicationService.GetViewModelForBeforeReadMyHomework(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
         }
 
         [HttpPost]
-        public async Task<IActionResult> BeforeReadMyHomework(Homework homework, string returnUrl = null)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> BeforeReadMyHomework(string stageId, /*Homework homework,*/ string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
-            await _myApplicationService.UpdateMyHomeworkAsReaded(homework.Id, myId);
+            try
+            {
+                await _myApplicationService.UpdateMyHomeworkAsReaded(stageId, myId);
+                return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId, returnUrl });
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId = homework.Id });
+            return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId, returnUrl });
+
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> ReadMyHomework(string stageId, string returnUrl = null)
+        public async Task<IActionResult> ReadMyHomework(string stageId, string applicationId = null, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _myApplicationService.GetViewModelForReadMyHomework(stageId, myId);
 
@@ -217,8 +239,10 @@ namespace Recruiter.Controllers
         }
 
         [Route("{stageId?}")]
-        public async Task<IActionResult> ShowMyHomework(string stageId, string returnUrl = null)
+        public async Task<IActionResult> ShowMyHomework(string stageId, string applicationId = null, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             var myId = _userManager.GetUserId(HttpContext.User);
             var stage = await _myApplicationService.GetViewModelForShowMyHomework(stageId, myId);
 
@@ -313,6 +337,10 @@ namespace Recruiter.Controllers
             if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
+            }
+            else if(applicationId == null || applicationId == "")
+            {
+                return RedirectToAction(nameof(MyApplicationController.MyApplications));
             }
             else
             {

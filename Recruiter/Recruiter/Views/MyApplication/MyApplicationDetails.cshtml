@@ -68,17 +68,29 @@
                                 @:- Waiting for specification
                                 break;
                             case HomeworkState.WaitingForRead:
-                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id" asp-route-returnUrl="@Context.Request.Path">
+                                <a asp-controller="MyApplication" 
+                                    asp-action="ProcessMyHomework" 
+                                    asp-route-stageId="@stage.Id" 
+                                    asp-route-applicationId="@stage.ApplicationId" 
+                                    asp-route-returnUrl="@Context.Request.Path">
                                     <b>(@Html.DisplayFor(model => stage.State)) - Read homework</b>
                                 </a>
                                 break;
                             case HomeworkState.WaitingForSendHomework:
-                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id" asp-route-returnUrl="@Context.Request.Path">
+                                <a asp-controller="MyApplication" 
+                                    asp-action="ProcessMyHomework" 
+                                    asp-route-stageId="@stage.Id" 
+                                    asp-route-applicationId="@stage.ApplicationId" 
+                                    asp-route-returnUrl="@Context.Request.Path">
                                     <b>(@Html.DisplayFor(model => stage.State)) - Send homework</b>
                                 </a>
                                 break;
                             case HomeworkState.Completed:
-                                <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id" asp-route-returnUrl="@Context.Request.Path">
+                                <a asp-controller="MyApplication" 
+                                    asp-action="ProcessMyHomework" 
+                                    asp-route-stageId="@stage.Id" 
+                                    asp-route-applicationId="@stage.ApplicationId" 
+                                    asp-route-returnUrl="@Context.Request.Path">
                                     <b>(@Html.DisplayFor(model => stage.State)) - Show my homework</b>
                                 </a>
                                 break;
@@ -90,7 +102,11 @@
                             <b> - Show my homework</b>
                         </a>
                     }
-                    <a asp-controller="MyApplication" asp-action="ProcessMyHomework" asp-route-stageId="@stage.Id" asp-route-returnUrl="@Context.Request.Path">
+                    <a asp-controller="MyApplication" 
+                        asp-action="ProcessMyHomework" 
+                        asp-route-stageId="@stage.Id" 
+                        asp-route-applicationId="@stage.ApplicationId" 
+                        asp-route-returnUrl="@Context.Request.Path">
                         <b>TEST</b>
                     </a>
                 }

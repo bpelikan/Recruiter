@@ -222,7 +222,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetHomeworkStageToShow(stageId, userId);
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
-                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
+            {
+                _logger.LogError($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState. (UserID: {userId})");
+                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
+            }
 
             var vm = new Homework()
             {
@@ -241,7 +244,10 @@ namespace Recruiter.Services.Implementation
 
             var stage = await GetHomeworkStageToProcess(stageId, userId);
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
-                throw new Exception($"Homework stage with ID: {stageId} is not in WaitingForRead state. (UserID: {userId})");
+            {
+                _logger.LogError($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState. (UserID: {userId})");
+                throw new Exception($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
+            }
 
             stage.StartTime = DateTime.UtcNow;
             stage.EndTime = stage.StartTime?.AddHours(stage.Duration);
@@ -326,9 +332,15 @@ namespace Recruiter.Services.Implementation
                                         .ThenInclude(x => x.JobPosition)
                                     .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
             if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
+                throw new PermissionException($"You are not allowed to get ApplicationStage with ID:{stageId}.");
+            }
 
             return stage;
         }
