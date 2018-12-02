@@ -281,16 +281,26 @@ namespace Recruiter.Controllers
         }
 
         [ImportModelState]
-        public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string returnUrl = null)
+        [Route("{stageId?}")]
+        public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string applicationId = null, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (stageId == null)
-                return RedirectToLocal(returnUrl);
+            //if (stageId == null)
+            //    return RedirectToLocal(returnUrl);
 
             var myId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+            try
+            {
+                var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(vm);
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+            
         }
 
         [ExportModelState]

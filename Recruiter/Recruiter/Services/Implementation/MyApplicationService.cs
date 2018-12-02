@@ -365,9 +365,15 @@ namespace Recruiter.Services.Implementation
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(x => x.Id == stageId) as Interview;
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
             if (stage.Application.UserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
+                throw new PermissionException($"You ares not allowed to get ApplicationStage with ID:{stageId}.");
+            }
 
             var appointments = _context.InterviewAppointments
                                             .Where(x => x.InterviewId == stage.Id &&

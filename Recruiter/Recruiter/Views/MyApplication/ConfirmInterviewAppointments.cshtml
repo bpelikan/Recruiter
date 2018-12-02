@@ -63,7 +63,9 @@
        asp-route-returnurl="@ViewData["ReturnUrl"]">
         Request for new appointment
     </a>
-    <a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-id="@Model.Application.Id">Back</a>
+    @*<a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>*@
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
 </div>
 
 @*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
