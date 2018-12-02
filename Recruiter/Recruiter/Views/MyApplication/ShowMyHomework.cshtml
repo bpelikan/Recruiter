@@ -50,6 +50,5 @@
     </dl>
 </div>
 
-@*<a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>*@
 <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
 <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
