@@ -470,21 +470,6 @@ namespace Recruiter.Services.Implementation
             //throw new NotImplementedException();
         }
 
-        //public async Task<string> GetStageIdThatContainInterviewAppointmentWithId(string interviewAppointmentId, string userId)
-        //{
-        //    _logger.LogInformation($"Executing GetStageIdThatContainInterviewAppointmentWithId with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
-
-        //    var stage = await _context.Interviews
-        //        .Include(x => x.InterviewAppointments)
-        //        .Where(x => x.InterviewAppointments.Any(y => y.Id == interviewAppointmentId))
-        //        .FirstOrDefaultAsync();
-
-        //    if(stage == null)
-        //        throw new Exception($"ApplicationStage that contain interview appointment with id {interviewAppointmentId} not found. (UserID: {userId})");
-
-        //    return stage.Id;
-        //}
-
         public async Task RequestForNewAppointmentsInInterview(string interviewId, string userId)
         {
             _logger.LogInformation($"Executing RequestForNewAppointmentsInInterview with interviewAppointmentId={interviewId}. (UserID: {userId})");
