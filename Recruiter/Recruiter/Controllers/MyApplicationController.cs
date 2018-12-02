@@ -337,8 +337,6 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
-            
-            //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
         }
 
 

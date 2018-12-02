@@ -494,9 +494,15 @@ namespace Recruiter.Services.Implementation
                                         .Include(x => x.Application)
                                         .FirstOrDefaultAsync(x => x.Id == interviewId);
             if (interview == null)
-                throw new Exception($"interview with id {interviewId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"Interview with ID:{interviewId} not found. (UserID: {userId})");
+                throw new Exception($"Interview with ID:{interviewId} not found.");
+            }
             if (interview.Application.UserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to request for new appointments in this interview with ID: {interviewId}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to request for new appointments in this interview with ID:{interviewId}. (UserID: {userId})");
+                throw new Exception($"You are not allowed to request for new appointments in Interview with ID:{interviewId}.");
+            }
 
             foreach (var appointment in interview.InterviewAppointments)
             {
