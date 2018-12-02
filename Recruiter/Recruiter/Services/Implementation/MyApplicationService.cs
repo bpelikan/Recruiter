@@ -298,9 +298,15 @@ namespace Recruiter.Services.Implementation
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync(x => x.Id == stageId) as Homework;
             if (stage == null)
-                throw new Exception($"ApplicationStage with id {stageId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+            }
             if (stage.Application.User.Id != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to get ApplicationStage with ID: {stageId}.");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
+                throw new PermissionException($"You are not allowed to get ApplicationStage with ID:{stageId}.");
+            }
 
             stage.StartTime = stage.StartTime?.ToLocalTime();
             stage.EndTime = stage.EndTime?.ToLocalTime();
