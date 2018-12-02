@@ -280,7 +280,6 @@ namespace Recruiter.Controllers
             return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
         }
 
-        [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ConfirmInterviewAppointments(string stageId, string applicationId = null, string returnUrl = null)
         {
@@ -301,31 +300,69 @@ namespace Recruiter.Controllers
             
         }
 
-        [ExportModelState]
-        public async Task<IActionResult> ConfirmAppointmentInInterview(string interviewAppointmentId, string returnUrl = null)
+        [HttpPost]
+        [Route("{interviewAppointmentId?}")]
+        public async Task<IActionResult> ConfirmInterviewAppointments(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             try
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
+                TempData["Success"] = "Confirmed.";
+                return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
             }
-            catch (UserInvalidActionException ex)
+            catch (CustomException ex)
             {
-                ModelState.AddModelError("", ex.Message);
-            }
-            if (!ModelState.IsValid)
-            {
-                var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
-                return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
-
-                //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
-                //return View(vm);
+                TempData["Error"] = ex.Message;
             }
 
-            return RedirectToLocal(returnUrl);
+            return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
+
+            //if (!ModelState.IsValid)
+            //{
+            //    //var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
+            //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
+
+            //    //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+            //    //return View(vm);
+            //}
+
+            //return RedirectToLocal(returnUrl);
             //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
         }
+
+        ////[ExportModelState]
+        //[Route("{interviewAppointmentId?}")]
+        //public async Task<IActionResult> ConfirmAppointmentInInterview(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
+        //{
+        //    var myId = _userManager.GetUserId(HttpContext.User);
+
+        //    try
+        //    {
+        //        await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
+        //        TempData["Success"] = "Confirmed.";
+        //        return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+        //    }
+        //    catch (CustomException ex)
+        //    {
+        //        TempData["Error"] = ex.Message;
+        //    }
+
+        //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
+
+        //    //if (!ModelState.IsValid)
+        //    //{
+        //    //    //var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
+        //    //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
+
+        //    //    //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
+        //    //    //return View(vm);
+        //    //}
+
+        //    //return RedirectToLocal(returnUrl);
+        //    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
+        //}
 
         public async Task<IActionResult> RequestForNewAppointmentsInInterview(string interviewId, string returnUrl = null)
         {

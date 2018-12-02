@@ -264,7 +264,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
+                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState.");
             }
 
             var vm = _mapper.Map<Homework, ReadMyHomeworkViewModel>(stage);
@@ -374,8 +374,14 @@ namespace Recruiter.Services.Implementation
                 _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
                 throw new PermissionException($"You ares not allowed to get ApplicationStage with ID:{stageId}.");
             }
+            if (stage.InterviewState != InterviewState.WaitingForConfirmAppointment)
+            {
+                _logger.LogError($"Interview with ID:{stageId} is not in WaitingForConfirmAppointment InterviewState. (UserID: {userId})");
+                throw new PermissionException($"Interview with ID:{stageId} is not in WaitingForConfirmAppointment InterviewState.");
+            }
 
             var appointments = _context.InterviewAppointments
+                                            .Include(x => x.Interview)
                                             .Where(x => x.InterviewId == stage.Id &&
                                                         x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm &&
                                                         DateTime.UtcNow <= x.StartTime)
@@ -430,11 +436,27 @@ namespace Recruiter.Services.Implementation
                                             .ThenInclude(x => x.Application)
                                         .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
             if (appointmentToConfirm == null)
-                throw new Exception($"InterviewAppointments with id {interviewAppointmentId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
+                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+            }
             if (appointmentToConfirm.Interview.Application.UserId != userId)
-                throw new Exception($"User with ID: {userId} is not allowed to confirm appointment with ID: {interviewAppointmentId}. (UserID: {userId})");
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to confirm appointment with ID:{interviewAppointmentId}. (UserID: {userId})");
+                throw new PermissionException($"You are not allowed to confirm appointment with ID:{interviewAppointmentId}.");
+            }
             if (appointmentToConfirm.StartTime < DateTime.UtcNow)
-                throw new UserInvalidActionException($"You can't confirm appointment that StartTime isn't in the future.");
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} have StartTime in the past. (UserID: {userId})");
+                throw new InvalidActionException($"You can't confirm appointment that StartTime isn't in the future.");
+            }
+            if (appointmentToConfirm.Interview.InterviewState != InterviewState.WaitingForConfirmAppointment)
+            {
+                _logger.LogError($"Couldn't confirm InterviewAppointment with ID:{interviewAppointmentId} in Interview with ID:{appointmentToConfirm.InterviewId} " +
+                                 $"that is not in WaitingForConfirmAppointment InterviewState. (UserID: {userId})");
+                throw new PermissionException($"Couldn't confirm InterviewAppointment with ID:{interviewAppointmentId} in Interview with ID:{appointmentToConfirm.InterviewId} " +
+                                                $"that is not in WaitingForConfirmAppointment InterviewState.");
+            }
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
             appointmentToConfirm.Interview.InterviewState = InterviewState.AppointmentConfirmed;
@@ -449,20 +471,20 @@ namespace Recruiter.Services.Implementation
             //throw new NotImplementedException();
         }
 
-        public async Task<string> GetStageIdThatContainInterviewAppointmentWithId(string interviewAppointmentId, string userId)
-        {
-            _logger.LogInformation($"Executing GetStageIdThatContainInterviewAppointmentWithId with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
+        //public async Task<string> GetStageIdThatContainInterviewAppointmentWithId(string interviewAppointmentId, string userId)
+        //{
+        //    _logger.LogInformation($"Executing GetStageIdThatContainInterviewAppointmentWithId with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
 
-            var stage = await _context.Interviews
-                .Include(x => x.InterviewAppointments)
-                .Where(x => x.InterviewAppointments.Any(y => y.Id == interviewAppointmentId))
-                .FirstOrDefaultAsync();
+        //    var stage = await _context.Interviews
+        //        .Include(x => x.InterviewAppointments)
+        //        .Where(x => x.InterviewAppointments.Any(y => y.Id == interviewAppointmentId))
+        //        .FirstOrDefaultAsync();
 
-            if(stage == null)
-                throw new Exception($"ApplicationStage that contain interview appointment with id {interviewAppointmentId} not found. (UserID: {userId})");
+        //    if(stage == null)
+        //        throw new Exception($"ApplicationStage that contain interview appointment with id {interviewAppointmentId} not found. (UserID: {userId})");
 
-            return stage.Id;
-        }
+        //    return stage.Id;
+        //}
 
         public async Task RequestForNewAppointmentsInInterview(string interviewId, string userId)
         {

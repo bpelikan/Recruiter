@@ -36,12 +36,26 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
-                            <a class="btn btn-sm btn-primary"
+                            @*<a class="btn btn-sm btn-primary"
                                asp-action="ConfirmAppointmentInInterview"
                                asp-route-interviewAppointmentId="@appointment.Id"
+                               asp-route-stageId="@appointment.InterviewId"
+                               asp-route-applicationId="@appointment.Interview.ApplicationId"
                                asp-route-returnurl="@ViewData["ReturnUrl"]">
-                                Confirm
-                            </a>
+                                Confirm 
+                            </a>*@
+                            <form asp-action="ConfirmInterviewAppointments" 
+                                    asp-route-interviewAppointmentId="@appointment.Id"
+                                    asp-route-stageId="@appointment.InterviewId"
+                                    asp-route-applicationId="@appointment.Interview.ApplicationId"
+                                    asp-route-returnurl="@ViewData["ReturnUrl"]" 
+                                    method="post">
+                                        <button class="btn btn-sm btn-success btn-block" type="submit" onclick="return confirm('Do you really want to confirm this appointment?');" class="btn btn-sm btn-block">
+                                            Confirm
+                                        </button>
+                                @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block" href="@ViewData["ReturnUrl"]">Back</a>
+                                <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>*@
+                            </form>
                         </td>
                         @*<td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
                             <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
