@@ -319,50 +319,7 @@ namespace Recruiter.Controllers
 
             return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
 
-            //if (!ModelState.IsValid)
-            //{
-            //    //var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
-            //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
-
-            //    //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
-            //    //return View(vm);
-            //}
-
-            //return RedirectToLocal(returnUrl);
-            //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
         }
-
-        ////[ExportModelState]
-        //[Route("{interviewAppointmentId?}")]
-        //public async Task<IActionResult> ConfirmAppointmentInInterview(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
-        //{
-        //    var myId = _userManager.GetUserId(HttpContext.User);
-
-        //    try
-        //    {
-        //        await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
-        //        TempData["Success"] = "Confirmed.";
-        //        return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        TempData["Error"] = ex.Message;
-        //    }
-
-        //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
-
-        //    //if (!ModelState.IsValid)
-        //    //{
-        //    //    //var stageIdWithInterview = await _myApplicationService.GetStageIdThatContainInterviewAppointmentWithId(interviewAppointmentId, myId);
-        //    //    return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId = stageIdWithInterview });
-
-        //    //    //var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
-        //    //    //return View(vm);
-        //    //}
-
-        //    //return RedirectToLocal(returnUrl);
-        //    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { id = "Interview" });
-        //}
 
         public async Task<IActionResult> RequestForNewAppointmentsInInterview(string interviewId, string returnUrl = null)
         {
