@@ -192,26 +192,32 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing RemoveJobPosition with jobPositionId={jobPositionId}. (UserID: {userId})");
 
             var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
-           
+
             if (jobPosition == null)
-                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"Job position with ID:{jobPositionId} not found. (UserID: {userId})");
+                throw new NotFoundException($"Job position with ID:{jobPositionId} not found.");
+            }
             if (jobPosition.Applications.Count != 0)
-                throw new Exception($"Job position with id {jobPositionId} has Applications. (UserID: {userId})");
+            {
+                _logger.LogError($"Job position with ID:{jobPositionId} has Applications. (UserID: {userId})");
+                throw new InvalidActionException($"Couldn't delete, job position with ID:{jobPositionId} has Applications.");
+            }
 
             await _jobPositionRepository.RemoveAsync(jobPosition);
         }
 
-        public async Task RemoveJobPositionFromIndexView(string jobPositionId, string userId)
-        {
-            _logger.LogInformation($"Executing RemoveJobPositionFromIndexView with jobPositionId={jobPositionId}. (UserID: {userId})");
+        //public async Task RemoveJobPositionFromIndexView(string jobPositionId, string userId)
+        //{
+        //    _logger.LogInformation($"Executing RemoveJobPositionFromIndexView with jobPositionId={jobPositionId}. (UserID: {userId})");
 
-            var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
-            if (jobPosition == null)
-                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
-            if (jobPosition.Applications.Count != 0)
-                throw new ApplicationException($"This JobPosition has already Applications.");
+        //    var jobPosition = await _context.JobPositions.Include(x => x.Applications).SingleOrDefaultAsync(x => x.Id == jobPositionId);
+        //    if (jobPosition == null)
+        //        throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+        //    if (jobPosition.Applications.Count != 0)
+        //        throw new ApplicationException($"This JobPosition has already Applications.");
 
-            await _jobPositionRepository.RemoveAsync(jobPosition);
-        }
+        //    await _jobPositionRepository.RemoveAsync(jobPosition);
+        //}
     }
 }

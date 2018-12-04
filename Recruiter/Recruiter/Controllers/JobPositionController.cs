@@ -187,35 +187,49 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Delete(string jobPositionId, string returnUrl = null, string returnUrlFail = null)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            await _jobPositionService.RemoveJobPosition(id, userId);
-
-            return RedirectToAction(nameof(JobPositionController.Index));
-        }
-
-        [HttpPost]
-        [ExportModelState]
-        public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivityFromIndex = "") //-> DeleteFromIndexView
-        {
-            var userId = _userManager.GetUserId(HttpContext.User);
-
             try
             {
-                await _jobPositionService.RemoveJobPositionFromIndexView(id, userId);
+                await _jobPositionService.RemoveJobPosition(jobPositionId, userId);
+                TempData["Success"] = "Successfully deleted.";
+                return RedirectToLocal(returnUrl);
+                //return RedirectToAction(nameof(JobPositionController.Index));
             }
-            catch (ApplicationException ex)
+            catch (CustomException ex)
             {
-                ModelState.AddModelError("", ex.Message);
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError("", "Something went wrong, please try again.");
+                TempData["Error"] = ex.Message;
             }
 
-            return RedirectToAction(nameof(JobPositionController.Index), new { jobPositionActivity = jobPositionActivityFromIndex });
+            if(returnUrlFail != null)
+                return RedirectToLocal(returnUrlFail);
+            return RedirectToLocal(returnUrl);
+            //return RedirectToAction(nameof(JobPositionController.Index));
         }
+
+        //[HttpPost]
+        //[ExportModelState]
+        //public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivityFromIndex = "") //-> DeleteFromIndexView
+        //{
+        //    var userId = _userManager.GetUserId(HttpContext.User);
+
+        //    try
+        //    {
+        //        await _jobPositionService.RemoveJobPositionFromIndexView(id, userId);
+        //    }
+        //    catch (ApplicationException ex)
+        //    {
+        //        ModelState.AddModelError("", ex.Message);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        ModelState.AddModelError("", "Something went wrong, please try again.");
+        //    }
+
+        //    return RedirectToAction(nameof(JobPositionController.Index), new { jobPositionActivity = jobPositionActivityFromIndex });
+        //}
 
 
         #region Helpers

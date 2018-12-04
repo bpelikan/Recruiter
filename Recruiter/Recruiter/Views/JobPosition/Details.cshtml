@@ -55,15 +55,16 @@
         </dd>
     </dl>
     <div>
-        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <form asp-action="Delete" asp-route-jobPositionId="@Model.Id" asp-route-returnUrl="@ViewData["ReturnUrl"]" asp-route-returnUrlFail="@Context.Request.Path" method="post">
             @*<a class="btn btn-sm btn-primary" asp-controller="Application" asp-action="Apply" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Apply</a>*@
             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-jobPositionId="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
-            <button condition="Model.Applications.Count() == 0" type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
+            <button  type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
                 Delete
             </button>
-            <button condition="Model.Applications.Count() != 0" type="button" onclick="return confirm('First delete all applications.');" class="btn btn-sm btn-danger disabled">
+            @*condition="Model.Applications.Count() == 0"*@
+            @*<button condition="Model.Applications.Count() != 0" type="button" onclick="return confirm('First delete all applications.');" class="btn btn-sm btn-danger disabled">
                 Delete
-            </button>
+            </button>*@
             <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
             <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
         </form>
