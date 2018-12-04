@@ -128,7 +128,6 @@
                     <td>@Html.DisplayFor(model => jobPosition.StartDate)</td>
                     <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
                     <td>
-                        @*<form asp-action="DeleteFromIndex" asp-route-id="@jobPosition.Id" asp-route-jobPositionActivity="@ViewContext.HttpContext.Request.Query["jobPositionActivity"]" method="post">*@
                         <form asp-action="Delete" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path" method="post">
                             <a class="btn btn-sm btn-default" asp-action="Details" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
                             <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>

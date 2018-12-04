@@ -196,7 +196,6 @@ namespace Recruiter.Controllers
                 await _jobPositionService.RemoveJobPosition(jobPositionId, userId);
                 TempData["Success"] = "Successfully deleted.";
                 return RedirectToLocal(returnUrl);
-                //return RedirectToAction(nameof(JobPositionController.Index));
             }
             catch (CustomException ex)
             {
@@ -206,7 +205,6 @@ namespace Recruiter.Controllers
             if(returnUrlFail != null)
                 return RedirectToLocal(returnUrlFail);
             return RedirectToLocal(returnUrl);
-            //return RedirectToAction(nameof(JobPositionController.Index));
         }
 
         //[HttpPost]
