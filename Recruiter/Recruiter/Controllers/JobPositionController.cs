@@ -138,26 +138,52 @@ namespace Recruiter.Controllers
             return View(addJobPositionViewModel);
         }
 
-        public async Task<IActionResult> Edit(string id, string returnUrl = null)
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Edit(string jobPositionId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _jobPositionService.GetViewModelForEditJobPosition(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = await _jobPositionService.GetViewModelForEditJobPosition(jobPositionId, userId);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditJobPositionViewModel editJobPositionViewModel)
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Edit(string jobPositionId, EditJobPositionViewModel editJobPositionViewModel, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
-                return View(editJobPositionViewModel);
+            if (ModelState.IsValid)
+                if (editJobPositionViewModel.StartDate.ToUniversalTime() < DateTime.UtcNow)
+                    ModelState.AddModelError("StartDate", "StartDate must be in the future.");
 
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var jobPosition = await _jobPositionService.UpdateJobPosition(editJobPositionViewModel, userId);
+            if (ModelState.IsValid)
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                try
+                {
+                    var jobPosition = await _jobPositionService.UpdateJobPosition(editJobPositionViewModel, userId);
+                    TempData["Success"] = "Successfully updated.";
 
-            return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
+                    return RedirectToLocal(returnUrl);
+                    //return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
+                }
+                catch (CustomException ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
+            }
+
+            return View(editJobPositionViewModel);
         }
 
         [HttpPost]

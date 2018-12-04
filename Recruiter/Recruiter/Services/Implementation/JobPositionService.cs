@@ -82,8 +82,8 @@ namespace Recruiter.Services.Implementation
             var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
             if (jobPosition == null)
             {
-                _logger.LogError($"JobPosition with ID:{jobPositionId} doesn't exists. (UserID: {userId})");
-                throw new NotFoundException($"JobPosition with ID:{jobPositionId} doesn't exists.");
+                _logger.LogError($"Job position with ID:{jobPositionId} doesn't exists. (UserID: {userId})");
+                throw new NotFoundException($"Job position with ID:{jobPositionId} doesn't exists.");
             }
 
             var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
@@ -163,7 +163,15 @@ namespace Recruiter.Services.Implementation
 
             var jobPosition = await _jobPositionRepository.GetAsync(editJobPositionViewModel.Id);
             if (jobPosition == null)
-                throw new Exception($"Job position with id {editJobPositionViewModel.Id} not found. (UserID: {userId})");
+            {
+                _logger.LogError($"Job position with ID:{editJobPositionViewModel.Id} not found. (UserID: {userId})");
+                throw new NotFoundException($"Job position with ID:{editJobPositionViewModel.Id} not found.");
+            }
+            if(jobPosition.StartDate < DateTime.UtcNow)
+            {
+                _logger.LogError($"Couldn't edit job position with ID:{editJobPositionViewModel.Id}, because StartDate is in the past. (UserID: {userId})");
+                throw new InvalidActionException($"You couldn't edit job position with ID:{editJobPositionViewModel.Id}, because StartDate is in the past.");
+            }
 
             jobPosition.Name = editJobPositionViewModel.Name;
             jobPosition.Description = editJobPositionViewModel.Description;
@@ -171,12 +179,12 @@ namespace Recruiter.Services.Implementation
             jobPosition.EndDate = editJobPositionViewModel.EndDate?.ToUniversalTime();
 
             await _jobPositionRepository.UpdateAsync(jobPosition);
+            
+            //var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
+            //if (jobPositionCheck == null)
+            //    throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
 
-            var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
-            if (jobPositionCheck == null)
-                throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
-
-            return jobPositionCheck;
+            return jobPosition;
         }
 
         public async Task RemoveJobPosition(string jobPositionId, string userId)
