@@ -50,7 +50,6 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         [Route("{stageName?}")]
         public IActionResult Applications(string stageName = "")
         {
@@ -69,7 +68,6 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         [Route("{applicationId?}")]
         public async Task<IActionResult> ApplicationDetails(string applicationId, string returnUrl = null)
         {
@@ -92,7 +90,6 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{applicationId?}")]
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> DeleteApplication(string applicationId, string returnUrl = null, string returnUrlFail = null)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
@@ -113,7 +110,6 @@ namespace Recruiter.Controllers
         }
 
         [Route("{applicationId?}")]
-        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<IActionResult> ApplicationsViewHistory(string applicationId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
