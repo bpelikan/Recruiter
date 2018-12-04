@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationViewModels;
@@ -19,6 +20,8 @@ using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {
+    [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+    [Route("[controller]/[action]")]
     public class ApplicationController : Controller
     {
         private readonly ICvStorageService _cvStorageService;
@@ -41,42 +44,75 @@ namespace Recruiter.Controllers
             _context = context;
         }
 
+        [Route("/[controller]")]
         public IActionResult Index()
         {
             return RedirectToAction(nameof(ApplicationController.Applications));
         }
 
-        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        [Route("{stageName?}")]
         public IActionResult Applications(string stageName = "")
         {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = _applicationService.GetViewModelForApplications(stageName, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = _applicationService.GetViewModelForApplications(stageName, userId);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public async Task<ActionResult> ApplicationDetails(string id, string returnUrl = null)
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        [Route("{applicationId?}")]
+        public async Task<IActionResult> ApplicationDetails(string applicationId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationService.GetViewModelForApplicationDetails(id, userId);
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = await _applicationService.GetViewModelForApplicationDetails(applicationId, userId);
 
-            return View(vm);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public async Task<IActionResult> DeleteApplication(string id, string returnUrl = null)
-        {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            await _applicationService.DeleteApplication(id, userId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
             return RedirectToLocal(returnUrl);
         }
 
-        [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        [HttpPost]
+        [Route("{applicationId?}")]
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
+        public async Task<IActionResult> DeleteApplication(string applicationId, string returnUrl = null, string returnUrlFail = null)
+        {
+            var userId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                await _applicationService.DeleteApplication(applicationId, userId);
+                TempData["Success"] = "Successfully deleted.";
+                return RedirectToLocal(returnUrl);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            if (returnUrlFail != null)
+                return RedirectToLocal(returnUrlFail);
+            return RedirectToLocal(returnUrl);
+        }
+
+        //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
         public async Task<ActionResult> ApplicationsViewHistory(string id, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
