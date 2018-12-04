@@ -125,7 +125,7 @@
 @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
 <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>*@
 
-<h3>Last 10 view history (<a asp-controller="Application" asp-action="ApplicationsViewHistory" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">See more</a>)</h3>
+<h3>Last 10 view history (<a asp-controller="Application" asp-action="ApplicationsViewHistory" asp-route-applicationId="@Model.Id" asp-route-returnurl="@Context.Request.Path">See more</a>)</h3>
 
 <div class="row panel-body">
     @*<hr />*@

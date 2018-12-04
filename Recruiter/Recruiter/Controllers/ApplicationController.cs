@@ -112,15 +112,24 @@ namespace Recruiter.Controllers
             return RedirectToLocal(returnUrl);
         }
 
+        [Route("{applicationId?}")]
         //[Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
-        public async Task<ActionResult> ApplicationsViewHistory(string id, string returnUrl = null)
+        public async Task<IActionResult> ApplicationsViewHistory(string applicationId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = await _applicationService.GetViewModelForApplicationsViewHistory(id, userId);
+            try
+            {
+                var vm = await _applicationService.GetViewModelForApplicationsViewHistory(applicationId, userId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
-            return View(vm);
+            return RedirectToLocal(returnUrl);
         }
 
         #region Helpers
