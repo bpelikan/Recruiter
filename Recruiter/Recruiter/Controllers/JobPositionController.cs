@@ -207,29 +207,6 @@ namespace Recruiter.Controllers
             return RedirectToLocal(returnUrl);
         }
 
-        //[HttpPost]
-        //[ExportModelState]
-        //public async Task<IActionResult> DeleteFromIndex(string id, string jobPositionActivityFromIndex = "") //-> DeleteFromIndexView
-        //{
-        //    var userId = _userManager.GetUserId(HttpContext.User);
-
-        //    try
-        //    {
-        //        await _jobPositionService.RemoveJobPositionFromIndexView(id, userId);
-        //    }
-        //    catch (ApplicationException ex)
-        //    {
-        //        ModelState.AddModelError("", ex.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ModelState.AddModelError("", "Something went wrong, please try again.");
-        //    }
-
-        //    return RedirectToAction(nameof(JobPositionController.Index), new { jobPositionActivity = jobPositionActivityFromIndex });
-        //}
-
-
         #region Helpers
         private IActionResult RedirectToLocal(string returnUrl)
         {
