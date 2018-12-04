@@ -82,7 +82,6 @@ namespace Recruiter.Controllers
             return RedirectToLocal(returnUrl);
         }
 
-        //[ImportModelState]
         public async Task<IActionResult> Add(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -109,7 +108,6 @@ namespace Recruiter.Controllers
         }
 
         [HttpPost]
-        //[ExportModelState]
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
