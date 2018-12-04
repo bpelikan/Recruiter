@@ -43,7 +43,6 @@ namespace Recruiter.Controllers
             _jobPositionService = jobPositionService;
         }
 
-        [ImportModelState]
         [Route("{jobPositionActivity?}")]
         public IActionResult Index(string jobPositionActivity = "")
         {
