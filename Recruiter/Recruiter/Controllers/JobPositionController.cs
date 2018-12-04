@@ -175,7 +175,6 @@ namespace Recruiter.Controllers
                     TempData["Success"] = "Successfully updated.";
 
                     return RedirectToLocal(returnUrl);
-                    //return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
                 }
                 catch (CustomException ex)
                 {
@@ -219,17 +218,6 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(JobPositionController.Index));
             }
         }
-        //private IActionResult RedirectToLocalOrToIndex(string returnUrl)
-        //{
-        //    if (Url.IsLocalUrl(returnUrl))
-        //    {
-        //        return Redirect(returnUrl);
-        //    }
-        //    else
-        //    {
-        //        return RedirectToAction(nameof(JobPositionController.Index));
-        //    }
-        //}
         #endregion
     }
 }
