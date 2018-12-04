@@ -202,7 +202,7 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{stageId?}")]
-        public async Task<IActionResult> BeforeReadMyHomework(string stageId, /*Homework homework,*/ string returnUrl = null)
+        public async Task<IActionResult> BeforeReadMyHomework(string stageId, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
             try
