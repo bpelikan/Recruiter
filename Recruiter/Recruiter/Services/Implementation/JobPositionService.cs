@@ -139,11 +139,11 @@ namespace Recruiter.Services.Implementation
 
             await _jobPositionRepository.AddAsync(jobPosition);
 
-            var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
-            if (jobPositionCheck == null)
-                throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
+            //var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
+            //if (jobPositionCheck == null)
+            //    throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
 
-            return jobPositionCheck;
+            return jobPosition;
         }
 
         public async Task<EditJobPositionViewModel> GetViewModelForEditJobPosition(string jobPositionId, string userId)

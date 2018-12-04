@@ -19,6 +19,7 @@ using Recruiter.Shared;
 
 namespace Recruiter.Controllers
 {
+    [Route("[controller]/[action]")]
     [Authorize(Roles = RoleCollection.Administrator + "," + RoleCollection.Recruiter)]
     public class JobPositionController : Controller
     {
@@ -43,6 +44,7 @@ namespace Recruiter.Controllers
         }
 
         [ImportModelState]
+        [Route("{jobPositionActivity?}")]
         public IActionResult Index(string jobPositionActivity = "")
         {
             try
@@ -60,14 +62,15 @@ namespace Recruiter.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        public async Task<IActionResult> Details(string id, string returnUrl = null)
+        [Route("{jobPositionId?}")]
+        public async Task<IActionResult> Details(string jobPositionId, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
 
             try
             {
                 var userId = _userManager.GetUserId(HttpContext.User);
-                var vm = await _jobPositionService.GetViewModelForJobPositionDetails(id, userId);
+                var vm = await _jobPositionService.GetViewModelForJobPositionDetails(jobPositionId, userId);
 
                 return View(vm);
             }
@@ -79,38 +82,63 @@ namespace Recruiter.Controllers
             return RedirectToLocal(returnUrl);
         }
 
-        public async Task<IActionResult> Add()
+        //[ImportModelState]
+        public async Task<IActionResult> Add(string returnUrl = null)
         {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var vm = _jobPositionService.GetViewModelForAddJobPosition(userId);
+            ViewData["ReturnUrl"] = returnUrl;
 
-            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-            ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email");
-            ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email");
-            ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email");
-            ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email");
+            try
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                var vm = _jobPositionService.GetViewModelForAddJobPosition(userId);
 
-            return View(vm);
+                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+                ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email");
+                ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email");
+                ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email");
+                ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email");
+
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel)
+        //[ExportModelState]
+        public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
-            {
-                var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
-                ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
-                ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
-                ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
-                ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId);
+            if (ModelState.IsValid)
+                if (addJobPositionViewModel.StartDate.ToUniversalTime() < DateTime.UtcNow)
+                    ModelState.AddModelError("StartDate", "StartDate must be in the future.");
 
-                return View(addJobPositionViewModel);
+            if (ModelState.IsValid)
+            {
+                var userId = _userManager.GetUserId(HttpContext.User);
+                try
+                {
+                    var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
+                    TempData["Success"] = "Successfully created.";
+                    return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
+                    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = application.Id });
+                }
+                catch (CustomException ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
             }
 
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
+            var users = await _userManager.GetUsersInRoleAsync(RoleCollection.Recruiter);
+            ViewData["DefaultResponsibleForApplicatioApprovalId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId);
+            ViewData["DefaultResponsibleForPhoneCallId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId);
+            ViewData["DefaultResponsibleForHomeworkId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForHomeworkId);
+            ViewData["DefaultResponsibleForInterviewId"] = new SelectList(users, "Id", "Email", addJobPositionViewModel.ApplicationStagesRequirement.DefaultResponsibleForInterviewId);
 
-            return RedirectToAction(nameof(JobPositionController.Details), new { id = jobPosition.Id });
+            return View(addJobPositionViewModel);
         }
 
         public async Task<IActionResult> Edit(string id, string returnUrl = null)

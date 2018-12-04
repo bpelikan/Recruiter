@@ -23,7 +23,7 @@
     <div class="form-group">
         <label asp-for="Description" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <textarea id="summernote" name="Description"></textarea>
+            <textarea id="summernote" name="Description">@Model.Description</textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
@@ -53,7 +53,10 @@
 
         <tr>
             <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
-            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+            <td>
+                @Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)
+                @*<input asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" class="form-control" />*@
+            </td>
             <td>
                 <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class="form-control" asp-items="ViewBag.DefaultResponsibleForApplicatioApprovalId">
                     <option selected value="">--- SELECT ---</option>
@@ -62,7 +65,10 @@
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
-            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+            <td>
+                @Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)
+                @*<input asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" class="form-control" />*@
+            </td>
             <td>
                 <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId" class="form-control" asp-items="ViewBag.DefaultResponsibleForPhoneCallId">
                     <option selected value="">--- SELECT ---</option>
@@ -71,7 +77,10 @@
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
-            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+            <td>
+                @Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)
+                @*<input asp-for="ApplicationStagesRequirement.IsHomeworkRequired" class="form-control" />*@
+            </td>
             <td>
                 <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForHomeworkId" class="form-control" asp-items="ViewBag.DefaultResponsibleForHomeworkId">
                     <option selected value="">--- SELECT ---</option>
@@ -80,7 +89,10 @@
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
-            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+            <td>
+                @Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)
+                @*<input asp-for="ApplicationStagesRequirement.IsInterviewRequired" class="form-control" />*@
+            </td>
             <td>
                 <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForInterviewId" class="form-control" asp-items="ViewBag.DefaultResponsibleForInterviewId">
                     <option selected value="">--- SELECT ---</option>
@@ -125,8 +137,10 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Create" />
-            <a asp-action="Index" class="btn btn-default">Cancel</a>
+            <input type="submit" class="btn btn-primary" value="Create" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+            @*<a asp-action="Index" class="btn btn-default">Cancel</a>*@
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Back</a>
         </div>
     </div>
 </form>
