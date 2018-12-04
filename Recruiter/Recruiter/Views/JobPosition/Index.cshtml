@@ -15,7 +15,7 @@
 
 <div>
     <ul class="nav nav-tabs">
-        @if (!JobPositionActivity.Activities.Contains(@ViewContext.HttpContext.Request.Query["jobPositionActivity"]))
+        @if (!JobPositionActivity.Activities.Contains(@ViewContext.RouteData.Values["jobPositionActivity"]?.ToString()))
         {
             <li class="nav-item active">
                 <a asp-action="Index" asp-route-jobPositionActivity="">All</a>
@@ -30,7 +30,7 @@
 
         @foreach (var activity in JobPositionActivity.Activities)
         {
-            if (@ViewContext.HttpContext.Request.Query["jobPositionActivity"] == activity)
+            if (@ViewContext.RouteData.Values["jobPositionActivity"]?.ToString() == activity)
             {
                 <li class="nav-item active ">
                     <a asp-action="Index" asp-route-jobPositionActivity="@activity">
