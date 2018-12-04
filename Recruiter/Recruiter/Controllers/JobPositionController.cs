@@ -43,6 +43,7 @@ namespace Recruiter.Controllers
             _jobPositionService = jobPositionService;
         }
 
+        [Route("/[controller]")]
         [Route("{jobPositionActivity?}")]
         public IActionResult Index(string jobPositionActivity = "")
         {

@@ -44,6 +44,7 @@ namespace Recruiter.Controllers
             _userManager = userManager;
         }
 
+        [Route("/[controller]")]
         public IActionResult Index()
         {
             return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview));

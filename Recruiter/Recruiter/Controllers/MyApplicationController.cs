@@ -44,6 +44,7 @@ namespace Recruiter.Controllers
             _context = context;
         }
 
+        [Route("/[controller]")]
         public IActionResult Index()
         {
             return RedirectToAction(nameof(MyApplicationController.MyApplications));
