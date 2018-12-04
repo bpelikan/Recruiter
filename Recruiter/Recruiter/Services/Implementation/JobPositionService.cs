@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.JobPositionViewModels;
@@ -80,7 +81,10 @@ namespace Recruiter.Services.Implementation
 
             var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
             if (jobPosition == null)
-                throw new Exception($"Application with ID: {jobPositionId} doesn't exists. (UserID: {userId})");
+            {
+                _logger.LogError($"JobPosition with ID:{jobPositionId} doesn't exists. (UserID: {userId})");
+                throw new NotFoundException($"JobPosition with ID:{jobPositionId} doesn't exists.");
+            }
 
             var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
             vm.StartDate = vm.StartDate.ToLocalTime();
