@@ -172,7 +172,7 @@
                     <tr>
                         <td>@application.User.FirstName @application.User.LastName</td>
                         <td>@Html.DisplayFor(model => application.CreatedAt)</td>
-                        <td><a asp-controller="Application" asp-action="ApplicationDetails" asp-route-id="@application.Id" asp-route-returnurl="@Context.Request.Path">Show</a></td>
+                        <td><a asp-controller="Application" asp-action="ApplicationDetails" asp-route-applicationId="@application.Id" asp-route-returnurl="@Context.Request.Path">Show</a></td>
                     </tr>
                 }
 

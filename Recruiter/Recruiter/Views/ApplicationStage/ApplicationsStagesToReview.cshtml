@@ -90,7 +90,7 @@ else
                 <td>
                     <a asp-controller="Application" 
                         asp-action="ApplicationDetails" 
-                        asp-route-id="@stage.Application.Id" 
+                        asp-route-applicationId="@stage.Application.Id" 
                         asp-route-returnurl="@Context.Request.Path">
                             @Html.DisplayFor(model => stage.Application.User.FirstName)
                             @Html.DisplayFor(model => stage.Application.User.LastName)
@@ -100,7 +100,7 @@ else
                 <td>
                     <a asp-controller="JobPosition" 
                         asp-action="Details" 
-                        asp-route-id="@stage.Application.JobPosition.Id" 
+                        asp-route-jobPositionId="@stage.Application.JobPosition.Id" 
                         asp-route-returnurl="@Context.Request.Path">
                             @Html.DisplayFor(model => stage.Application.JobPosition.Name)
                     </a>

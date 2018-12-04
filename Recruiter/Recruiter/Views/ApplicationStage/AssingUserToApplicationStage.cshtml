@@ -25,7 +25,14 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" class="btn btn-primary" value="Assing" />
-                <a asp-action="ApplicationDetails" asp-controller="Application" asp-route-id="@Model.ApplicationId" class="btn btn-default">Cancel</a>
+                @*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-default" asp-action="Index">Back</a>*@
+                <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-default" href="@ViewData["ReturnUrl"]">Cancel</a>
+                <a condition="@ViewData["ReturnUrl"] == null"
+                   asp-action="ApplicationDetails"
+                   asp-controller="Application"
+                   asp-route-applicationId="@Model.ApplicationId" class="btn btn-default">
+                    Cancel
+                </a>
             </div>
         </div>
     </div>
