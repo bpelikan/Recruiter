@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationViewModels;
@@ -99,9 +100,11 @@ namespace Recruiter.Services.Implementation
                                 .Include(x => x.JobPosition)
                                 .Include(x => x.User)
                                 .FirstOrDefault(x => x.Id == applicationId);
-
             if (application == null)
-                throw new Exception($"Application with ID: {applicationId} doesn't exists. (UserID: {userId})");
+            {
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+            }
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
             
@@ -137,17 +140,19 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing DeleteApplication with applicationId={applicationId}. (UserID: {userId})");
 
             var application = await _context.Applications.SingleOrDefaultAsync(x => x.Id == applicationId);
-
             if (application == null)
             {
-                throw new Exception($"Application with id: {applicationId} doesn't exist. (UserID: {userId})");
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.");
             }
 
-            var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
-            if (!delete)
-            {
-                throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}. (UserID: {userId})");
-            }
+            await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            //var delete = await _cvStorageService.DeleteCvAsync(application.CvFileName);
+            //if (!delete)
+            //{
+            //    _logger.LogError($"Message. (UserID: {userId})");
+            //    throw new Exception($"Something went wrong while deleting cv in Blob: {application.CvFileName}. (UserID: {userId})");
+            //}
 
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
@@ -158,9 +163,12 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing GetViewModelForApplicationsViewHistory with applicationId={applicationId}. (UserID: {userId})");
 
             var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
-
             if (application == null)
-                throw new Exception($"Application with ID: {applicationId} doesn't exists. (UserID: {userId})");
+            {
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+
+            }
 
             var vm = await _context.ApplicationsViewHistories
                                         .Where(x => x.ApplicationId == application.Id)
