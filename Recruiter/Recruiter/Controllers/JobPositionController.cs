@@ -124,7 +124,6 @@ namespace Recruiter.Controllers
                     var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
                     TempData["Success"] = "Successfully created.";
                     return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
-                    //return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = application.Id });
                 }
                 catch (CustomException ex)
                 {

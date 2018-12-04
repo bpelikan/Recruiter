@@ -139,10 +139,6 @@ namespace Recruiter.Services.Implementation
 
             await _jobPositionRepository.AddAsync(jobPosition);
 
-            //var jobPositionCheck = await _jobPositionRepository.GetAsync(jobPosition.Id);
-            //if (jobPositionCheck == null)
-            //    throw new Exception($"JobPositionId with ID: {jobPosition.Id} not found. (UserID: {userId})");
-
             return jobPosition;
         }
 
