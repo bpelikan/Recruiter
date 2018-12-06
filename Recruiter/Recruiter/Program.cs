@@ -34,6 +34,16 @@ namespace Recruiter
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
+                //disable SQL queries logging
+                .ConfigureLogging((context, logging) => {
+                    var env = context.HostingEnvironment;
+                    var config = context.Configuration.GetSection("Logging");
+                    // ...
+                    logging.AddConfiguration(config);
+                    logging.AddConsole();
+                    // ...
+                    logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                })
                 .UseStartup<Startup>()
                 .Build();
     }
