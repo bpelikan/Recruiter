@@ -35,7 +35,8 @@ namespace Recruiter
             WebHost.CreateDefaultBuilder(args)
                 .UseApplicationInsights()
                 //disable SQL queries logging
-                .ConfigureLogging((context, logging) => {
+                .ConfigureLogging((context, logging) =>
+                {
                     var env = context.HostingEnvironment;
                     var config = context.Configuration.GetSection("Logging");
                     // ...
