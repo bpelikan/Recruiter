@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Recruiter.AttributeFilters;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -28,18 +29,24 @@ namespace Recruiter.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
         private readonly IApplicationStageService _applicationStageService;
+        private readonly IEmailSender _emailSender;
 
-        public ApplicationStageController(IMapper mapper, 
+        public ApplicationStageController(IMapper mapper,
+                    ILogger<ApplicationStageController> logger,
                     ICvStorageService cvStorageService, 
-                    IApplicationStageService applicationStageService, 
+                    IApplicationStageService applicationStageService,
+                    IEmailSender emailSender,
                     ApplicationDbContext context, 
                     UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper;
+            _logger = logger;
             _cvStorageService = cvStorageService;
             _applicationStageService = applicationStageService;
+            _emailSender = emailSender;
             _context = context;
             _userManager = userManager;
         }
@@ -207,6 +214,19 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
 
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationProcessApplicationApprovalAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+            }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "ApplicationApproval");
         }
         #endregion
@@ -257,6 +277,20 @@ namespace Recruiter.Controllers
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
+
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationProcessPhoneCallAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+            }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "PhoneCall");
             //if (returnUrl != null)
             //    return RedirectToLocal(returnUrl);
@@ -341,6 +375,19 @@ namespace Recruiter.Controllers
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
             }
 
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+            }
+
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
         }
         [ImportModelState]
@@ -387,6 +434,19 @@ namespace Recruiter.Controllers
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
+
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationProcessHomeworkStageAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
@@ -481,6 +541,7 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
             }
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
@@ -517,6 +578,20 @@ namespace Recruiter.Controllers
             catch (CustomException ex)
             {
                 TempData["Error"] = ex.Message;
+                return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
+            }
+
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
@@ -563,6 +638,19 @@ namespace Recruiter.Controllers
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
+            }
+
+            try
+            {
+                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
+                await _emailSender.SendEmailNotificationProcessInterviewStageAsync(stage.Application.User.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");

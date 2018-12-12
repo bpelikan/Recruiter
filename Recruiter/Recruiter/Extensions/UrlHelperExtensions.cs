@@ -25,5 +25,14 @@ namespace Microsoft.AspNetCore.Mvc
                 values: new { userId, code },
                 protocol: scheme);
         }
+
+        public static string MyApplicationDetailsCallbackLink(this IUrlHelper urlHelper, string applicationId, string scheme)
+        {
+            return urlHelper.Action(
+                action: nameof(MyApplicationController.MyApplicationDetails),
+                controller: "MyApplication",
+                values: new { applicationId },
+                protocol: scheme);
+        }
     }
 }
