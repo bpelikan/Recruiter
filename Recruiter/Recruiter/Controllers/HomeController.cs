@@ -8,19 +8,25 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Recruiter.Data;
 using Recruiter.Models;
+using Recruiter.Services;
 
 namespace Recruiter.Controllers
 {
     public class HomeController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
+        private readonly IEmailSender _emailSender;
 
-        public HomeController(UserManager<ApplicationUser> userManager, ILogger<HomeController> logger)
+        public HomeController(UserManager<ApplicationUser> userManager, ApplicationDbContext context, ILogger<HomeController> logger, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _context = context;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -45,6 +51,26 @@ namespace Recruiter.Controllers
         public IActionResult Test(string id = null)
         {
             throw new Exception($"Test function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        }
+
+        public async Task<IActionResult> EmailTest()
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+            var user = await _userManager.FindByIdAsync(myId);
+
+            try
+            {
+                var callbackUrl = Url.MyApplicationDetailsCallbackLink("TESTID", Request.Scheme);
+                await _emailSender.SendTestEmailNotificationAsync(user.Email, callbackUrl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Email notification has not been sent. StageID:TESTID (UserID: {myId})");
+                _logger.LogError(ex.Message);
+                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+            }
+
+            return RedirectToAction(nameof(HomeController.Index));
         }
 
         public IActionResult LoggerTest(string id = null)
