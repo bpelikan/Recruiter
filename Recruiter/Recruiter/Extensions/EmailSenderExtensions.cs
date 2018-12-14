@@ -126,10 +126,6 @@ namespace Recruiter.Services
 	                            </td>
                             </tr>
                             ";
-                //content += $@"
-                //    {appointment.StartTime.ToString("dd.MM.yyyy HH:mm:ss")} - {appointment.EndTime.ToString("dd.MM.yyyy HH:mm:ss")}
-                //    <a href='{HtmlEncoder.Default.Encode(appointment.ConfirmationUrl)}'>Confirm</a>
-                //    <br/>";
             }
             content += $"</table>";
 
