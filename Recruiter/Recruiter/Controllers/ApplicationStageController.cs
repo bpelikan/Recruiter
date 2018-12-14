@@ -17,6 +17,7 @@ using Recruiter.Data;
 using Recruiter.Models;
 using Recruiter.Models.ApplicationStageViewModels;
 using Recruiter.Models.ApplicationStageViewModels.Shared;
+using Recruiter.Models.EmailNotificationViewModel;
 using Recruiter.Services;
 using Recruiter.Shared;
 
@@ -603,14 +604,27 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages
+                var stage = _context.Interviews
+                                    .Include(x => x.InterviewAppointments)
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.User)
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.JobPosition)
-                                    .FirstOrDefault(x => x.Id == stageId) as Interview;
+                                    .FirstOrDefault(x => x.Id == stageId);// as Interview;
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl, stage);
+                
+                var interviewAppointmentsToConfirm = new List<InterviewAppointmentToConfirmViewModel>();
+                foreach (var appointment in stage.InterviewAppointments.Where(x => x.InterviewAppointmentState == InterviewAppointmentState.WaitingForConfirm))
+                {
+                    interviewAppointmentsToConfirm.Add(new InterviewAppointmentToConfirmViewModel() {
+                        StartTime = appointment.StartTime.ToLocalTime(),
+                        EndTime = appointment.EndTime.ToLocalTime(),
+                        Duration = appointment.Duration,
+                        ConfirmationUrl = Url.ConfirmAppointmentCallbackLink(appointment.Id, Request.Scheme, stage.Id, stage.ApplicationId)
+                    });
+                }
+
+                await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl, stage, interviewAppointmentsToConfirm);
             }
             catch (Exception ex)
             {

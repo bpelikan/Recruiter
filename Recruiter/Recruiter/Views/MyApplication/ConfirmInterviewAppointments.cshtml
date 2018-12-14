@@ -36,7 +36,7 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
-                            <form asp-action="ConfirmInterviewAppointments" 
+                            <form asp-action="ConfirmInterviewAppointment" 
                                     asp-route-interviewAppointmentId="@appointment.Id"
                                     asp-route-stageId="@appointment.InterviewId"
                                     asp-route-applicationId="@Model.ApplicationId"

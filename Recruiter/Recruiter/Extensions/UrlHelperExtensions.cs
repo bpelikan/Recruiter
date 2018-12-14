@@ -34,5 +34,14 @@ namespace Microsoft.AspNetCore.Mvc
                 values: new { applicationId },
                 protocol: scheme);
         }
+
+        public static string ConfirmAppointmentCallbackLink(this IUrlHelper urlHelper, string interviewAppointmentId, string scheme, string stageId = null, string applicationId = null)
+        {
+            return urlHelper.Action(
+                action: nameof(MyApplicationController.ConfirmInterviewAppointmentFromLink),
+                controller: "MyApplication",
+                values: new { interviewAppointmentId, stageId, applicationId },
+                protocol: scheme);
+        }
     }
 }

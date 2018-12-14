@@ -298,12 +298,11 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
-            
         }
 
         [HttpPost]
         [Route("{interviewAppointmentId?}")]
-        public async Task<IActionResult> ConfirmInterviewAppointments(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
+        public async Task<IActionResult> ConfirmInterviewAppointment(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
@@ -319,7 +318,25 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
+        }
 
+        [Route("{interviewAppointmentId?}")]
+        public async Task<IActionResult> ConfirmInterviewAppointmentFromLink(string interviewAppointmentId, string stageId = null, string applicationId = null, string returnUrl = null)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            try
+            {
+                await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
+                TempData["Success"] = "Confirmed.";
+                return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(MyApplicationController.ConfirmInterviewAppointments), new { stageId, applicationId, returnUrl });
         }
 
         [HttpPost]

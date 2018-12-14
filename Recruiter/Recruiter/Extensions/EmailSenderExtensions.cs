@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Recruiter.Models;
+using Recruiter.Models.EmailNotificationViewModel;
 using Recruiter.Services;
 
 namespace Recruiter.Services
@@ -33,26 +34,29 @@ namespace Recruiter.Services
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 ";
 
+            return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title,content));
-                
-                //$@"
-                //    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-                //    <html xmlns='http://www.w3.org/1999/xhtml'>
-                //    <head>
-                //        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-                //        <title>Demystifying Email Design</title>
-                //        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-                //    </head>                
-                //    <body style='margin: 0; padding: 0;'>
-                //        <table border='1' cellpadding='0' cellspacing='0' width='100%'>
-                //            <tr>
-                //                <td>
-                //                    One of the stages of your application has changed the state, 
-                //                    check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                //                </td>
-                //            </tr>
-                //        </table>
-                //    </body>");
+
+            #region del
+            //$@"
+            //    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+            //    <html xmlns='http://www.w3.org/1999/xhtml'>
+            //    <head>
+            //        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+            //        <title>Demystifying Email Design</title>
+            //        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+            //    </head>                
+            //    <body style='margin: 0; padding: 0;'>
+            //        <table border='1' cellpadding='0' cellspacing='0' width='100%'>
+            //            <tr>
+            //                <td>
+            //                    One of the stages of your application has changed the state, 
+            //                    check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+            //                </td>
+            //            </tr>
+            //        </table>
+            //    </body>");
+            #endregion
         }
 
         public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
@@ -64,6 +68,7 @@ namespace Recruiter.Services
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 ";
 
+            return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
@@ -76,6 +81,7 @@ namespace Recruiter.Services
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 ";
 
+            return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
@@ -88,10 +94,15 @@ namespace Recruiter.Services
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 ";
 
+            return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, string email, string link, Interview stage)
+        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, 
+                                            string email, 
+                                            string link, 
+                                            Interview stage, 
+                                            IEnumerable<InterviewAppointmentToConfirmViewModel> interviewAppointmentsToConfirm)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
             string title = $"Application state notification - {stage.GetType().Name}";
@@ -102,12 +113,25 @@ namespace Recruiter.Services
                                 Appointments
                                 <br/>
                                 ";
-            foreach (var appointment in stage.InterviewAppointments)
+            content += $"<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
+            foreach (var appointment in interviewAppointmentsToConfirm.OrderBy(x => x.StartTime))
             {
                 content += $@"
-                    {appointment.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {appointment.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}
-                    <br/>";
+                            <tr>
+	                            <td width='300' valign='top'>
+		                            {appointment.StartTime.ToString("dd.MM.yyyy HH:mm:ss")} <b>(Duration: {appointment.Duration} min</b>)
+	                            </td>
+	                            <td width='240' valign='top'>
+		                            <a href='{HtmlEncoder.Default.Encode(appointment.ConfirmationUrl)}'>Click here to confirm</a>
+	                            </td>
+                            </tr>
+                            ";
+                //content += $@"
+                //    {appointment.StartTime.ToString("dd.MM.yyyy HH:mm:ss")} - {appointment.EndTime.ToString("dd.MM.yyyy HH:mm:ss")}
+                //    <a href='{HtmlEncoder.Default.Encode(appointment.ConfirmationUrl)}'>Confirm</a>
+                //    <br/>";
             }
+            content += $"</table>";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
