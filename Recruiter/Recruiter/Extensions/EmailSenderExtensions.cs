@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Recruiter.Models;
 using Recruiter.Services;
 
 namespace Recruiter.Services
@@ -15,59 +16,128 @@ namespace Recruiter.Services
                 $"Please confirm your account by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
         }
 
-        public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             //return emailSender.SendEmailAsync(email, "ApplicationApproval - Application state notification",
             //    $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
-            return emailSender.SendEmailAsync(email, "ApplicationApproval - Application state notification",
-                $@"
-                    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-                    <html xmlns='http://www.w3.org/1999/xhtml'>
-                    <head>
-                        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-                        <title>Demystifying Email Design</title>
-                        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-                    </head>                
-                    <body style='margin: 0; padding: 0;'>
-                        <table border='1' cellpadding='0' cellspacing='0' width='100%'>
-                            <tr>
-                                <td>
-                                    One of the stages of your application has changed the state, 
-                                    check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </body>");
+
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title,content));
+                
+            //$@"
+                //    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+                //    <html xmlns='http://www.w3.org/1999/xhtml'>
+                //    <head>
+                //        <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+                //        <title>Demystifying Email Design</title>
+                //        <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+                //    </head>                
+                //    <body style='margin: 0; padding: 0;'>
+                //        <table border='1' cellpadding='0' cellspacing='0' width='100%'>
+                //            <tr>
+                //                <td>
+                //                    One of the stages of your application has changed the state, 
+                //                    check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                //                </td>
+                //            </tr>
+                //        </table>
+                //    </body>");
         }
 
-        public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            return emailSender.SendEmailAsync(email, "PhoneCall - Application state notification",
-                $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationAddHomeworkSpecificationAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationAddHomeworkSpecificationAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            return emailSender.SendEmailAsync(email, "HomeworkSpecification - Application state notification",
-                $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationProcessHomeworkStageAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationProcessHomeworkStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            return emailSender.SendEmailAsync(email, "Homework - Application state notification",
-                $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            return emailSender.SendEmailAsync(email, "InterviewAppointmentsToConfirm - Application state notification",
-                $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationProcessInterviewStageAsync(this IEmailSender emailSender, string email, string link)
+        public static Task SendEmailNotificationProcessInterviewStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            return emailSender.SendEmailAsync(email, "Interview - Application state notification",
-                $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
+            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string content = $@"
+                                One of the stages of your application has changed the state, 
+                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                                <br/>
+                                Rate: {stage.Rate}
+                                <br/>
+                                Note: {stage.Note}
+                                <br/>
+                                ";
+
+            return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
         public static Task SendTestEmailNotificationAsync(this IEmailSender emailSender, string email, string link)

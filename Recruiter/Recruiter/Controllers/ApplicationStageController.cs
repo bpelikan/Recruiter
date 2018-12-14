@@ -216,9 +216,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationProcessApplicationApprovalAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationProcessApplicationApprovalAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
@@ -280,9 +285,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationProcessPhoneCallAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationProcessPhoneCallAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
@@ -377,9 +387,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
@@ -438,9 +453,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationProcessHomeworkStageAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationProcessHomeworkStageAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
@@ -583,9 +603,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
@@ -642,9 +667,14 @@ namespace Recruiter.Controllers
 
             try
             {
-                var stage = _context.ApplicationStages.Include(x => x.Application).ThenInclude(x => x.User).FirstOrDefault(x => x.Id == stageId);
+                var stage = _context.ApplicationStages
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.User)
+                                    .Include(x => x.Application)
+                                        .ThenInclude(x => x.JobPosition)
+                                    .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationProcessInterviewStageAsync(stage.Application.User.Email, callbackUrl);
+                await _emailSender.SendEmailNotificationProcessInterviewStageAsync(stage.Application.User.Email, callbackUrl, stage);
             }
             catch (Exception ex)
             {
