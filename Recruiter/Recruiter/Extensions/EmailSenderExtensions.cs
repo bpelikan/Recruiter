@@ -18,9 +18,6 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            //return emailSender.SendEmailAsync(email, "ApplicationApproval - Application state notification",
-            //    $"One of the stages of your application has changed the state, check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
-
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
             string content = $@"
