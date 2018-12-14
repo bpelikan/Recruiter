@@ -608,7 +608,7 @@ namespace Recruiter.Controllers
                                         .ThenInclude(x => x.User)
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.JobPosition)
-                                    .FirstOrDefault(x => x.Id == stageId);
+                                    .FirstOrDefault(x => x.Id == stageId) as Interview;
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
                 await _emailSender.SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(stage.Application.User.Email, callbackUrl, stage);
             }

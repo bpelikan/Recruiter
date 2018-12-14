@@ -26,16 +26,11 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
-                                <br/>
                                 ";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title,content));
@@ -62,16 +57,11 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
-                                <br/>
                                 ";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
@@ -79,16 +69,11 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationAddHomeworkSpecificationAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
-                                <br/>
                                 ";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
@@ -96,50 +81,44 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessHomeworkStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
-                                <br/>
                                 ";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
-        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
+        public static Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(this IEmailSender emailSender, string email, string link, Interview stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
+                                Appointments
                                 <br/>
                                 ";
+            foreach (var appointment in stage.InterviewAppointments)
+            {
+                content += $@"
+                    {appointment.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {appointment.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}
+                    <br/>";
+            }
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
         public static Task SendEmailNotificationProcessInterviewStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
-            string title = $"ApplicationApproval - Application state notification - {stage.Accepted}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string title = $"Application state notification - {stage.GetType().Name}";
             string content = $@"
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                Rate: {stage.Rate}
-                                <br/>
-                                Note: {stage.Note}
-                                <br/>
                                 ";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
