@@ -148,7 +148,7 @@ namespace Recruiter.Services
         public static Task SendTestEmailNotificationAsync(this IEmailSender emailSender, string email, string link)
         {
             return emailSender.SendEmailAsync(email, $"Test Email Notification {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}",
-                EmailTemplate("Tutu³", "Treœæ"));
+                EmailTemplate("Tutul", "Tresc"));
         }
 
         private static string EmailTemplate(string title, string content)
