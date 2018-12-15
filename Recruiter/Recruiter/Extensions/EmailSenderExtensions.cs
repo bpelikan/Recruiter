@@ -27,13 +27,13 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             if(stage.Accepted)
                 content += $@"Your CV was accepted. <br/><br/>";
             else
-                content += $@"Your CV was rejected. <br/><br/>";
+                content += $@"We regret to inform you that your CV was rejected. <br/><br/>";
             content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             //return Task.CompletedTask;
@@ -63,13 +63,13 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             if (stage.Accepted)
                 content += $@"Your telephone conversation has ended positively. <br/><br/>";
             else
-                content += $@"Your telephone conversation has ended negatively. <br/><br/>";
+                content += $@"We regret to inform you that your telephone conversation has ended negatively. <br/><br/>";
             content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             //return Task.CompletedTask;
@@ -78,11 +78,11 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationAddHomeworkSpecificationAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             content += "Homework specification was added. <br/><br/>";
-            content += $@"Now you can start your homework by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
+            content += $@"Now you can read your homework details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             //return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
@@ -90,13 +90,13 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessHomeworkStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             if (stage.Accepted)
                 content += $@"Your homework was accepted. <br/><br/>";
             else
-                content += $@"Your homework was rejected. <br/><br/>";
+                content += $@"We regret to inform you that your homework was rejected. <br/><br/>";
             content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             //return Task.CompletedTask;
@@ -109,13 +109,12 @@ namespace Recruiter.Services
                                             Interview stage, 
                                             IEnumerable<InterviewAppointmentToConfirmViewModel> interviewAppointmentsToConfirm)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             content += "Interview appointments was added. <br/><br/>";
             content += $@"
                         Now you can confirm one of the appointments by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                        <br/>
                         <br/>
                         Or confirm directly below:
                         <br/>
@@ -141,13 +140,14 @@ namespace Recruiter.Services
 
         public static Task SendEmailNotificationProcessInterviewStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
-            string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
+            string subject = $"{stage.Application.JobPosition.Name} - Application state notification";
             string title = $"Application state notification";
             string content = "";
             if (stage.Accepted)
-                content += $@"Your interview has ended positively. <br/><br/>";
+                content += $@"Congratulations! Your interview has ended positively. <br/>
+                              We invite you to the office of the company in order to sign the contract.<br/><br/>";
             else
-                content += $@"Your interview has ended negatively. <br/><br/>";
+                content += $@"We regret to inform you that your interview has ended negatively. <br/><br/>";
             content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
