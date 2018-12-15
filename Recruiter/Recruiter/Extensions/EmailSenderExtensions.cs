@@ -110,6 +110,7 @@ namespace Recruiter.Services
                                 One of the stages of your application has changed the state, 
                                 check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
                                 <br/>
+                                <br/>
                                 Appointments
                                 <br/>
                                 ";
