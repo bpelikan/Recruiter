@@ -28,13 +28,15 @@ namespace Recruiter.Services
         public static Task SendEmailNotificationProcessApplicationApprovalAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            if(stage.Accepted)
+                content += $@"Your CV was accepted. <br/><br/>";
+            else
+                content += $@"Your CV was rejected. <br/><br/>";
+            content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title,content));
 
             #region del
@@ -62,39 +64,42 @@ namespace Recruiter.Services
         public static Task SendEmailNotificationProcessPhoneCallAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            if (stage.Accepted)
+                content += $@"Your telephone conversation has ended positively. <br/><br/>";
+            else
+                content += $@"Your telephone conversation has ended negatively. <br/><br/>";
+            content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
         public static Task SendEmailNotificationAddHomeworkSpecificationAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            content += "Homework specification was added. <br/><br/>";
+            content += $@"Now you can start your homework by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
         public static Task SendEmailNotificationProcessHomeworkStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            if (stage.Accepted)
+                content += $@"Your homework was accepted. <br/><br/>";
+            else
+                content += $@"Your homework was rejected. <br/><br/>";
+            content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
 
@@ -105,15 +110,16 @@ namespace Recruiter.Services
                                             IEnumerable<InterviewAppointmentToConfirmViewModel> interviewAppointmentsToConfirm)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                <br/>
-                                <br/>
-                                Appointments
-                                <br/>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            content += "Interview appointments was added. <br/><br/>";
+            content += $@"
+                        Now you can confirm one of the appointments by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
+                        <br/>
+                        <br/>
+                        Or confirm directly below:
+                        <br/>
+                        ";
             content += $"<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
             foreach (var appointment in interviewAppointmentsToConfirm.OrderBy(x => x.StartTime))
             {
@@ -136,11 +142,13 @@ namespace Recruiter.Services
         public static Task SendEmailNotificationProcessInterviewStageAsync(this IEmailSender emailSender, string email, string link, ApplicationStageBase stage)
         {
             string subject = $"{stage.Application.JobPosition.Name} - Application state notification - {stage.GetType().Name}";
-            string title = $"Application state notification - {stage.GetType().Name}";
-            string content = $@"
-                                One of the stages of your application has changed the state, 
-                                check by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>
-                                ";
+            string title = $"Application state notification";
+            string content = "";
+            if (stage.Accepted)
+                content += $@"Your interview has ended positively. <br/><br/>";
+            else
+                content += $@"Your interview has ended negatively. <br/><br/>";
+            content += $@"Check details by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>";
 
             return emailSender.SendEmailAsync(email, subject, EmailTemplate(title, content));
         }
@@ -158,14 +166,14 @@ namespace Recruiter.Services
                     <html xmlns='http://www.w3.org/1999/xhtml'>
                     <head>
 	                    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-	                    <title>Demystifying Email Design</title>
+	                    <title>Recruiter</title>
 	                    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
                     </head>                
                     <body style='margin: 0; padding: 0;'>
                     <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; border: 1px solid #cccccc;'>
 	                    <tr>
 		                    <td align='center' bgcolor='#0254E6' style='padding: 0 0 0 0; '>
-			                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/career-3449422_640.png' alt='ASP.NET' width='600' height='300' style='display: block;' />
+			                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/career-3449422_640.png' alt='Recruiter' width='600' height='300' style='display: block;' />
 		                    </td>
 	                    </tr>
 	                    <tr>
@@ -202,7 +210,7 @@ namespace Recruiter.Services
 							                    <tr>
 								                    <td>
 									                    <a href='https://recruiterbp.azurewebsites.net/'>
-										                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/website.png' alt='Facebook' width='38' height='38' style='display: block;' border='0' />
+										                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/website.png' alt='Recruiter website' width='38' height='38' style='display: block;' border='0' />
 									                    </a>
 								                    </td>
 							                    </tr>
