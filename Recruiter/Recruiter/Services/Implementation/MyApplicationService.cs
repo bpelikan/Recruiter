@@ -20,6 +20,7 @@ namespace Recruiter.Services.Implementation
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
+        private readonly IQueueMessageSender _queueMessageSender;
         private readonly IApplicationStageService _applicationStageService;
         private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
         private readonly ApplicationDbContext _context;
@@ -28,6 +29,7 @@ namespace Recruiter.Services.Implementation
                         IMapper mapper, 
                         ILogger<MyApplicationService> logger, 
                         ICvStorageService cvStorageService,
+                        IQueueMessageSender queueMessageSender,
                         IApplicationStageService applicationStageService,
                         IApplicationsViewHistoriesService applicationsViewHistoriesService,
                         ApplicationDbContext context)
@@ -35,6 +37,7 @@ namespace Recruiter.Services.Implementation
             _mapper = mapper;
             _logger = logger;
             _cvStorageService = cvStorageService;
+            _queueMessageSender = queueMessageSender;
             _applicationStageService = applicationStageService;
             _applicationsViewHistoriesService = applicationsViewHistoriesService;
             _context = context;
@@ -435,6 +438,7 @@ namespace Recruiter.Services.Implementation
                                             .ThenInclude(x => x.InterviewAppointments)
                                         .Include(x => x.Interview)
                                             .ThenInclude(x => x.Application)
+                                                .ThenInclude(x => x.User)
                                         .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
             if (appointmentToConfirm == null)
             {
@@ -468,6 +472,8 @@ namespace Recruiter.Services.Implementation
                                                 .Where(x => x.InterviewAppointmentState != InterviewAppointmentState.Confirmed);
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
+
+            await _queueMessageSender.SendInterviewReminderQueueMessageAsync(appointmentToConfirm.Interview.Application.User.Email, appointmentToConfirm);
 
             //throw new NotImplementedException();
         }
