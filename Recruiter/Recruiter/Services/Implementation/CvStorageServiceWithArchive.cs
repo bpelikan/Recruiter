@@ -95,6 +95,7 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Generated ID for CV: {cvId}");
 
             var container = blobClient.GetContainerReference("cvstorage");
+            await container.CreateIfNotExistsAsync();
             var blob = container.GetBlockBlobReference(cvId);
             blob.Properties.ContentType = "application/pdf";
 
@@ -137,6 +138,7 @@ namespace Recruiter.Services.Implementation
             }
 
             var containerArchive = blobClientArchive.GetContainerReference("cvstoragearchieve");
+            await containerArchive.CreateIfNotExistsAsync();
             var blobArchive = containerArchive.GetBlockBlobReference(cvId);
             blobArchive.Properties.ContentType = "application/pdf";
 

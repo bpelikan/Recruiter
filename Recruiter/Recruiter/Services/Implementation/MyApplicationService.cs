@@ -439,6 +439,9 @@ namespace Recruiter.Services.Implementation
                                         .Include(x => x.Interview)
                                             .ThenInclude(x => x.Application)
                                                 .ThenInclude(x => x.User)
+                                        .Include(x => x.Interview)
+                                            .ThenInclude(x => x.Application)
+                                                .ThenInclude(x => x.JobPosition)
                                         .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
             if (appointmentToConfirm == null)
             {
@@ -473,7 +476,7 @@ namespace Recruiter.Services.Implementation
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
 
-            await _queueMessageSender.SendInterviewReminderQueueMessageAsync(appointmentToConfirm.Interview.Application.User.Email, appointmentToConfirm);
+            await _queueMessageSender.SendAppointmentReminderAsync(appointmentToConfirm.Interview.Application.User.Email, appointmentToConfirm);
 
             //throw new NotImplementedException();
         }
