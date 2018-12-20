@@ -36,7 +36,6 @@ namespace Recruiter.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetByIdAsync(string id)
         {
-            //var pet = await _repository.GetPetAsync(id);
             var appointment = _context.InterviewAppointments.FirstOrDefault(x => x.Id == id);
 
             if (appointment == null)
@@ -52,7 +51,6 @@ namespace Recruiter.Controllers
             {
                 return Ok(false);
             }
-            //var result = true;
         }
 
     }
