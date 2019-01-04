@@ -2,10 +2,10 @@
 @model IEnumerable<JobPositionViewModel>
 
 @{
-    ViewData["Title"] = "Job Positions";
+    ViewData["Title"] = "Oferty pracy";
 }
 
-<h2>Job Positions
+<h2>Oferty pracy
     <a class="btn btn-default" asp-action="Add" asp-route-returnurl="@Context.Request.Path">
         <span class="glyphicon glyphicon-plus">
         </span>
@@ -18,13 +18,13 @@
         @if (!JobPositionActivity.Activities.Contains(@ViewContext.RouteData.Values["jobPositionActivity"]?.ToString()))
         {
             <li class="nav-item active">
-                <a asp-action="Index" asp-route-jobPositionActivity="">All</a>
+                <a asp-action="Index" asp-route-jobPositionActivity="">Wszystkie</a>
             </li>
         }
         else
         {
             <li class="nav-item ">
-                <a asp-action="Index" asp-route-jobPositionActivity="">All</a>
+                <a asp-action="Index" asp-route-jobPositionActivity="">Wszystkie</a>
             </li>
         }
 
@@ -34,19 +34,18 @@
             {
                 <li class="nav-item active ">
                     <a asp-action="Index" asp-route-jobPositionActivity="@activity">
-                        @activity
-                        @*@switch (@activity)
+                        @switch (@activity)
                         {
                             case JobPositionActivity.Active:
-                                @:Active
+                                @:Aktywne
                                 break;
                             case JobPositionActivity.Planned:
-                                @:Planned
+                                @:Zaplanowane
                                 break;
                             case JobPositionActivity.Expired:
-                                @:Expired
+                                @:Zamknięte
                                 break;
-                        }*@
+                        }
                     </a>
                 </li>
             }
@@ -54,19 +53,18 @@
             {
                 <li class="nav-item">
                     <a asp-action="Index" asp-route-jobPositionActivity="@activity">
-                        @activity
-                        @*@switch (@activity)
+                        @switch (@activity)
                         {
                             case JobPositionActivity.Active:
-                                @:Active
+                                @:Aktywne
                                 break;
                             case JobPositionActivity.Planned:
-                                @:Planned
+                                @:Zaplanowane
                                 break;
                             case JobPositionActivity.Expired:
-                                @:Expired
+                                @:Zamknięte
                                 break;
-                        }*@
+                        }
                     </a>
                 </li>
             }
@@ -129,10 +127,10 @@
         <thead>
             <tr>
                 @*<th>Id</th>*@
-                <th>Name</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Actions</th>
+                <th>Stanowisko</th>
+                <th>Czas rozpoczęcia</th>
+                <th>Czas zakończenia</th>
+                <th>Akcje</th>
             </tr>
         </thead>
         
@@ -153,10 +151,10 @@
                     <td>@Html.DisplayFor(model => jobPosition.EndDate)</td>
                     <td>
                         <form asp-action="Delete" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path" method="post">
-                            <a class="btn btn-sm btn-default" asp-action="Details" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Details</a>
-                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edit</a>
-                            <button type="submit" onclick="return confirm('Do you really want to delete this job position?');" class="btn btn-sm btn-danger">
-                                Delete
+                            <a class="btn btn-sm btn-default" asp-action="Details" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Szczegóły</a>
+                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-jobPositionId="@jobPosition.Id" asp-route-returnurl="@Context.Request.Path">Edytuj</a>
+                            <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tę ofertę precy?');" class="btn btn-sm btn-danger">
+                                Usuń
                             </button>
                         </form>
                     </td>
