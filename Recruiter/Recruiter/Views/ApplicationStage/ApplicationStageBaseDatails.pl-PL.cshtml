@@ -124,4 +124,10 @@
 </div>
 
 <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Wróć</a>
+<a condition="@ViewData["ReturnUrl"] == null"
+   class="btn btn-sm btn-default"
+   asp-controller="Application"
+   asp-action="ApplicationDetails"
+   asp-route-applicationId="@Model.ApplicationId">
+    Wróć
+</a>

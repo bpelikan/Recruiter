@@ -43,8 +43,21 @@
             Stage
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.GetType().Name)
-
+            @switch (@Model.GetType().Name)
+            {
+                case "ApplicationApproval":
+                    @:Application Approval
+                    break;
+                case "PhoneCall":
+                    @:Phone Call
+                    break;
+                case "Homework":
+                    @:Homework
+                    break;
+                case "Interview":
+                    @:Interview
+                    break;
+            }
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.State)
@@ -94,17 +107,18 @@
             @Html.DisplayFor(model => model.StartTime)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.EndTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.SendingTime)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.SendingTime)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
 
         <hr />
 
@@ -141,4 +155,11 @@
 </div>
 
 <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Back</a>
+@*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Back</a>*@
+<a condition="@ViewData["ReturnUrl"] == null"
+   class="btn btn-sm btn-default"
+   asp-controller="Application"
+   asp-action="ApplicationDetails"
+   asp-route-applicationId="@Model.ApplicationId">
+    Back
+</a>

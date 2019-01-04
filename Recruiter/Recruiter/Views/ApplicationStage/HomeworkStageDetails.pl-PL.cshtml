@@ -1,24 +1,24 @@
-﻿@model Recruiter.Models.ApplicationStageBase
+﻿@model Recruiter.Models.Homework
 
 @{
-    ViewData["Title"] = "Application Stage Datails";
+    ViewData["Title"] = "Homework Datails";
 }
 
 <h2>
-    Application Stage Datails - 
+    Szczegóły etapu rekrutacji -
     @switch (@Model.GetType().Name)
     {
         case "ApplicationApproval":
-            @:Application Approval
+            @:Akceptacja aplikacji
             break;
         case "PhoneCall":
-            @:Phone Call
+            @:Rozmowa telefoniczna
             break;
         case "Homework":
-            @:Homework
+            @:Zadanie domowe
             break;
         case "Interview":
-            @:Interview
+            @:Rozmowa kwalifikacyjna
             break;
     }
 </h2>
@@ -57,22 +57,22 @@
             @Html.DisplayFor(model => model.Level)
         </dd>*@
         <dt>
-            Stage
+            Etap
         </dt>
         <dd>
             @switch (@Model.GetType().Name)
             {
                 case "ApplicationApproval":
-                    @:Application Approval
+                    @:Akceptacja aplikacji
                     break;
                 case "PhoneCall":
-                    @:Phone Call
+                    @:Rozmowa telefoniczna
                     break;
                 case "Homework":
-                    @:Homework
+                    @:Zadanie domowe
                     break;
                 case "Interview":
-                    @:Interview
+                    @:Rozmowa kwalifikacyjna
                     break;
             }
         </dd>
@@ -83,6 +83,12 @@
             @Html.DisplayFor(model => model.State)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.HomeworkState)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HomeworkState)
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.ResponsibleUser)
         </dt>
         <dd>
@@ -91,6 +97,48 @@
                 (@Html.DisplayFor(model => model.ResponsibleUser.Email))
             </b>
         </dd>
+
+        <hr />
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.Raw(@Model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Url)
+        </dt>
+        <dd>
+            <a href="@Model.Url" target="_blank" rel="nofollow noopener noreferrer">@Html.DisplayFor(model => model.Url)</a>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SendingTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SendingTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>
+
+
+        <hr />
+
         <dt>
             @Html.DisplayNameFor(model => model.Accepted)
         </dt>
@@ -123,12 +171,11 @@
     </dl>
 </div>
 
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-@*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Back</a>*@
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
 <a condition="@ViewData["ReturnUrl"] == null"
-   class="btn btn-sm btn-default"
-   asp-controller="Application"
-   asp-action="ApplicationDetails"
-   asp-route-applicationId="@Model.ApplicationId">
-    Back
+    class="btn btn-sm btn-default"
+    asp-controller="Application"
+    asp-action="ApplicationDetails"
+    asp-route-applicationId="@Model.ApplicationId">
+        Wróć
 </a>

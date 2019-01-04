@@ -61,6 +61,7 @@ namespace Recruiter.Models
         {
             Level = 3;
         }
+        [Display(Name = "Homework State")]
         public HomeworkState HomeworkState { get; set; }
 
         [Display(Name = "Description")]

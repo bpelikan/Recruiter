@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Accepted" xml:space="preserve">
+    <value>Accepted</value>
+  </data>
+  <data name="Accepted By" xml:space="preserve">
+    <value>Accepted by</value>
+  </data>
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
@@ -126,11 +132,26 @@
   <data name="End Time" xml:space="preserve">
     <value>End Time</value>
   </data>
+  <data name="Homework State" xml:space="preserve">
+    <value>Homework State</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="Rate" xml:space="preserve">
+    <value>Rate</value>
+  </data>
+  <data name="Responsible User" xml:space="preserve">
+    <value>Responsible user</value>
+  </data>
   <data name="Sending Time" xml:space="preserve">
     <value>Sending Time</value>
   </data>
   <data name="Start Time" xml:space="preserve">
     <value>Start Time</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>State</value>
   </data>
   <data name="Url" xml:space="preserve">
     <value>Url</value>
