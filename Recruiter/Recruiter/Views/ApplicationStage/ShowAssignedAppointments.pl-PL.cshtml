@@ -61,8 +61,8 @@
                             </a>
                         </td>
                         <td>
-                            @*@Html.DisplayFor(model => appointment.InterviewAppointmentState)*@
-                            @switch (appointment.InterviewAppointmentState)
+                            @Html.DisplayFor(model => appointment.InterviewAppointmentState)
+                            @*@switch (appointment.InterviewAppointmentState)
                             {
                                 case InterviewAppointmentState.WaitingToAdd:
                                     @:Oczekiwanie na dodanie
@@ -79,7 +79,7 @@
                                 case InterviewAppointmentState.Finished:
                                     @:Zakończone
                                     break;
-                            }
+                            }*@
                         </td>
                         <td>
                             <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>

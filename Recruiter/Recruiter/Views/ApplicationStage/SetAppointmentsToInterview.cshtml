@@ -97,8 +97,8 @@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
                         <td>
-                            @*@Html.DisplayFor(model => appointment.InterviewAppointmentState)*@
-                            @switch (appointment.InterviewAppointmentState)
+                            @Html.DisplayFor(model => appointment.InterviewAppointmentState)
+                            @*@switch (appointment.InterviewAppointmentState)
                             {
                                 case InterviewAppointmentState.WaitingToAdd:
                                     @:Waiting to add
@@ -115,7 +115,7 @@
                                 case InterviewAppointmentState.Finished:
                                     @:Finished
                                     break;
-                            }
+                            }*@
                         </td>
                         @*<td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
                         <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>*@
