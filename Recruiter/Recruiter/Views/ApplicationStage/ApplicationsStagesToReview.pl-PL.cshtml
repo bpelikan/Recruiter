@@ -2,10 +2,10 @@
 @model ApplicationsStagesToReviewViewModel
 
 @{
-    ViewData["Title"] = "Applications";
+    ViewData["Title"] = "Oczekujące etapy rekrutacji";
 }
 
-<h2>Application stages to review</h2>
+<h2>Oczekujące etapy rekrutacji</h2>
 
 <div>
     <ul class="nav nav-tabs">
@@ -13,37 +13,35 @@
                                     .Count() == 0)
         {
             <li class="nav-item active">
-                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a>
+                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">Wszystkie</a>
             </li>
         }
         else
         {
             <li class="nav-item ">
-                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">All</a>
+                <a asp-action="ApplicationsStagesToReview" asp-route-stageName="">Wszystkie</a>
             </li>
         }
 
         @foreach (var stage in Model.StageSortedByName)
         {
-            //if (@ViewContext.HttpContext.Request.Query["stageName"] == stage.Name)
             if (@ViewContext.RouteData.Values["stageName"]?.ToString() == stage.Name)
             {
                 <li class="nav-item active">
                     <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-                        @*@Html.DisplayFor(x => stage.Name)*@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
@@ -54,20 +52,19 @@
             {
                 <li Condition="stage.Quantity!=0" class="nav-item">
                     <a asp-action="ApplicationsStagesToReview" asp-route-stageName="@stage.Name">
-                        @*@Html.DisplayFor(x => stage.Name)*@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
@@ -75,20 +72,19 @@
                 </li>
                 <li Condition="stage.Quantity==0" class="nav-item disabled">
                     <a>
-                        @*@Html.DisplayFor(x => stage.Name)*@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                     </a>
@@ -103,8 +99,7 @@
     <tr>
         <td colspan="3" class="text-center">
             <br />
-            @*@:Any job position not found.*@
-            Any application stages to review not found.
+            Nie znaleziono aplikacji do wyświetlenia.
         </td>
     </tr>
 }
@@ -112,10 +107,10 @@ else
 {
     <table class="table table-condensed table-bordered" header header-content="My applications">
         <tr>
-            <th>Application</th>
-            <th>Job Position</th>
-            <th>Stage</th>
-            <th>Apply time</th>
+            <th>Kandydat</th>
+            <th>Oferta pracy</th>
+            <th>Etap</th>
+            <th>Czas wysłania aplikacji</th>
         </tr>
 
         @foreach (var stage in Model.AsignedStages)
@@ -161,16 +156,16 @@ else
                                     asp-action="ProcessStage" 
                                     asp-route-stageId="@stage.CurrentStage.Id" 
                                     asp-route-returnurl="@Context.Request.Path">
-                                        Add homework specification
+                                        Dodaj zadanie domowe
                                 </a>
                                 break;
                             case HomeworkState.WaitingForRead:
-                                @:Waiting for reading homework
+                                @:Oczekiwanie na przeczytanie zadania
                                 break;
                             case HomeworkState.WaitingForSendHomework:
-                                @:Waiting for sending homework
+                                @:Oczekiwanie na wysłanie zadania
                                 <b>
-                                    (Expiry time: @Html.DisplayFor(model => homework.EndTime))
+                                    (Termin: @Html.DisplayFor(model => homework.EndTime))
                                 </b>
                                 break;
                             case HomeworkState.Completed:
@@ -178,7 +173,7 @@ else
                                     asp-action="ProcessStage" 
                                     asp-route-stageId="@stage.CurrentStage.Id" 
                                     asp-route-returnurl="@Context.Request.Path">
-                                        Rate homework
+                                        Oceń zadanie domowe
                                 </a>
                                 break;
                         }
@@ -193,7 +188,7 @@ else
                                     asp-action="ProcessStage" 
                                     asp-route-stageId="@stage.CurrentStage.Id" 
                                     asp-route-returnurl="@Context.Request.Path">
-                                        Waiting for setting appointments
+                                        Umów się na spotkanie
                                 </a>
                                 break;
                             case InterviewState.RequestForNewAppointments:
@@ -202,22 +197,16 @@ else
                                     asp-action="ProcessStage" 
                                     asp-route-stageId="@stage.CurrentStage.Id" 
                                     asp-route-returnurl="@Context.Request.Path">
-                                        Reguest for another appointments
+                                        Ponów próbę umówienia się na spotkanie
                                 </a>
                                 break;
                             case InterviewState.WaitingForConfirmAppointment:
-                                @:Waiting to confirm appointment
+                                @:Oczekiwanie na potwierdzenie daty spotkania
                                 break;
                             case InterviewState.AppointmentConfirmed:
                                 @if (interview.InterviewAppointments?.FirstOrDefault()?.StartTime > DateTime.Now)
                                 {
-                                    <a style="color: green"
-                                       asp-controller="ApplicationStage"
-                                       asp-action="ProcessStage"
-                                       asp-route-stageId="@stage.CurrentStage.Id"
-                                       asp-route-returnurl="@Context.Request.Path">
-                                        Interview confirmed (@Html.DisplayFor(model => interview.InterviewAppointments.FirstOrDefault().StartTime))
-                                    </a>
+                                    @:Spotkanie potwierdzone (@Html.DisplayFor(model => interview.InterviewAppointments.FirstOrDefault().StartTime))
                                 }
                                 else
                                 {
@@ -226,13 +215,10 @@ else
                                        asp-action="ProcessStage"
                                        asp-route-stageId="@stage.CurrentStage.Id"
                                        asp-route-returnurl="@Context.Request.Path">
-                                        Rate interview
+                                        Oceń rozmowę kwalifikacyjną
                                     </a>
                                 }
                                 break;
-                            @*case InterviewState.InterviewCompleted:
-                                @:Interview completed
-                                break;*@
                         }
                     }
                     else
@@ -241,21 +227,14 @@ else
                             asp-action="ProcessStage" 
                             asp-route-stageId="@stage.CurrentStage.Id" 
                             asp-route-returnurl="@Context.Request.Path">
-                                @*Process*@
                                 @switch (@stage.CurrentStage.GetType().Name)
                                 {
                                     case "ApplicationApproval":
-                                        @:Accept application
+                                        @:Zaakceptuj aplikację
                                         break;
                                     case "PhoneCall":
-                                        @:Make phone call
+                                        @:Wykonaj rozmowę telefoniczną
                                         break;
-                                    @*case "Homework":
-                                        @:Zadanie domowe
-                                        break;
-                                    case "Interview":
-                                        @:Rozmowa kwalifikacyjna
-                                        break;*@
                                 }
                         </a>
                     }

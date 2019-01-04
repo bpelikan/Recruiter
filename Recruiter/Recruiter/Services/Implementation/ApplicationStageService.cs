@@ -222,17 +222,37 @@ namespace Recruiter.Services.Implementation
             {
                 foreach (var stage in stages)
                 {
-                    vm.AsignedStages.Add(new AsignedStagesViewModel()
+                    if (stage.GetType().Name == "Interview")
                     {
-                        Application = new ApplicationViewModel()
+                        var interview = stage as Interview;
+                        if(interview.InterviewState == InterviewState.AppointmentConfirmed)
+                            interview.InterviewAppointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id).ToList();
+                        vm.AsignedStages.Add(new AsignedStagesViewModel()
                         {
-                            Id = stage.Application.Id,
-                            CreatedAt = stage.Application.CreatedAt.ToLocalTime(),
-                            User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
-                            JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
-                        },
-                        CurrentStage = stage,
-                    });
+                            Application = new ApplicationViewModel()
+                            {
+                                Id = stage.Application.Id,
+                                CreatedAt = stage.Application.CreatedAt.ToLocalTime(),
+                                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                            },
+                            CurrentStage = interview,
+                        });
+                    }
+                    else
+                    {
+                        vm.AsignedStages.Add(new AsignedStagesViewModel()
+                        {
+                            Application = new ApplicationViewModel()
+                            {
+                                Id = stage.Application.Id,
+                                CreatedAt = stage.Application.CreatedAt.ToLocalTime(),
+                                User = _mapper.Map<ApplicationUser, UserDetailsViewModel>(stage.Application.User),
+                                JobPosition = _mapper.Map<JobPosition, JobPositionViewModel>(stage.Application.JobPosition),
+                            },
+                            CurrentStage = stage,
+                        });
+                    }
                 }
             }
 

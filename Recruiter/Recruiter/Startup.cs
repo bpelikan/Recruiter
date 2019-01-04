@@ -58,17 +58,18 @@ namespace Recruiter
                     var supportedCultures = new List<CultureInfo>
                     {
                         new CultureInfo("en-US"),
-                        //new CultureInfo("pl-PL"),
+                        new CultureInfo("pl-PL"),
                     };
 
-                    opts.DefaultRequestCulture = new RequestCulture("en-US");
+                    //opts.DefaultRequestCulture = new RequestCulture("en-US");
+                    opts.DefaultRequestCulture = new RequestCulture("pl-PL");
                     opts.SupportedCultures = supportedCultures;
                     opts.SupportedUICultures = supportedCultures;
                 });
 
             // Add application services.
-            //services.AddTransient<IEmailSender, FakeEmailSender>();
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, FakeEmailSender>();
+            //services.AddTransient<IEmailSender, EmailSender>();
             services.AddSingleton<ICvStorageService, CvStorageServiceWithArchive>();
             services.AddSingleton<IQueueMessageSender, QueueMessageSender>();
             services.AddScoped<IJobPositionRepository, JobPositionRepository>();
