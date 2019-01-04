@@ -55,7 +55,7 @@
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruit)"><a asp-area="" asp-controller="MyApplication" asp-action="MyApplications">My applications</a></li>
                     <li condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruiter) || @User.IsInRole(RoleCollection.Administrator))">@await Component.InvokeAsync("HRMenu")</li>
                     <li condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Administrator)">@await Component.InvokeAsync("AdminMenu")</li>
-                    <li><a condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruit)" asp-area="" asp-controller="Home" asp-action="EmailTest">Email Test</a></li>
+                    @*<li><a condition="@SignInManager.IsSignedIn(User) && @User.IsInRole(RoleCollection.Recruit)" asp-area="" asp-controller="Home" asp-action="EmailTest">Email Test</a></li>*@
 
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
