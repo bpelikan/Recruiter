@@ -71,8 +71,8 @@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().Duration)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewAppointmentState)</th>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
-                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>
+                    <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>*@
                     <th>
                         <span class="glyphicon glyphicon-wrench">
                         </span>
@@ -96,11 +96,31 @@
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>@Html.DisplayFor(model => appointment.EndTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
-                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
                         <td>
-                            <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd" 
+                            @*@Html.DisplayFor(model => appointment.InterviewAppointmentState)*@
+                            @switch (appointment.InterviewAppointmentState)
+                            {
+                                case InterviewAppointmentState.WaitingToAdd:
+                                    @:Waiting to add
+                                    break;
+                                case InterviewAppointmentState.WaitingForConfirm:
+                                    @:Waiting for confirm
+                                    break;
+                                case InterviewAppointmentState.Confirmed:
+                                    @:Confirmed
+                                    break;
+                                case InterviewAppointmentState.Rejected:
+                                    @:Rejected
+                                    break;
+                                case InterviewAppointmentState.Finished:
+                                    @:Finished
+                                    break;
+                            }
+                        </td>
+                        @*<td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                        <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>*@
+                        <td>
+                            <a Condition="appointment.InterviewAppointmentState == InterviewAppointmentState.WaitingToAdd"
                                 class="btn btn-default" asp-action="RemoveAppointmentsFromInterview" 
                                                         asp-route-appointmentId="@appointment.Id"
                                                         asp-route-stageId="@appointment.InterviewId"
