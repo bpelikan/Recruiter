@@ -5,20 +5,20 @@
 }
 
 <h2>
-    Application Stage Datails - 
+    Szczegóły etapu rekrutacji -
     @switch (@Model.GetType().Name)
     {
         case "ApplicationApproval":
-            @:Application Approval
+            @:Akceptacja aplikacji
             break;
         case "PhoneCall":
-            @:Phone Call
+            @:Rozmowa telefoniczna
             break;
         case "Homework":
-            @:Homework
+            @:Zadanie domowe
             break;
         case "Interview":
-            @:Interview
+            @:Rozmowa kwalifikacyjna
             break;
     }
 </h2>
@@ -57,11 +57,24 @@
             @Html.DisplayFor(model => model.Level)
         </dd>*@
         <dt>
-            Stage
+            Etap
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.GetType().Name)
-            
+            @switch (@Model.GetType().Name)
+            {
+                case "ApplicationApproval":
+                    @:Akceptacja aplikacji
+                    break;
+                case "PhoneCall":
+                    @:Rozmowa telefoniczna
+                    break;
+                case "Homework":
+                    @:Zadanie domowe
+                    break;
+                case "Interview":
+                    @:Rozmowa kwalifikacyjna
+                    break;
+            }
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.State)
@@ -110,5 +123,5 @@
     </dl>
 </div>
 
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Back</a>
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-controller="Home" asp-action="Index">Wróć</a>

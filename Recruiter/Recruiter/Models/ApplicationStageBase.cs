@@ -17,18 +17,24 @@ namespace Recruiter.Models
 
         public string Id { get; set; }
         public int Level { get; set; }
+        [Display(Name = "State")]
         public ApplicationStageState State { get; set; }
+        [Display(Name = "Accepted")]
         public bool Accepted { get; set; }
+        [Display(Name = "Note")]
         public string Note { get; set; }
+        [Display(Name = "Rate")]
         public int? Rate { get; set; }
 
-        public string ApplicationId { get; set; }
+        public string ApplicationId { get; set; }   
         public virtual Application Application { get; set; }
 
         public string ResponsibleUserId { get; set; }
+        [Display(Name = "Responsible User")]
         public virtual ApplicationUser ResponsibleUser { get; set; }
 
         public string AcceptedById { get; set; }
+        [Display(Name = "Accepted By")]
         public virtual ApplicationUser AcceptedBy { get; set; }
 
     }
@@ -94,8 +100,11 @@ namespace Recruiter.Models
 
     public enum ApplicationStageState
     {
+        [Display(Name = "Waiting")]
         Waiting,
+        [Display(Name = "In Progress")]
         InProgress,
+        [Display(Name = "Finished")]
         Finished
     }
 
