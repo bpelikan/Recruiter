@@ -19,8 +19,10 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class InterviewViewModel
     {
         public string Id { get; set; }
+        [Display(Name = "Note")]
         public string Note { get; set; }
 
+        [Display(Name = "Rate")]
         [Range(1, 5, ErrorMessage = "Rate must be beetween 1 and 5")]
         public int Rate { get; set; }
         public virtual ICollection<InterviewAppointment> InterviewAppointments { get; set; }
