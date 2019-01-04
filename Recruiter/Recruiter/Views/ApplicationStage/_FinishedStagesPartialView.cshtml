@@ -1,0 +1,65 @@
+﻿@model ICollection<Recruiter.Models.ApplicationStageBase>
+
+<hr />
+<h4>Poprzednie etapy</h4>
+<div class="row panel-body">
+    @if (Model.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
+            <thead>
+                <tr>
+                    <th>Etap</th>
+                    <th>Notatka</th>
+                    <th>Ocena</th>
+                    @*<th>Accepted</th>*@
+                    <th>Zaakceptowany przez</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var applicationStage in Model)
+                {
+                    <tr>
+                        <td>
+                            @*@applicationStage.GetType().Name*@
+                            <a asp-action="ShowApplicationStageDetails"
+                               asp-controller="ApplicationStage"
+                               asp-route-stageId="@applicationStage.Id"
+                               asp-route-returnurl="@Context.Request.Path">
+                                @switch (applicationStage.GetType().Name)
+                                {
+                                    case "ApplicationApproval":
+                                        @:Akceptacja aplikacji
+                                        break;
+                                    case "PhoneCall":
+                                        @:Rozmowa telefoniczna
+                                        break;
+                                    case "Homework":
+                                        @:Zadanie domowe
+                                        break;
+                                    case "Interview":
+                                        @:Rozmowa kwalifikacyjna
+                                        break;
+                                }
+                            </a>
+                            <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
+                        </td>
+                        <td>@Html.DisplayFor(model => applicationStage.Note)</td>
+                        <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
+                        @*<td>@Html.DisplayFor(model => applicationStage.Accepted)</td>*@
+                        <td>
+                            @Html.DisplayFor(model => applicationStage.AcceptedBy.FirstName)
+                            @Html.DisplayFor(model => applicationStage.AcceptedBy.LastName)
+                            <b Condition="applicationStage.AcceptedById != null">
+                                (@Html.DisplayFor(model => applicationStage.AcceptedBy.Email))
+                            </b>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Nie znaleziono poprzednich etapów.
+    }
+</div>

@@ -4,43 +4,13 @@
     ViewData["Title"] = "Process Interview Stage";
 }
 
-<h2>Application Details</h2>
-
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.User)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.User.FirstName) @Html.DisplayFor(model => model.Application.User.LastName) (@Html.DisplayFor(model => model.Application.User.Email))
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.JobPosition.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.JobPosition.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.CvFileUrl)
-        </dt>
-        <dd>
-            <a href="@Model.Application.CvFileUrl" target="_blank">Click to view CV</a>
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.CreatedAt)
-        </dd>
-    </dl>
-</div>
+@await Html.PartialAsync("_ApplicationDetailsPartialView", Model.Application)
 
 <hr />
 <h3>Appointment</h3>
 @*<a class="btn btn-default" asp-action="AddInterviewAppointments" asp-route-stageId="@Model.StageToProcess.Id">
-    Add Interview Appointment
-</a>*@
+        Add Interview Appointment
+    </a>*@
 
 <div class="row panel-body">
     @if (Model.StageToProcess.InterviewAppointments.Count() != 0)
@@ -55,9 +25,9 @@
                     @*<th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruit)</th>*@
                     <th>@Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().AcceptedByRecruitTime)</th>
                     @*<th>
-                        - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)
-                        <br />
-                    </th>*@
+                            - @Html.DisplayNameFor(model => model.StageToProcess.InterviewAppointments.First().InterviewId)
+                            <br />
+                        </th>*@
                 </tr>
             </thead>
             <tbody>
@@ -74,9 +44,9 @@
                             @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)
                         </td>
                         @*<td>
-                            - @Html.DisplayFor(model => appointment.InterviewId)
-                            <br />
-                        </td>*@
+                                - @Html.DisplayFor(model => appointment.InterviewId)
+                                <br />
+                            </td>*@
                     </tr>
                 }
             </tbody>
@@ -136,65 +106,5 @@
     </div>
 </form>
 
-<hr />
-<h4>Finished Stages</h4>
-<div class="row panel-body">
-    @if (Model.ApplicationStagesFinished.Count() != 0)
-    {
-        <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Note</th>
-                    <th>Rate</th>
-                    @*<th>Accepted</th>*@
-                    <th>Accepted By</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var applicationStage in Model.ApplicationStagesFinished)
-                {
-                    <tr>
-                        <td>
-                            @*@applicationStage.GetType().Name*@
-                            <a asp-action="ShowApplicationStageDetails"
-                               asp-controller="ApplicationStage"
-                               asp-route-stageId="@applicationStage.Id"
-                               asp-route-returnurl="@Context.Request.Path">
-                                @applicationStage.GetType().Name
-                            </a>
-                            <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
-                        </td>
-                        <td>@Html.DisplayFor(model => applicationStage.Note)</td>
-                        <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
-                        @*<td>@Html.DisplayFor(model => applicationStage.Accepted)</td>*@
-                        <td>
-                            @Html.DisplayFor(model => applicationStage.AcceptedBy.FirstName)
-                            @Html.DisplayFor(model => applicationStage.AcceptedBy.LastName)
-                            <b Condition="applicationStage.AcceptedById != null">
-                                (@Html.DisplayFor(model => applicationStage.AcceptedBy.Email))
-                            </b>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        @:Finished Applications Stages not found.
-    }
-</div>
-
-
-<hr />
-<h4>Waiting Stages</h4>
-@if (Model.ApplicationStagesWaiting.Count() != 0)
-{
-    @:Waiting stages count:
-    @Model.ApplicationStagesWaiting.Count()
-}
-else
-{
-    @:No other stages
-}
+@await Html.PartialAsync("_FinishedStagesPartialView", Model.ApplicationStagesFinished)
+@await Html.PartialAsync("_WaitingStagesPartialView", Model.ApplicationStagesWaiting)

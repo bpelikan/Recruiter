@@ -1,0 +1,33 @@
+﻿@model Recruiter.Models.ApplicationStageViewModels.Shared.ApplicationViewModel
+
+<h2>Informacje o kandydacie</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.FirstName) @Html.DisplayFor(model => model.User.LastName) (@Html.DisplayFor(model => model.User.Email))
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.JobPosition)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.JobPosition.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CvFileUrl)
+        </dt>
+        <dd>
+            <a href="@Model.CvFileUrl" target="_blank">Click to view CV</a>
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedAt)
+        </dd>
+    </dl>
+</div>
