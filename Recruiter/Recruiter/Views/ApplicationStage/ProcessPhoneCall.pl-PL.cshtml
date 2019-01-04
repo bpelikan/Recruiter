@@ -4,37 +4,7 @@
     ViewData["Title"] = "Process PhoneCall";
 }
 
-<h2>Informacje o kandydacie</h2>
-
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.User)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.User.FirstName) @Html.DisplayFor(model => model.Application.User.LastName) (@Html.DisplayFor(model => model.Application.User.Email))
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.JobPosition)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.JobPosition.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.CvFileUrl)
-        </dt>
-        <dd>
-            <a href="@Model.Application.CvFileUrl" target="_blank">Click to view CV</a>
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Application.CreatedAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Application.CreatedAt)
-        </dd>
-    </dl>
-</div>
+@await Html.PartialAsync("_ApplicationDetailsPartialView", Model.Application)
 
 <hr />
 <h3>Oceń rozmowę telefoniczną</h3>
@@ -81,79 +51,5 @@
     </div>
 </form>
 
-<hr />
-<h4>Poprzednie etapy</h4>
-<div class="row panel-body">
-    @if (Model.ApplicationStagesFinished.Count() != 0)
-    {
-        <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
-            <thead>
-                <tr>
-                    <th>Etap</th>
-                    <th>Notatka</th>
-                    <th>Ocena</th>
-                    @*<th>Accepted</th>*@
-                    <th>Zaakceptowany przez</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var applicationStage in Model.ApplicationStagesFinished)
-                {
-                    <tr>
-                        <td>
-                            @*@applicationStage.GetType().Name*@
-                            <a asp-action="ShowApplicationStageDetails"
-                               asp-controller="ApplicationStage"
-                               asp-route-stageId="@applicationStage.Id"
-                               asp-route-returnurl="@Context.Request.Path">
-                                @switch (applicationStage.GetType().Name)
-                                {
-                                    case "ApplicationApproval":
-                                        @:Akceptacja aplikacji
-                                        break;
-                                    case "PhoneCall":
-                                        @:Rozmowa telefoniczna
-                                        break;
-                                    case "Homework":
-                                        @:Zadanie domowe
-                                        break;
-                                    case "Interview":
-                                        @:Rozmowa kwalifikacyjna
-                                        break;
-                                }
-                            </a>
-                            <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
-                        </td>
-                        <td>@Html.DisplayFor(model => applicationStage.Note)</td>
-                        <td>@Html.DisplayFor(model => applicationStage.Rate)</td>
-                        @*<td>@Html.DisplayFor(model => applicationStage.Accepted)</td>*@
-                        <td>
-                            @Html.DisplayFor(model => applicationStage.AcceptedBy.FirstName)
-                            @Html.DisplayFor(model => applicationStage.AcceptedBy.LastName)
-                            <b Condition="applicationStage.AcceptedById != null">
-                                (@Html.DisplayFor(model => applicationStage.AcceptedBy.Email))
-                            </b>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        @:Nie znaleziono poprzednich etapów.
-    }
-</div>
-
-
-<hr />
-<h4>Oczekujące etapy</h4>
-@if (Model.ApplicationStagesWaiting.Count() != 0)
-{
-    @:Ilość oczekujących etapów:
-    @Model.ApplicationStagesWaiting.Count()
-}
-else
-{
-    @:Brak oczekujących etapów
-}
+@await Html.PartialAsync("_FinishedStagesPartialView", Model.ApplicationStagesFinished)
+@await Html.PartialAsync("_WaitingStagesPartialView", Model.ApplicationStagesWaiting)
