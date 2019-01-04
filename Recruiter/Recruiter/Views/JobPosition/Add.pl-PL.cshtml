@@ -1,0 +1,139 @@
+﻿@model Recruiter.Models.JobPositionViewModels.AddJobPositionViewModel
+
+@{
+    ViewData["Title"] = "Dodaj ofertę pracy";
+}
+
+<h2>Dodaj ofertę pracy</h2>
+
+<form asp-controller="JobPosition" asp-action="Add" method="post" class="form-horizontal" role="form">
+    <h4>@*Enter the JobPosition details below*@</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Name" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Description" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <textarea id="summernote" name="Description">@Model.Description</textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StartDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EndDate" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <table class="table table-condensed table-bordered" header header-content="Application Stages Requirement">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement)</th>
+            <th>Wymagane</th>
+            <th>Domyślna osoba odpowiedzialna</th>
+        </tr>
+
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)</td>
+            <td>
+                <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class="form-control" asp-items="ViewBag.DefaultResponsibleForApplicatioApprovalId">
+                    <option selected value="">--- WYBIERZ ---</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)</td>
+            <td>
+                <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForPhoneCallId" class="form-control" asp-items="ViewBag.DefaultResponsibleForPhoneCallId">
+                    <option selected value="">--- WYBIERZ ---</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)</td>
+            <td>
+                <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForHomeworkId" class="form-control" asp-items="ViewBag.DefaultResponsibleForHomeworkId">
+                    <option selected value="">--- WYBIERZ ---</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+            <td>@Html.CheckBoxFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)</td>
+            <td>
+                <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForInterviewId" class="form-control" asp-items="ViewBag.DefaultResponsibleForInterviewId">
+                    <option selected value="">--- WYBIERZ ---</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    @*<div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsApplicationApprovalRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsApplicationApprovalRequired)
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class="control-label"></label>
+            <select asp-for="ApplicationStagesRequirement.DefaultResponsibleForApplicatioApprovalId" class ="form-control" asp-items="ViewBag.DefaultResponsibleForApplicatioApprovalId">
+                <option selected value="">--- SELECT ---</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsPhoneCallRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsPhoneCallRequired)
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsHomeworkRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsHomeworkRequired)
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label>
+                    <input asp-for="ApplicationStagesRequirement.IsInterviewRequired" /> @Html.DisplayNameFor(model => model.ApplicationStagesRequirement.IsInterviewRequired)
+                </label>
+            </div>
+        </div>*@
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Utwórz" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Wróć</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+

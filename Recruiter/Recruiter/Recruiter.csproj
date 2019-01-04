@@ -150,6 +150,12 @@
     <Content Update="Views\Application\ApplicationsViewHistory.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\JobPosition\Add.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\JobPosition\Index.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\MyApplication\Apply.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
