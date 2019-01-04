@@ -5,20 +5,20 @@
 }
 
 <h2>
-    Application Stage Datails -
+    Szczegóły etapu rekrutacji -
     @switch (@Model.GetType().Name)
     {
         case "ApplicationApproval":
-            @:Application Approval
+            @:Akceptacja aplikacji
             break;
         case "PhoneCall":
-            @:Phone Call
+            @:Rozmowa telefoniczna
             break;
         case "Homework":
-            @:Homework
+            @:Zadanie domowe
             break;
         case "Interview":
-            @:Interview
+            @:Rozmowa kwalifikacyjna
             break;
     }
 </h2>
@@ -57,7 +57,7 @@
                 @Html.DisplayFor(model => model.Level)
             </dd>*@
         <dt>
-            Stage
+            Etap
         </dt>
         <dd>
             @Html.DisplayFor(model => model.GetType().Name)
@@ -111,7 +111,7 @@
     </dl>
 </div>
 
-<h3>Appointments</h3>
+<h3>Spotkania</h3>
 <div class="row panel-body">
     @if (Model.InterviewAppointments.Count() != 0)
     {
@@ -179,7 +179,7 @@
     }
 </div>
 
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
 <a condition="@ViewData["ReturnUrl"] == null"
     class="btn btn-sm btn-default"
     asp-controller="Application"

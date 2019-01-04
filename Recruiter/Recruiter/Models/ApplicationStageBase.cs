@@ -94,6 +94,7 @@ namespace Recruiter.Models
             Level = 4;
         }
 
+        [Display(Name = "Interview State")]
         public InterviewState InterviewState { get; set; }
 
         public virtual ICollection<InterviewAppointment> InterviewAppointments { get; set; }

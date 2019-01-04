@@ -4,7 +4,24 @@
     ViewData["Title"] = "Homework Datails";
 }
 
-<h2>Application Stage Datails - @Model.GetType().Name</h2>
+<h2>
+    Application Stage Datails -
+    @switch (@Model.GetType().Name)
+    {
+        case "ApplicationApproval":
+            @:Application Approval
+            break;
+        case "PhoneCall":
+            @:Phone Call
+            break;
+        case "Homework":
+            @:Homework
+            break;
+        case "Interview":
+            @:Interview
+            break;
+    }
+</h2>
 
 <div>
     <hr />
