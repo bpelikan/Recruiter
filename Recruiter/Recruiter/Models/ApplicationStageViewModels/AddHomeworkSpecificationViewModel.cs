@@ -19,8 +19,10 @@ namespace Recruiter.Models.ApplicationStageViewModels
     public class HomeworkSpecificationViewModel
     {
         public string Id { get; set; }
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
+        [Display(Name = "Duration")]
         [Range(1, int.MaxValue, ErrorMessage = "Duration must be greater than 0")]
         public int Duration { get; set; }
     }

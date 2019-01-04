@@ -1,0 +1,55 @@
+﻿@model Recruiter.Models.ApplicationStageViewModels.AddHomeworkSpecificationViewModel
+
+@{
+    ViewData["Title"] = "Process PhoneCall";
+}
+
+@await Html.PartialAsync("_ApplicationDetailsPartialView", Model.Application)
+
+<hr />
+<h3>Dodaj zadanie domowe</h3>
+<form asp-controller="ApplicationStage" asp-action="AddHomeworkSpecification" method="post" class="form-horizontal" role="form">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    @*<div class="form-group" hidden>
+            <label asp-for="Application.Id" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Application.Id" class="form-control" readonly="readonly" />
+                <span asp-validation-for="Application.Id" class="text-danger"></span>
+            </div>
+        </div>*@
+
+    <div class="form-group" hidden>
+        <label asp-for="StageToProcess.Id" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Id" class="form-control" readonly="readonly" />
+            <span asp-validation-for="StageToProcess.Id" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="StageToProcess.Description" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            @*<input asp-for="StageToProcess.Description" class="form-control" />*@
+            <textarea id="summernote" name="StageToProcess.Description"></textarea>
+            <span asp-validation-for="StageToProcess.Description" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="StageToProcess.Duration" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="StageToProcess.Duration" class="form-control" />
+            <span asp-validation-for="StageToProcess.Duration" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary" value="Wyślij" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+        </div>
+        <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+        <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Wróć</a>
+    </div>
+</form>
+
+@await Html.PartialAsync("_FinishedStagesPartialView", Model.ApplicationStagesFinished)
+@await Html.PartialAsync("_WaitingStagesPartialView", Model.ApplicationStagesWaiting)
