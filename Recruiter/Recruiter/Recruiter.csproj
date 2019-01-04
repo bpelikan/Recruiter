@@ -147,6 +147,9 @@
     <Content Update="Views\Application\Applications.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Application\ApplicationsViewHistory.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\MyApplication\Apply.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

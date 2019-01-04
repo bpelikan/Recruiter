@@ -6,11 +6,18 @@
     ViewData["Title"] = "ApplicationsViewHistory";
 }
 
-<h2>Applications View History (@Model.Count())</h2>
+<h2>Historia (@Model.Count())</h2>
 
 
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+@*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Wróć</a>*@
+<a condition="@ViewData["ReturnUrl"] == null" 
+   class="btn btn-sm btn-default"
+   asp-controller="Application"
+   asp-action="ApplicationDetails"
+   asp-route-applicationId="@Model.First().ApplicationId">
+    Wróć
+</a>
 
 <div class="row panel-body">
     @*<hr />*@
@@ -19,8 +26,8 @@
         <table class="well table table-condensed table-bordered" header header-content="Applications View History">
             <thead>
                 <tr>
-                    <th>View Time</th>
-                    <th>User</th>
+                    <th>Czas</th>
+                    <th>Użytkownik</th>
                     @*<th>Application</th>*@
                 </tr>
             </thead>
