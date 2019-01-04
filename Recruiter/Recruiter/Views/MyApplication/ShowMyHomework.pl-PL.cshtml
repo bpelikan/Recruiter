@@ -5,7 +5,7 @@
     ViewData["Title"] = "My Homework";
 }
 
-<h2>My Homework</h2>
+<h2>Moje zadanie domowe</h2>
 
 <div>
     <hr />
@@ -51,5 +51,5 @@
     </dl>
 </div>
 
-<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
+<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Wróć</a>
