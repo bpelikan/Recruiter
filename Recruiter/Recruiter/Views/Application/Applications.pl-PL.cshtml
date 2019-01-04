@@ -2,23 +2,23 @@
 @model ApplicationsGroupedByStagesViewModel
 
 @{
-    ViewData["Title"] = "Applications";
+    ViewData["Title"] = "Aplikacje";
 }
 
-<h2>Applications</h2>
+<h2>Aplikacje</h2>
 
 <div>
     <ul class="nav nav-tabs">
         @if (Model.ApplicationStagesGroupedByName.Where(x => x.Name == @ViewContext.RouteData.Values["stageName"]?.ToString()).Count() == 0)
         {
             <li class="nav-item active">
-                <a asp-action="Applications" asp-route-stageName="">All</a>
+                <a asp-action="Applications" asp-route-stageName="">Wszystkie</a>
             </li>
         }
         else
         {
             <li class="nav-item ">
-                <a asp-action="Applications" asp-route-stageName="">All</a>
+                <a asp-action="Applications" asp-route-stageName="">Wszystkie</a>
             </li>
         }
 
@@ -32,16 +32,16 @@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
@@ -56,16 +56,16 @@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
@@ -73,20 +73,19 @@
                 </li>
                 <li Condition="stage.Quantity==0" class="nav-item disabled">
                     <a>
-                        @*@Html.DisplayFor(x => stage.Name)*@
                         @switch (@stage.Name)
                         {
                             case "ApplicationApproval":
-                                @:Application Approval
+                                @:Akceptacja aplikacji
                                 break;
                             case "PhoneCall":
-                                @:Phone Call
+                                @:Rozmowa telefoniczna
                                 break;
                             case "Homework":
-                                @:Homework
+                                @:Zadanie domowe
                                 break;
                             case "Interview":
-                                @:Interview
+                                @:Rozmowa kwalifikacyjna
                                 break;
                         }
                     </a>
@@ -99,16 +98,16 @@
 
 @if (!Model.Applications.Any())
 {
-    <tr><td colspan="3" class="text-center">No applications</td></tr>
+    <tr><td colspan="3" class="text-center">Brak aplikacji</td></tr>
 }
 else
 {
     <table class="table table-condensed table-bordered" header header-content="My applications">
         <tr>
-            <th>User</th>
-            <th>Name</th>
-            <th>Current Stage</th>
-            <th>Apply time</th>
+            <th>Użytkownik</th>
+            <th>Stanowisko</th>
+            <th>Obecny etap</th>
+            <th>Data aplikacji</th>
         </tr>
 
         @foreach (ApplicationsViewModel application in Model.Applications)
@@ -125,16 +124,16 @@ else
                     @switch (@application.CurrentStage)
                     {
                         case "ApplicationApproval":
-                            @:Application Approval
+                            @:Akceptacja aplikacji
                             break;
                         case "PhoneCall":
-                            @:Phone Call
+                            @:Rozmowa telefoniczna
                             break;
                         case "Homework":
-                            @:Homework
+                            @:Zadanie domowe
                             break;
                         case "Interview":
-                            @:Interview
+                            @:Rozmowa kwalifikacyjna
                             break;
                     }
                     <b Condition="!application.CurrentStageIsAssigned">
