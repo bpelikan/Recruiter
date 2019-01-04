@@ -111,17 +111,25 @@ namespace Recruiter.Models
 
     public enum HomeworkState
     {
+        [Display(Name = "Waiting For Specification")]
         WaitingForSpecification,
+        [Display(Name = "Waiting For Read")]
         WaitingForRead,
+        [Display(Name = "Waiting For Send Homework")]
         WaitingForSendHomework,
+        [Display(Name = "Completed")]
         Completed
     }
 
     public enum InterviewState
     {
+        [Display(Name = "Waiting For Setting Appointments")]
         WaitingForSettingAppointments,
+        [Display(Name = "Request For New Appointments")]
         RequestForNewAppointments,
+        [Display(Name = "Waiting For Confirm Appointment")]
         WaitingForConfirmAppointment,
+        [Display(Name = "Appointment Confirmed")]
         AppointmentConfirmed
     }
 }
