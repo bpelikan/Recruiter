@@ -115,10 +115,14 @@ else
         {
             <tr>
                 <td>
-                    @application.User.FirstName @application.User.LastName (@application.User.Email)
+                    <a asp-action="ApplicationDetails"
+                       asp-route-applicationId="@application.Id"
+                       asp-route-returnurl="@Context.Request.Path">
+                        @application.User.FirstName @application.User.LastName (@application.User.Email)
+                    </a>
                 </td>
                 <td>
-                    <a asp-action="ApplicationDetails" asp-route-applicationId="@application.Id" asp-route-returnurl="@Context.Request.Path">@application.JobPosition.Name</a>
+                    @application.JobPosition.Name
                 </td>
                 <td>
                     @*@Html.DisplayFor(model => application.CurrentStage)*@
