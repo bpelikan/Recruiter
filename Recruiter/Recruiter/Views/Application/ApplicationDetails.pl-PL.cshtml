@@ -1,10 +1,10 @@
 ﻿@model Recruiter.Models.ApplicationViewModels.ApplicationDetailsViewModel
 
 @{
-    ViewData["Title"] = "ApplicationDetails";
+    ViewData["Title"] = "Szczegóły aplikacji";
 }
 
-<h2>Application Details</h2>
+<h2>Szczegóły aplikacji</h2>
 
 <div>
     <hr />
@@ -36,7 +36,7 @@
     </dl>
 </div>
 
-<h3>Stages</h3>
+<h3>Etapy</h3>
 
 <div class="row panel-body">
     @*<hr />*@
@@ -45,12 +45,12 @@
         <table class="well table table-condensed table-bordered" header header-content="Applications Stages">
             <thead>
                 <tr>
-                    <th>Level</th>
-                    <th>Type</th>
-                    <th>State</th>
-                    <th>Rate</th>
-                    <th>Responsible User</th>
-                    <th>Accepted By</th>
+                    <th>Poziom</th>
+                    <th>Etap</th>
+                    <th>Stan</th>
+                    <th>Ocena</th>
+                    <th>Osoba odpowiedzialna</th>
+                    <th>Zaakceptowane przez</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,20 +63,19 @@
                                asp-controller="ApplicationStage"
                                asp-route-stageId="@applicationStage.Id"
                                asp-route-returnurl="@Context.Request.Path">
-                                @*@applicationStage.GetType().Name*@
                                 @switch (@applicationStage.GetType().Name)
                                 {
                                     case "ApplicationApproval":
-                                        @:Application Approval
+                                        @:Akceptacja aplikacji
                                         break;
                                     case "PhoneCall":
-                                        @:Phone Call
+                                        @:Rozmowa telefoniczna
                                         break;
                                     case "Homework":
-                                        @:Homework
+                                        @:Zadanie domowe
                                         break;
                                     case "Interview":
-                                        @:Interview
+                                        @:Rozmowa kwalifikacyjna
                                         break;
                                 }
                             </a>
@@ -98,7 +97,7 @@
                                    asp-controller="ApplicationStage"
                                    asp-route-stageId="@applicationStage.Id"
                                    asp-route-returnurl="@Context.Request.Path">
-                                    Change
+                                    Zmień
                                 </a>
                             </b>
                             <b Condition="applicationStage.ResponsibleUserId == null">
@@ -107,7 +106,7 @@
                                    asp-controller="ApplicationStage"
                                    asp-route-stageId="@applicationStage.Id"
                                    asp-route-returnurl="@Context.Request.Path">
-                                    Assing
+                                    Przypisz
                                 </a>
                             </b>
                         </td>
@@ -130,17 +129,17 @@
 </div>
 
 <form asp-action="DeleteApplication" asp-route-applicationId="@Model.Id" asp-route-returnUrl="@ViewData["ReturnUrl"]" asp-route-returnUrlFail="@Context.Request.Path" method="post">
-    <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
-        Delete
+    <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tą aplikację?');" class="btn btn-sm btn-danger">
+        Usuń
     </button>
-    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Wróć</a>
 </form>
 
 @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
 <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Applications">Back</a>*@
 
-<h3>Last 10 view history (<a asp-controller="Application" asp-action="ApplicationsViewHistory" asp-route-applicationId="@Model.Id" asp-route-returnurl="@Context.Request.Path">See more</a>)</h3>
+<h3>Ostatnie 10 wpisów historii (<a asp-controller="Application" asp-action="ApplicationsViewHistory" asp-route-applicationId="@Model.Id" asp-route-returnurl="@Context.Request.Path">Zobacz więcej</a>)</h3>
 
 <div class="row panel-body">
     @*<hr />*@
@@ -150,8 +149,8 @@
             @*<table class="well table table-hover table-bordered table-scroll" header header-content="Applications View History">*@
             <thead>
                 <tr>
-                    <th>View Time</th>
-                    <th>User</th>
+                    <th>Czas</th>
+                    <th>Użytkownik</th>
                 </tr>
             </thead>
             <tbody>

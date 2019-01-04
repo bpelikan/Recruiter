@@ -141,6 +141,12 @@
     <Content Update="Views\ApplicationStage\_WaitingStagesPartialView.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Application\ApplicationDetails.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Application\Applications.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\MyApplication\Apply.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
