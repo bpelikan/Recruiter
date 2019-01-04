@@ -107,7 +107,21 @@
                                asp-controller="ApplicationStage"
                                asp-route-stageId="@applicationStage.Id"
                                asp-route-returnUrl="@Context.Request.Path">
-                                @applicationStage.GetType().Name
+                                @switch (applicationStage.GetType().Name)
+                                {
+                                    case "ApplicationApproval":
+                                        @:Application approval
+                                        break;
+                                    case "PhoneCall":
+                                        @:Phone call
+                                        break;
+                                    case "Homework":
+                                        @:Homework
+                                        break;
+                                    case "Interview":
+                                        @:Interview
+                                        break;
+                                }
                             </a>
                             <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
                         </td>

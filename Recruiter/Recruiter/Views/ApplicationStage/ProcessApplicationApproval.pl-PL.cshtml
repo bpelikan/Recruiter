@@ -42,7 +42,7 @@
       asp-action="ProcessApplicationApproval" method="post" class="form-horizontal" role="form">
 
     <div asp-validation-summary="All" class="text-danger"></div>
-  
+
     @*<div class="form-group" hidden>
             <label asp-for="Application.Id" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -94,7 +94,7 @@
                     <th>Notatka</th>
                     <th>Ocena</th>
                     @*<th>Accepted</th>*@
-                    <th>Zaakceptowane przez</th>
+                    <th>Zaakceptowany przez</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,7 +107,21 @@
                                asp-controller="ApplicationStage"
                                asp-route-stageId="@applicationStage.Id"
                                asp-route-returnUrl="@Context.Request.Path">
-                                @applicationStage.GetType().Name
+                                @switch (applicationStage.GetType().Name)
+                                {
+                                    case "ApplicationApproval":
+                                        @:Akceptacja aplikacji
+                                        break;
+                                    case "PhoneCall":
+                                        @:Rozmowa telefoniczna
+                                        break;
+                                    case "Homework":
+                                        @:Zadanie domowe
+                                        break;
+                                    case "Interview":
+                                        @:Rozmowa kwalifikacyjna
+                                        break;
+                                }
                             </a>
                             <span condition="applicationStage.Accepted" class="glyphicon glyphicon-ok"></span>
                         </td>
@@ -142,7 +156,7 @@
 }
 else
 {
-    @:No other stages
+    @:Brak oczekujących etapów
 }
 
 
