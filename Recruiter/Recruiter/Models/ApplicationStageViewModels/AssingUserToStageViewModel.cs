@@ -13,6 +13,7 @@ namespace Recruiter.Models.ApplicationStageViewModels
         public string StageId { get; set; }
 
         [Required]
+        [Display(Name = "User Id")]
         public string UserId { get; set; }
     }
 }

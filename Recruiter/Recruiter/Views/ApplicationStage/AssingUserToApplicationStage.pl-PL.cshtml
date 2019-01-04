@@ -1,10 +1,10 @@
 ﻿@model Recruiter.Models.ApplicationStageViewModels.AssingUserToStageViewModel
 
 @{
-    ViewData["Title"] = "Assign employee to application stage";
+    ViewData["Title"] = "Przypisz pracownika do etapu";
 }
 
-<h2>Assign employee to application stage</h2>
+<h2>Przypisz pracownika do etapu</h2>
 
 <form asp-controller="ApplicationStage" asp-action="AssingUserToApplicationStage" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
     <hr />
@@ -24,14 +24,14 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-primary" value="Assing" />
+                <input type="submit" class="btn btn-primary" value="Przypisz" />
                 @*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-default" asp-action="Index">Back</a>*@
                 <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-default" href="@ViewData["ReturnUrl"]">Cancel</a>
                 <a condition="@ViewData["ReturnUrl"] == null"
                    asp-action="ApplicationDetails"
                    asp-controller="Application"
                    asp-route-applicationId="@Model.ApplicationId" class="btn btn-default">
-                    Cancel
+                    Anuluj
                 </a>
             </div>
         </div>
