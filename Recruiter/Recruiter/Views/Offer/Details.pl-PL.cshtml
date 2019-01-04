@@ -1,0 +1,45 @@
+﻿@using Recruiter.Models.OfferViewModel
+@model OfferDetailsViewModel
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Szczegóły oferty pracy";
+}
+
+<h1>@Html.DisplayFor(model => model.Name)</h1>
+
+<div>
+    <hr />
+    @Html.Raw(@Model.Description)
+    @*<dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd>
+                @Html.Raw(@Model.Description)
+            </dd>
+        </dl>*@
+</div>
+<div>
+    <a class="btn btn-sm btn-primary"
+       condition="@SignInManager.IsSignedIn(User) && (@User.IsInRole(RoleCollection.Recruit))"
+       asp-controller="MyApplication"
+       asp-action="Apply"
+       asp-route-jobPositionId="@Model.Id"
+       asp-route-returnurl="@Context.Request.Path">
+        Aplikuj
+    </a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Wróć</a>
+
+    @*<form asp-action="Delete" asp-route-id="@Model.Id" method="post"></form>*@
+</div>
+
+

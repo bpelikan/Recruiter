@@ -1,0 +1,38 @@
+﻿@using Recruiter.Models.MyApplicationViewModels
+@model IEnumerable<MyApplicationsViewModel>
+
+@{
+    ViewData["Title"] = "Moje aplikacje";
+}
+
+<h2>Moje aplikacje</h2>
+
+@if (!Model.Any())
+{
+    <tr><td colspan="3" class="text-center">No applications</td></tr>
+}
+else
+{
+    <table class="table table-condensed table-bordered" header header-content="My applications">
+        <tr>
+            <th>Stanowisko</th>
+            <th>Czas aplikacji</th>
+        </tr>
+
+        @foreach (MyApplicationsViewModel application in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="MyApplicationDetails" 
+                        asp-route-applicationId="@application.Id" 
+                        asp-route-returnurl="@Context.Request.Path">
+                            @application.JobPosition.Name
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => application.CreatedAt)
+                </td>
+            </tr>
+        }
+    </table>
+}
