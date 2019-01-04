@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Recruiter.Models.InterviewAppointment>
 
 @{
-    ViewData["Title"] = "My Appointments";
+    ViewData["Title"] = "Moje spotkania";
 }
 
-<h2>My Appointments</h2>
+<h2>Moje spotkania</h2>
 
 @*<h3>Appointments</h3>*@
 <div class="row panel-body">
@@ -16,7 +16,7 @@
                     <th>@Html.DisplayNameFor(model => model.First().StartTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().EndTime)</th>
                     <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
-                    <th>User - JobPosition</th>
+                    <th>Użytkownik - oferta pracy</th>
                     <th>@Html.DisplayNameFor(model => model.First().InterviewAppointmentState)</th>
                     @*<th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruit)</th>*@
                     <th>@Html.DisplayNameFor(model => model.First().AcceptedByRecruitTime)</th>
@@ -65,19 +65,19 @@
                             @switch (appointment.InterviewAppointmentState)
                             {
                                 case InterviewAppointmentState.WaitingToAdd:
-                                    @:Waiting to add
+                                    @:Oczekiwanie na dodanie
                                     break;
                                 case InterviewAppointmentState.WaitingForConfirm:
-                                    @:Waiting for confirm
+                                    @:Oczekiwanie na potwierdzenie
                                     break;
                                 case InterviewAppointmentState.Confirmed:
-                                    @:Confirmed
+                                    @:Potwierdzone
                                     break;
                                 case InterviewAppointmentState.Rejected:
-                                    @:Rejected
+                                    @:Odrzucone
                                     break;
                                 case InterviewAppointmentState.Finished:
-                                    @:Finished
+                                    @:Zakończone
                                     break;
                             }
                         </td>
@@ -130,7 +130,8 @@
     }
     else
     {
-        @:Interview Appointments not found.
+        @*@:Interview Appointments not found.*@
+        @:Brak spotkań to wyświetlenia. 
     }
 </div>
 
