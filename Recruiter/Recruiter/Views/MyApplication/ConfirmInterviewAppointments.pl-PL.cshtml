@@ -1,0 +1,85 @@
+﻿@model Recruiter.Models.Interview
+
+@{
+    ViewData["Title"] = "ConfirmInterviewAppointments";
+}
+
+<h2>Potwierdź spotkanie</h2>
+
+<hr />
+@*<h3>Appointments</h3>*@
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="row panel-body">
+    @if (Model.InterviewAppointments.Count() != 0)
+    {
+        <table class="well table table-condensed table-bordered" header header-content="Interview Appointments">
+            <thead>
+                <tr>
+                    @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().Id)</th>*@
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().StartTime)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().Duration)</th>
+                    <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().EndTime)</th>
+                    <th>Potwierdź</th>
+                    @*<th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewAppointmentState)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruit)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().AcceptedByRecruitTime)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterviewAppointments.First().InterviewId)</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model.InterviewAppointments)
+                {
+                    <tr>
+                        @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
+                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                        <td>@Html.DisplayFor(model => appointment.Duration)</td>
+                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        <td>
+                            <form asp-action="ConfirmInterviewAppointment" 
+                                    asp-route-interviewAppointmentId="@appointment.Id"
+                                    asp-route-stageId="@appointment.InterviewId"
+                                    asp-route-applicationId="@Model.ApplicationId"
+                                    asp-route-returnurl="@ViewData["ReturnUrl"]" 
+                                    method="post">
+                                        <button class="btn btn-sm btn-success btn-block" type="submit" onclick="return confirm('Do you really want to confirm this appointment?');">
+                                            Potwierdź
+                                        </button>
+                            </form>
+                        </td>
+                        @*<td>@Html.DisplayFor(model => appointment.InterviewAppointmentState)</td>
+                            <td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>
+                            <td>@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)</td>
+                            <td>@Html.DisplayFor(model => appointment.InterviewId)</td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        @:Nie znaleziono spotkań.
+        <hr />
+    }
+    @*<a class="btn btn-sm btn-primary"
+       asp-action="RequestForNewAppointmentsInInterview"
+       asp-route-interviewId="@Model.Id"
+       asp-route-returnurl="@ViewData["ReturnUrl"]">
+        Request for new appointment
+    </a>*@
+    <form asp-action="RequestForNewAppointmentsInInterview"
+            asp-route-interviewId="@Model.Id"
+            asp-route-applicationId="@Model.ApplicationId"
+            asp-route-returnurl="@ViewData["ReturnUrl"]"
+            method="post">
+        <button class="btn btn-sm btn-primary glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Czy na pewno chcesz poprosić o nowe spotkanie?');" class="btn btn-sm btn-block">
+            Poproś o nowe spotkanie
+        </button>
+    </form>
+
+    <hr />
+
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Wróć</a>
+</div>

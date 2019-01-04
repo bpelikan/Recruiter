@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Accepted By Recruit" xml:space="preserve">
+    <value>Accepted By Recruit</value>
+  </data>
+  <data name="Accepted By Recruit Time" xml:space="preserve">
+    <value>Accepted By Recruit Time</value>
+  </data>
   <data name="Duration" xml:space="preserve">
     <value>Duration [min]</value>
+  </data>
+  <data name="End Time" xml:space="preserve">
+    <value>End Time</value>
+  </data>
+  <data name="Interview Appointment State" xml:space="preserve">
+    <value>Interview Appointment State</value>
   </data>
   <data name="Start Time" xml:space="preserve">
     <value>Start Time</value>
