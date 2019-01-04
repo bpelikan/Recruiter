@@ -67,19 +67,7 @@
                 <b Condition='!stage.Accepted &&
                                     (stage.GetType().Name != "Homework" && stage.State != ApplicationStageState.Finished ||
                                         (stage.GetType().Name == "Homework" && stage.State == ApplicationStageState.Waiting))'>
-                    @*(@Html.DisplayFor(model => stage.State))*@
-                    @switch (stage.State)
-                    {
-                        case ApplicationStageState.Waiting:
-                            @:(Waiting)
-                            break;
-                        case ApplicationStageState.InProgress:
-                            @:(In progress)
-                            break;
-                        case ApplicationStageState.Finished:
-                            @:(Finished)
-                            break;
-                    }
+                    (@Html.DisplayFor(model => stage.State))
                 </b>
 
                 @if (stage.GetType().Name == "Homework")
@@ -90,19 +78,7 @@
                         {
                             case HomeworkState.WaitingForSpecification:
                                 <b>
-                                    @*(@Html.DisplayFor(model => stage.State))*@
-                                    @switch (stage.State)
-                                    {
-                                        case ApplicationStageState.Waiting:
-                                            @:(Waiting)
-                                            break;
-                                        case ApplicationStageState.InProgress:
-                                            @:(In progress)
-                                            break;
-                                        case ApplicationStageState.Finished:
-                                            @:(Finished)
-                                            break;
-                                    }
+                                    (@Html.DisplayFor(model => stage.State))
                                 </b>
                                 @:- Waiting for specification
                                 break;
@@ -113,19 +89,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Waiting)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(In progress)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Finished)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - Read homework
                                     </b>
                                 </a>

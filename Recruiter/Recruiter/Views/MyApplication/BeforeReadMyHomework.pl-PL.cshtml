@@ -1,0 +1,50 @@
+﻿@using Recruiter.Models
+@model Homework
+
+@{
+    ViewData["Title"] = "Moje zadanie";
+}
+
+<h2>Moje zadanie</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        @*<dt>
+            @Html.DisplayNameFor(model => model.StartTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EndTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.EndTime)
+        </dd>*@
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+</div>
+
+<form asp-action="BeforeReadMyHomework" asp-route-stageId="@Model.Id" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post">
+    @*<input type="hidden" name="Id" value="@Model.Id" />*@
+
+    <button type="submit" onclick="return confirm('Czy na pewno chcesz rozpocząć zadanie domowe?');" class="btn btn-sm btn-block">
+        Pokaż treść zadania
+    </button>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Wróć</a>
+</form>

@@ -66,19 +66,7 @@
                 <b Condition='!stage.Accepted &&
                                     (stage.GetType().Name != "Homework" && stage.State != ApplicationStageState.Finished ||
                                         (stage.GetType().Name == "Homework" && stage.State == ApplicationStageState.Waiting))'>
-                    @*(@Html.DisplayFor(model => stage.State))*@
-                    @switch (stage.State)
-                    {
-                        case ApplicationStageState.Waiting:
-                            @:(Oczekiwanie)
-                            break;
-                        case ApplicationStageState.InProgress:
-                            @:(W trakcie)
-                            break;
-                        case ApplicationStageState.Finished:
-                            @:(Zakończone)
-                            break;
-                    }
+                    (@Html.DisplayFor(model => stage.State))
                 </b>
 
                 @if (stage.GetType().Name == "Homework")
@@ -89,19 +77,7 @@
                         {
                             case HomeworkState.WaitingForSpecification:
                                 <b>
-                                    @*(@Html.DisplayFor(model => stage.State))*@
-                                    @switch (stage.State)
-                                    {
-                                        case ApplicationStageState.Waiting:
-                                            @:(Oczekiwanie)
-                                            break;
-                                        case ApplicationStageState.InProgress:
-                                            @:(W trakcie)
-                                            break;
-                                        case ApplicationStageState.Finished:
-                                            @:(Zakończone)
-                                            break;
-                                    }
+                                    (@Html.DisplayFor(model => stage.State))
                                 </b>
                                 @:- Oczekiwanie na zadanie domowe
                                 break;
@@ -112,19 +88,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Oczekiwanie)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(W trakcie)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Zakończone)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - przeczytaj zadanie domowe
                                     </b>
                                 </a>
@@ -232,7 +196,7 @@
 </div>
 
 <form asp-action="DeleteMyApplication" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path" method="post">
-    <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
+    <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąc tą aplikację?');" class="btn btn-sm btn-danger">
         Usuń
     </button>
     <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>

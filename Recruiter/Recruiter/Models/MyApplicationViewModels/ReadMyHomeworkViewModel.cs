@@ -12,15 +12,19 @@ namespace Recruiter.Models.MyApplicationViewModels
 
         public string ApplicationId { get; set; }
 
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
+        [Display(Name = "Start Time")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime? StartTime { get; set; }
 
+        [Display(Name = "End Time")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime? EndTime { get; set; }
 
         [Required]
+        [Display(Name = "Url")]
         [Url]
         public string Url { get; set; }
     }
