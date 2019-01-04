@@ -26,7 +26,7 @@
             @Html.DisplayNameFor(model => model.CvFileUrl)
         </dt>
         <dd>
-            <a href="@Model.CvFileUrl" target="_blank">Click to view CV</a>
+            <a href="@Model.CvFileUrl" target="_blank">Otwórz plik CV</a>
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CreatedAt)
@@ -48,20 +48,19 @@
             {
                 <span condition="stage.Accepted" class="glyphicon glyphicon-ok"></span>
                 <span condition="!stage.Accepted && stage.State == ApplicationStageState.Finished" class="glyphicon glyphicon-remove"></span>
-                @*@Html.DisplayFor(model => stage.GetType().Name)*@
                 @switch (stage.GetType().Name)
                 {
                     case "ApplicationApproval":
-                        @:Application approval
+                        @:Akceptacja aplikacji
                         break;
                     case "PhoneCall":
-                        @:Phone call
+                        @:Rozmowa telefoniczna
                         break;
                     case "Homework":
-                        @:Homework
+                        @:Zadanie domowe
                         break;
                     case "Interview":
-                        @:Interview
+                        @:Rozmowa kwalifikacyjna
                         break;
                 }
                 <b Condition='!stage.Accepted &&
@@ -71,13 +70,13 @@
                     @switch (stage.State)
                     {
                         case ApplicationStageState.Waiting:
-                            @:(Waiting)
+                            @:(Oczekiwanie)
                             break;
                         case ApplicationStageState.InProgress:
-                            @:(In progress)
+                            @:(W trakcie)
                             break;
                         case ApplicationStageState.Finished:
-                            @:(Finished)
+                            @:(Zakończone)
                             break;
                     }
                 </b>
@@ -94,17 +93,17 @@
                                     @switch (stage.State)
                                     {
                                         case ApplicationStageState.Waiting:
-                                            @:(Waiting)
+                                            @:(Oczekiwanie)
                                             break;
                                         case ApplicationStageState.InProgress:
-                                            @:(In progress)
+                                            @:(W trakcie)
                                             break;
                                         case ApplicationStageState.Finished:
-                                            @:(Finished)
+                                            @:(Zakończone)
                                             break;
                                     }
                                 </b>
-                                @:- Waiting for specification
+                                @:- Oczekiwanie na zadanie domowe
                                 break;
                             case HomeworkState.WaitingForRead:
                                 <a asp-controller="MyApplication" 
@@ -117,16 +116,16 @@
                                         @switch (stage.State)
                                         {
                                             case ApplicationStageState.Waiting:
-                                                @:(Waiting)
+                                                @:(Oczekiwanie)
                                                 break;
                                             case ApplicationStageState.InProgress:
-                                                @:(In progress)
+                                                @:(W trakcie)
                                                 break;
                                             case ApplicationStageState.Finished:
-                                                @:(Finished)
+                                                @:(Zakończone)
                                                 break;
                                         }
-                                        - Read homework
+                                        - przeczytaj zadanie domowe
                                     </b>
                                 </a>
                                 break;
@@ -141,16 +140,16 @@
                                         @switch (stage.State)
                                         {
                                             case ApplicationStageState.Waiting:
-                                                @:(Waiting)
+                                                @:(Oczekiwanie)
                                                 break;
                                             case ApplicationStageState.InProgress:
-                                                @:(In progress)
+                                                @:(W trakcie)
                                                 break;
                                             case ApplicationStageState.Finished:
-                                                @:(Finished)
+                                                @:(Zakończone)
                                                 break;
                                         }
-                                        - Send homework
+                                        - wyslij zadanie domowe
                                     </b>
                                 </a>
                                 break;
@@ -165,16 +164,16 @@
                                         @switch (stage.State)
                                         {
                                             case ApplicationStageState.Waiting:
-                                                @:(Waiting)
+                                                @:(Oczekiwanie)
                                                 break;
                                             case ApplicationStageState.InProgress:
-                                                @:(In progress)
+                                                @:(W trakcie)
                                                 break;
                                             case ApplicationStageState.Finished:
-                                                @:(Finished)
+                                                @:(Zakończone)
                                                 break;
                                         }
-                                        - Show my homework
+                                        - pokaż moje zadanie domowe
                                     </b>
                                 </a>
                                 break;
@@ -188,16 +187,9 @@
                             asp-route-stageId="@stage.Id"
                             asp-route-applicationId="@stage.ApplicationId"
                             asp-route-returnUrl="@Context.Request.Path" >
-                                <b> - Show my homework</b>
+                                <b> - pokaż moje zadanie domowe</b>
                         </a>
                     }
-                    @*<a asp-controller="MyApplication" 
-                        asp-action="ProcessMyHomework" 
-                        asp-route-stageId="@stage.Id" 
-                        asp-route-applicationId="@stage.ApplicationId" 
-                        asp-route-returnUrl="@Context.Request.Path">
-                        <b>TEST</b>
-                    </a>*@
                 }
                 else if (stage.GetType().Name == "Interview")
                 {
@@ -206,35 +198,30 @@
                         switch ((stage as Interview).InterviewState)
                         {
                             case InterviewState.WaitingForSettingAppointments:
-                                @:- Waiting for Setting Appointments
+                                @:- Waiting for Setting Appointments Oczekiwanie na spotkanie
                                 break;
                             case InterviewState.RequestForNewAppointments:
-                                @:- Waiting for Setting another Appointments
+                                @:- Waiting for Setting another Appointments  Oczekiwanie na ponowne spotkanie
                                 break;
                             case InterviewState.WaitingForConfirmAppointment:
                                 <a asp-controller="MyApplication" 
                                     asp-action="ConfirmInterviewAppointments" 
                                     asp-route-stageId="@stage.Id" 
                                     asp-route-returnurl="@Context.Request.Path">
-                                        <b> - Confirm your Appointment</b>
+                                        <b> - Potwierdź spotkanie</b>
                                 </a>
                                 @*@:- confirm your Appointment*@
                                 break;
                             case InterviewState.AppointmentConfirmed:
-                                @:- Appointment Confirmed: 
+                                @:- Spotkanie potwierdzone: 
                                 <b Condition="Model.ConfirmedInterviewAppointment != null">
                                     @Html.DisplayFor(model => model.ConfirmedInterviewAppointment.StartTime)
-                                    (Duration: @Html.DisplayFor(model => model.ConfirmedInterviewAppointment.Duration) min)
+                                    (Czas trwania: @Html.DisplayFor(model => model.ConfirmedInterviewAppointment.Duration) min)
                                 </b>
                                 break;
-                                //case InterviewState.InterviewCompleted:
-                                //    break;
+                                
                         }
                     }
-                    //else if (stage.State == ApplicationStageState.Finished)
-                    //{
-
-                    //}
                 }
                 <br />
             }
@@ -246,8 +233,8 @@
 
 <form asp-action="DeleteMyApplication" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path" method="post">
     <button type="submit" onclick="return confirm('Do you really want to delete this application?');" class="btn btn-sm btn-danger">
-        Delete
+        Usuń
     </button>
-    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Back</a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplications">Wróć</a>
 </form>

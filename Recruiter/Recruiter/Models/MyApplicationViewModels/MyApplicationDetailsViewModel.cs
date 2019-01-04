@@ -10,15 +10,19 @@ namespace Recruiter.Models.MyApplicationViewModels
     public class MyApplicationDetailsViewModel
     {
         public string Id { get; set; }
+        [Display(Name = "User")]
         public virtual UserDetailsViewModel User { get; set; }
 
+        [Display(Name = "Job Position")]
         public virtual JobPositionViewModel JobPosition { get; set; }
 
         public virtual ICollection<ApplicationStageBase> ApplicationStages { get; set; }
         public virtual InterviewAppointment ConfirmedInterviewAppointment { get; set; }
 
+        [Display(Name = "Cv file url")]
         public string CvFileUrl { get; set; }
 
+        [Display(Name = "Created At")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime CreatedAt { get; set; }
 
