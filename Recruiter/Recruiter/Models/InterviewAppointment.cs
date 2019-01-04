@@ -16,10 +16,12 @@ namespace Recruiter.Models
         public virtual Interview Interview { get; set; }
 
         [Required]
+        [Display(Name = "Start Time")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime StartTime { get; set; }
 
         [Required]
+        [Display(Name = "Duration")]
         [Range(1, int.MaxValue, ErrorMessage = "Duration must be greater than 0")]
         public int Duration { get; set; }
 
