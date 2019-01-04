@@ -101,19 +101,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Waiting)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(In progress)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Finished)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - Send homework
                                     </b>
                                 </a>
@@ -125,19 +113,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Waiting)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(In progress)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Finished)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - Show my homework
                                     </b>
                                 </a>

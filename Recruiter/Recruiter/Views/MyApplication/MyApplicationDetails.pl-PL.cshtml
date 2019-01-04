@@ -100,19 +100,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Oczekiwanie)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(W trakcie)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Zakończone)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - wyslij zadanie domowe
                                     </b>
                                 </a>
@@ -124,19 +112,7 @@
                                     asp-route-applicationId="@stage.ApplicationId" 
                                     asp-route-returnUrl="@Context.Request.Path">
                                     <b>
-                                        @*(@Html.DisplayFor(model => stage.State))*@
-                                        @switch (stage.State)
-                                        {
-                                            case ApplicationStageState.Waiting:
-                                                @:(Oczekiwanie)
-                                                break;
-                                            case ApplicationStageState.InProgress:
-                                                @:(W trakcie)
-                                                break;
-                                            case ApplicationStageState.Finished:
-                                                @:(Zakończone)
-                                                break;
-                                        }
+                                        (@Html.DisplayFor(model => stage.State))
                                         - pokaż moje zadanie domowe
                                     </b>
                                 </a>
