@@ -31,7 +31,8 @@ namespace Recruiter.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(OfferController.Index), "Offer");
+            //return View();
         }
 
         //public IActionResult About()

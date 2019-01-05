@@ -63,6 +63,15 @@
     <Content Update="Views\Account\ConfirmEmail.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Account\ForgotPassword.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\ForgotPasswordConfirmation.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Account\Login.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Account\PleaseConfirmEmail.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
