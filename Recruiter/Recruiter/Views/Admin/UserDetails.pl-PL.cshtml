@@ -1,4 +1,4 @@
-﻿@model Recruiter.Models.AdminViewModels.UserDetailsViewModel
+﻿@model Recruiter.Models.AdminViewModels.UserDetailsWithRolesViewModel
 
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -12,45 +12,88 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
+            @Html.DisplayNameFor(model => model.User.FirstName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.FirstName)
+            @Html.DisplayFor(model => model.User.FirstName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.LastName)
+            @Html.DisplayNameFor(model => model.User.LastName)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.LastName)
+            @Html.DisplayFor(model => model.User.LastName)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.User.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Email)
-            <span condition="Model.EmailConfirmed" class="glyphicon glyphicon-ok"></span>
+            @Html.DisplayFor(model => model.User.Email)
+            <span condition="Model.User.EmailConfirmed" class="glyphicon glyphicon-ok"></span>
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.User.PhoneNumber)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
+            @Html.DisplayFor(model => model.User.PhoneNumber)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CreatedAt)
+            @Html.DisplayNameFor(model => model.User.CreatedAt)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CreatedAt)
+            @Html.DisplayFor(model => model.User.CreatedAt)
         </dd>
     </dl>
 </div>
 <div>
-    <form asp-action="DeleteUser" asp-route-id="@Model.Id" method="post">
-        <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.Id" asp-route-returnurl="@Context.Request.Path">Edytuj</a>
+    <form asp-action="DeleteUser" asp-route-id="@Model.User.Id" method="post">
+        <a class="btn btn-sm btn-primary" asp-action="EditUser" asp-route-id="@Model.User.Id" asp-route-returnurl="@Context.Request.Path">Edytuj</a>
         <button type="submit" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika?');" class="btn btn-sm btn-danger">
             Usuń
         </button>
         <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
         <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="UserManagement">Wróć</a>
     </form>
+</div>
+
+<br />
+<h3>Zarządzanie rolami</h3>
+<div>
+    <hr />
+    @if (Model.Roles.Count() != 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Roles)
+                    </th>
+                    <th>
+                        Dodaj
+                    </th>
+                    <th>
+                        Usuń
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model.Roles)
+                {
+                    <tr condition="role.IsInRole == true" style="background-color: lightyellow;">
+                        <td>@role.Name</td>
+                        <td></td>
+                        <td><a class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć tego użytkownika z roli @role.Name?');" asp-action="DeleteUserFromRole" asp-route-id="@Model.User.Id" asp-route-roleName="@role.Name" asp-route-returnurl="@Context.Request.Path">Usuń</a></td>
+                    </tr>
+                    <tr condition="role.IsInRole == false">
+                        <td>@role.Name</td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="AddUserToRole" asp-route-id="@Model.User.Id" asp-route-roleName="@role.Name" asp-route-returnurl="@Context.Request.Path">Dodaj</a></td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        @:Brak ról.
+    }
 </div>

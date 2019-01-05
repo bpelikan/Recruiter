@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Recruiter.Models.AdminViewModels
         public UserDetailsViewModel User { get; set; }
 
         //roles
+        [Display(Name = "Roles")]
         public List<RoleInUserDetails> Roles { get; }
 
         public void AddRole(string name, bool isInRole)
