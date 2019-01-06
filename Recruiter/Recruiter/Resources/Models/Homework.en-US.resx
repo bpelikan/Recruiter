@@ -127,7 +127,7 @@
     <value>Description</value>
   </data>
   <data name="Duration" xml:space="preserve">
-    <value>Duration [min]</value>
+    <value>Duration [h]</value>
   </data>
   <data name="End Time" xml:space="preserve">
     <value>End Time</value>

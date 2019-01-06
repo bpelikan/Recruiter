@@ -182,11 +182,6 @@ namespace Recruiter.Services.Implementation
                     <body style='margin: 0; padding: 0;'>
                     <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; border: 1px solid #cccccc;'>
 	                    <tr>
-		                    <td align='center' bgcolor='#0254E6' style='padding: 0 0 0 0; '>
-			                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/career.png' alt='Recruiter' width='600' height='300' style='display: block;' />
-		                    </td>
-	                    </tr>
-	                    <tr>
 		                    <td bgcolor='#ffffff' style='padding: 40px 30px 40px 30px;'>
 
                                 <table border='0' cellpadding='0' cellspacing='0' width='100%'>
@@ -207,7 +202,7 @@ namespace Recruiter.Services.Implementation
         
 	                    </tr>
 	                    <tr>
-		                    <td bgcolor='#ee4c50' style='padding: 30px 30px 30px 30px;'>
+		                    <td bgcolor='#0254E6' style='padding: 30px 30px 30px 30px;'>
 			                    <table border='0' cellpadding='0' cellspacing='0' width='100%'>
 				                    <tr>
 					                    <td width='75%' style='color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;'>

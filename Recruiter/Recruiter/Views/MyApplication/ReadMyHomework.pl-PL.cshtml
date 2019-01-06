@@ -18,23 +18,23 @@
         <dd>
             @Html.DisplayFor(model => model.Duration)
         </dd>*@
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.StartTime)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.StartTime)
+        </dd>*@
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.Raw(@Model.Description)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.EndTime)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.EndTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.Raw(@Model.Description)
         </dd>
     </dl>
 </div>
@@ -48,9 +48,9 @@
         <input type="hidden" name="Description" value="@Model.Description" />*@
 
         <div class="form-group">
-            <label asp-for="Url" class="col-md-1 control-label"></label>
+            <label asp-for="Url" class="col-md-1 control-label text-center"></label>
             <div class="col-md-10">
-                <input asp-for="Url" class="form-control" />
+                <input asp-for="Url" class="form-control" placeholder="Wpisz adres URL swojego zadania domowego"/>
                 <span asp-validation-for="Url" class="text-danger"></span>
             </div>
         </div>

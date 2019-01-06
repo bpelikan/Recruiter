@@ -117,43 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Accepted" xml:space="preserve">
-    <value>Zaakceptowany</value>
-  </data>
-  <data name="Accepted By" xml:space="preserve">
-    <value>Zaakceptowany przez</value>
-  </data>
-  <data name="Description" xml:space="preserve">
-    <value>Opis</value>
-  </data>
-  <data name="Duration" xml:space="preserve">
-    <value>Czas trwania [h]</value>
-  </data>
-  <data name="End Time" xml:space="preserve">
-    <value>Termin</value>
-  </data>
-  <data name="Homework State" xml:space="preserve">
-    <value>Status zadania</value>
-  </data>
-  <data name="Note" xml:space="preserve">
-    <value>Notatka</value>
-  </data>
-  <data name="Rate" xml:space="preserve">
-    <value>Ocena</value>
-  </data>
-  <data name="Responsible User" xml:space="preserve">
-    <value>Osoba odpowiedzialna</value>
-  </data>
-  <data name="Sending Time" xml:space="preserve">
-    <value>Czas wysłania</value>
-  </data>
-  <data name="Start Time" xml:space="preserve">
-    <value>Czas rozpoczęcia</value>
-  </data>
-  <data name="State" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="Url" xml:space="preserve">
-    <value>Zadanie</value>
+  <data name="Description is hidden, clicking ,,Show description&quot; button will start time counting and show you the content of the homework." xml:space="preserve">
+    <value>Treść zadania domowego jest ukryta, aby ją odczytać kliknij poniżej w ,,Pokaż treść zadania". &lt;br/&gt;Pokazanie treści oznacza rozpoczęcie wykonywania zadania domowego.</value>
   </data>
 </root>

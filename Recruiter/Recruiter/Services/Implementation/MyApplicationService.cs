@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -23,6 +24,7 @@ namespace Recruiter.Services.Implementation
         private readonly IQueueMessageSender _queueMessageSender;
         private readonly IApplicationStageService _applicationStageService;
         private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
+        private readonly IStringLocalizer<MyApplicationService> _stringLocalizer;
         private readonly ApplicationDbContext _context;
 
         public MyApplicationService(
@@ -32,6 +34,7 @@ namespace Recruiter.Services.Implementation
                         IQueueMessageSender queueMessageSender,
                         IApplicationStageService applicationStageService,
                         IApplicationsViewHistoriesService applicationsViewHistoriesService,
+                        IStringLocalizer<MyApplicationService> stringLocalizer,
                         ApplicationDbContext context)
         {
             _mapper = mapper;
@@ -40,6 +43,7 @@ namespace Recruiter.Services.Implementation
             _queueMessageSender = queueMessageSender;
             _applicationStageService = applicationStageService;
             _applicationsViewHistoriesService = applicationsViewHistoriesService;
+            _stringLocalizer = stringLocalizer;
             _context = context;
         }
 
@@ -234,7 +238,8 @@ namespace Recruiter.Services.Implementation
             {
                 Id = stage.Id,
                 Duration = stage.Duration,
-                Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
+                //Description = "Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework",
+                Description = _stringLocalizer["Description is hidden, clicking ,,Show description\" button will start time counting and show you the content of the homework."],
                 ApplicationId = stage.ApplicationId,
             };
 
