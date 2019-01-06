@@ -40,10 +40,15 @@ namespace Recruiter.Models
 
     public enum InterviewAppointmentState
     {
+        [Display(Name = "Waiting To Add")]
         WaitingToAdd,
+        [Display(Name = "Waiting For Confirm")]
         WaitingForConfirm,
+        [Display(Name = "Confirmed")]
         Confirmed,
+        [Display(Name = "Rejected")]
         Rejected,
+        [Display(Name = "Finished")]
         Finished
     }
 }
