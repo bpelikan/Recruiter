@@ -18,5 +18,8 @@ namespace Recruiter.Models.ApplicationStageViewModels.Shared
 
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
     }
 }
