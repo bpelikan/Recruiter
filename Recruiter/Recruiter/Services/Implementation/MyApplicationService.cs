@@ -584,17 +584,6 @@ namespace Recruiter.Services.Implementation
                                                                 .ThenInclude(x => x.JobPosition)
                                                         .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
 
-            //var appointmentToConfirm = await _context.InterviewAppointments
-            //                            .Include(x => x.Interview)
-            //                                .ThenInclude(x => x.InterviewAppointments)
-            //                            .Include(x => x.Interview)
-            //                                .ThenInclude(x => x.Application)
-            //                                    .ThenInclude(x => x.User)
-            //                            .Include(x => x.Interview)
-            //                                .ThenInclude(x => x.Application)
-            //                                    .ThenInclude(x => x.JobPosition)
-            //                            .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
-
             if (interviewAppointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
@@ -603,15 +592,31 @@ namespace Recruiter.Services.Implementation
             if (interviewAppointment.Interview.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
-                throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
+                throw new PermissionException($"You are not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
             }
             if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
                 throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
             }
+            if (interviewAppointment.ScheduledNotification == true)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} has already scheduled notification. (UserID: {userId})");
+                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} has already scheduled notification.");
+            }
+            if (time < 1)
+            {
+                throw new InvalidActionException($"Time must be greater than 0.");
+            }
+            if (interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)) < DateTime.UtcNow)
+            {
+                throw new InvalidActionException($"Notification time {interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)).ToLocalTime()} must be in future.");
+            }
 
             await _queueMessageSender.SendAppointmentReminderAsync(interviewAppointment, time);
+
+            interviewAppointment.ScheduledNotification = true;
+            await _context.SaveChangesAsync();
             //throw new NotImplementedException();
         }
     }

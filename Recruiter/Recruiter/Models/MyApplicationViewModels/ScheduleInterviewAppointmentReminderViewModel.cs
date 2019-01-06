@@ -11,7 +11,7 @@ namespace Recruiter.Models.MyApplicationViewModels
         public virtual InterviewAppointment InterviewAppointment { get; set; }
 
         [Display(Name = "Time")]
-        [Range(1, int.MaxValue, ErrorMessage = "Time must be greater than 0")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Time must be greater than 0")]
         public int Time { get; set; }
     }
 }

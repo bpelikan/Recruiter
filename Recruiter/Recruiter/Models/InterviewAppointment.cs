@@ -8,6 +8,11 @@ namespace Recruiter.Models
 {
     public class InterviewAppointment
     {
+        public InterviewAppointment()
+        {
+            ScheduledNotification = false;
+        }
+
         public string Id { get; set; }
 
         [Display(Name = "Interview Appointment State")]
@@ -36,6 +41,9 @@ namespace Recruiter.Models
         [Display(Name = "Accepted By Recruit Time")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}")]
         public DateTime? AcceptedByRecruitTime { get; set; }
+
+        [Display(Name = "Scheduled Notification")]
+        public bool ScheduledNotification { get; set; }
     }
 
     public enum InterviewAppointmentState

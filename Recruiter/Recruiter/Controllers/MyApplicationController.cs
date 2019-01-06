@@ -389,7 +389,6 @@ namespace Recruiter.Controllers
 
             try
             {
-                var test = scheduleInterviewAppointmentReminderViewModel.Time;
                 await _myApplicationService.ProcessScheduleInterviewAppointmentReminder(interviewAppointmentId, scheduleInterviewAppointmentReminderViewModel.Time, myId);
                 TempData["Success"] = "Scheduled.";
             }
