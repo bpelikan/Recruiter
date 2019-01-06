@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Localization;
 using Recruiter.Models;
 using Recruiter.Models.EmailNotificationViewModel;
+using Recruiter.Shared;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -58,7 +59,7 @@ namespace Recruiter.Services.Implementation
             string title = _stringLocalizer["Confirm your email"];
             string content = _stringLocalizer["Please confirm your account by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
             //return emailSender.SendEmailAsync(email, "Confirm your email",
             //    $"Please confirm your account by clicking this link: <a href='{HtmlEncoder.Default.Encode(link)}'>link</a>");
         }
@@ -74,8 +75,8 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your CV was rejected. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return Task.CompletedTask;
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationProcessPhoneCallAsync(string email, string link, ApplicationStageBase stage)
@@ -89,8 +90,8 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your telephone conversation has ended negatively. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return Task.CompletedTask;
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationAddHomeworkSpecificationAsync(string email, string link, ApplicationStageBase stage)
@@ -101,8 +102,8 @@ namespace Recruiter.Services.Implementation
             content += _stringLocalizer["Homework specification was added. <br/><br/>"];
             content += _stringLocalizer["Now you can read your homework details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return Task.CompletedTask;
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationProcessHomeworkStageAsync(string email, string link, ApplicationStageBase stage)
@@ -116,8 +117,8 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your homework was rejected. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return Task.CompletedTask;
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationSendInterviewAppointmentsToConfirmAsync(
@@ -145,7 +146,7 @@ namespace Recruiter.Services.Implementation
             content += $"</table>";
 
             //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationProcessInterviewStageAsync(string email, string link, ApplicationStageBase stage)
@@ -159,76 +160,80 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your interview has ended negatively. <br/><br/>"];
 
             //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, EmailTemplate(title, content));
+            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendTestEmailNotificationAsync(string email, string link)
         {
             //return Task.CompletedTask;
             return SendEmailAsync(email, $"Test Email Notification {DateTime.Now.Hour}:{DateTime.Now.Minute}:{DateTime.Now.Second}",
-                EmailTemplate("Tutul", "Tresc"));
+                GetEmailTemplate("Tutul", "Tresc"));
         }
 
-        private static string EmailTemplate(string title, string content)
+        private static string GetEmailTemplate(string title, string content)
         {
-            return $@"
-                    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-                    <html xmlns='http://www.w3.org/1999/xhtml'>
-                    <head>
-	                    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
-	                    <title>Recruiter</title>
-	                    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
-                    </head>                
-                    <body style='margin: 0; padding: 0;'>
-                    <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; border: 1px solid #cccccc;'>
-	                    <tr>
-		                    <td bgcolor='#ffffff' style='padding: 40px 30px 40px 30px;'>
-
-                                <table border='0' cellpadding='0' cellspacing='0' width='100%'>
-	                                <tr>
-		                                <td style='color: #153643; font-family: Arial, sans-serif; font-size: 24px;'>
-			                                <b>
-                                                {title}
-                                            </b>
-		                                </td>
-	                                </tr>
-	                                <tr>
-		                                <td style='padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;'>
-                                            {content}
-		                                </td>
-	                                </tr>
-                                </table>
-		                    </td>
-        
-	                    </tr>
-	                    <tr>
-		                    <td bgcolor='#0254E6' style='padding: 30px 30px 30px 30px;'>
-			                    <table border='0' cellpadding='0' cellspacing='0' width='100%'>
-				                    <tr>
-					                    <td width='75%' style='color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;'>
-						                    &reg; <a href='https://recruiterbp.azurewebsites.net/' style='color: #ffffff;'>Recruiter {DateTime.UtcNow.Year}</a>  
-						
-						                    <br/>
-					                    </td>
-					                    <td align='right'>
-						                    <table border='0' cellpadding='0' cellspacing='0'>
-							                    <tr>
-								                    <td>
-									                    <a href='https://recruiterbp.azurewebsites.net/'>
-										                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/website.png' alt='Recruiter website' width='38' height='38' style='display: block;' border='0' />
-									                    </a>
-								                    </td>
-							                    </tr>
-						                    </table>
-					                    </td>
-				                    </tr>
-			                    </table>
-		                    </td>
-	                    </tr>
-                    </table>
-                    </body>
-                    </html>
-                    ";
+            return SharedEmailTemplate.GetEmailTemplate(title, content);
         }
+        //private static string EmailTemplate(string title, string content)
+        //{
+        //    return $@"
+        //            <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+        //            <html xmlns='http://www.w3.org/1999/xhtml'>
+        //            <head>
+        //             <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+        //             <title>Recruiter</title>
+        //             <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+        //            </head>                
+        //            <body style='margin: 0; padding: 0;'>
+        //            <table align='center' border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse: collapse; border: 1px solid #cccccc;'>
+        //             <tr>
+        //              <td bgcolor='#ffffff' style='padding: 40px 30px 40px 30px;'>
+
+        //                        <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+        //                         <tr>
+        //                          <td style='color: #153643; font-family: Arial, sans-serif; font-size: 24px;'>
+        //                           <b>
+        //                                        {title}
+        //                                    </b>
+        //                          </td>
+        //                         </tr>
+        //                         <tr>
+        //                          <td style='padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;'>
+        //                                    {content}
+        //                          </td>
+        //                         </tr>
+        //                        </table>
+        //              </td>
+
+        //             </tr>
+        //             <tr>
+        //              <td bgcolor='#0254E6' style='padding: 30px 30px 30px 30px;'>
+        //               <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+        //                <tr>
+        //                 <td width='75%' style='color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;'>
+        //                  &reg; <a href='https://recruiterbp.azurewebsites.net/' style='color: #ffffff;'>Recruiter {DateTime.UtcNow.Year}</a>  
+
+        //                  <br/>
+        //                 </td>
+        //                 <td align='right'>
+        //                  <table border='0' cellpadding='0' cellspacing='0'>
+        //                   <tr>
+        //                    <td>
+        //	                    <a href='https://recruiterbp.azurewebsites.net/'>
+        //		                    <img src='https://recruiterbpstorage.blob.core.windows.net/static/website.png' alt='Recruiter website' width='38' height='38' style='display: block;' border='0' />
+        //	                    </a>
+        //                    </td>
+        //                   </tr>
+        //                  </table>
+        //                 </td>
+        //                </tr>
+        //               </table>
+        //              </td>
+        //             </tr>
+        //            </table>
+        //            </body>
+        //            </html>
+        //            ";
+        //}
     }
 }
