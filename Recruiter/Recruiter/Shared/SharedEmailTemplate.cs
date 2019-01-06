@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Shared
 {
-    public static class EmailTemplate
+    public static class SharedEmailTemplate
     {
         public static string GetEmailTemplate(string title, string content)
         {
