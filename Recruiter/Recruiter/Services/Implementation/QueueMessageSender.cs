@@ -35,7 +35,7 @@ namespace Recruiter.Services.Implementation
                 Email = appointment.Interview.Application.User.Email,
                 InterviewAppointmentId = appointment.Id,
                 JobPositionName = appointment.Interview.Application.JobPosition.Name,
-                NotificationTime = appointment.StartTime.Subtract(TimeSpan.FromMinutes(time)),
+                NotificationTime = appointment.StartTime.Subtract(TimeSpan.FromHours(time)),
                 StartTime = appointment.StartTime,
                 Duration = appointment.Duration,
                 EndTime = appointment.EndTime,
