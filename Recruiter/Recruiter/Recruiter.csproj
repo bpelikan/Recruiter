@@ -183,6 +183,9 @@
     <Content Update="Views\MyApplication\ReadMyHomework.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\MyApplication\ScheduleInterviewAppointmentReminder.pl-PL.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\MyApplication\ShowMyHomework.pl-PL.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

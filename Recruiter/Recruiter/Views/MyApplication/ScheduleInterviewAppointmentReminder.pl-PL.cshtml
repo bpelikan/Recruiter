@@ -1,0 +1,59 @@
+﻿@model Recruiter.Models.MyApplicationViewModels.ScheduleInterviewAppointmentReminderViewModel
+
+@{
+    ViewData["Title"] = "ScheduleInterviewAppointmentReminder";
+}
+
+<h2>Dodaj przypominenie o spotkaniu</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.InterviewAppointment.StartTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InterviewAppointment.StartTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.InterviewAppointment.Duration)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InterviewAppointment.Duration)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.InterviewAppointment.EndTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InterviewAppointment.EndTime)
+        </dd>
+    </dl>
+</div>
+
+
+
+<hr />
+<h3>Ile godzin przed spotkaniem poinformować Cię o spotkaniu?</h3>
+<form asp-controller="ApplicationStage"
+      asp-action="ScheduleInterviewAppointmentReminder" method="post" class="form-horizontal" role="form">
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Time" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Time" class="form-control" />
+            <span asp-validation-for="Time" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="Dodaj przypomnienie" asp-route-interviewAppointmentId="@Model.InterviewAppointment.Id" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+            @*<input type="submit" class="btn btn-danger" value="Odrzuć" asp-route-accepted="@false" asp-route-returnUrl="@ViewData["ReturnUrl"]" />*@
+        </div>
+        @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>*@
+        @*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Wróć</a>*@
+        <a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId">Wróć</a>
+    </div>
+</form>

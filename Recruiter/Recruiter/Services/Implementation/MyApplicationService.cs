@@ -444,9 +444,9 @@ namespace Recruiter.Services.Implementation
                                         .Include(x => x.Interview)
                                             .ThenInclude(x => x.Application)
                                                 .ThenInclude(x => x.User)
-                                        .Include(x => x.Interview)
-                                            .ThenInclude(x => x.Application)
-                                                .ThenInclude(x => x.JobPosition)
+                                        //.Include(x => x.Interview)
+                                        //    .ThenInclude(x => x.Application)
+                                        //        .ThenInclude(x => x.JobPosition)
                                         .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
             if (appointmentToConfirm == null)
             {
@@ -481,8 +481,7 @@ namespace Recruiter.Services.Implementation
             _context.InterviewAppointments.RemoveRange(appointmentsToDelete);
             await _context.SaveChangesAsync();
 
-            await _queueMessageSender.SendAppointmentReminderAsync(appointmentToConfirm.Interview.Application.User.Email, appointmentToConfirm);
-
+            //await _queueMessageSender.SendAppointmentReminderAsync(appointmentToConfirm.Interview.Application.User.Email, appointmentToConfirm);
             //throw new NotImplementedException();
         }
 
@@ -535,5 +534,85 @@ namespace Recruiter.Services.Implementation
             #endregion
         }
 
+        public async Task<ScheduleInterviewAppointmentReminderViewModel> GetViewModelForScheduleInterviewAppointmentReminder(string interviewAppointmentId, string userId)
+        {
+            _logger.LogInformation($"Executing GetViewModelForScheduleInterviewAppointmentReminder with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
+
+            var interviewAppointment = await _context.InterviewAppointments
+                                                        .Include(x => x.Interview)
+                                                            .ThenInclude(x => x.Application)
+                                                        .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+
+            if (interviewAppointment == null)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
+                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+            }
+            if (interviewAppointment.Interview.Application.UserId != userId)
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
+                throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
+            }
+            if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
+                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
+            }
+
+            interviewAppointment.StartTime = interviewAppointment.StartTime.ToLocalTime();
+            interviewAppointment.EndTime = interviewAppointment.EndTime.ToLocalTime();
+
+            var vm = new ScheduleInterviewAppointmentReminderViewModel()
+            {
+                InterviewAppointment = interviewAppointment,
+                Time = 1,
+            };
+
+            return vm;
+        }
+
+        public async Task ProcessScheduleInterviewAppointmentReminder(string interviewAppointmentId, int time, string userId)
+        {
+            _logger.LogInformation($"Executing ProcessScheduleInterviewAppointmentReminder with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
+
+            var interviewAppointment = await _context.InterviewAppointments
+                                                        .Include(x => x.Interview)
+                                                            .ThenInclude(x => x.Application)
+                                                                .ThenInclude(x => x.User)
+                                                        .Include(x => x.Interview)
+                                                            .ThenInclude(x => x.Application)
+                                                                .ThenInclude(x => x.JobPosition)
+                                                        .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+
+            //var appointmentToConfirm = await _context.InterviewAppointments
+            //                            .Include(x => x.Interview)
+            //                                .ThenInclude(x => x.InterviewAppointments)
+            //                            .Include(x => x.Interview)
+            //                                .ThenInclude(x => x.Application)
+            //                                    .ThenInclude(x => x.User)
+            //                            .Include(x => x.Interview)
+            //                                .ThenInclude(x => x.Application)
+            //                                    .ThenInclude(x => x.JobPosition)
+            //                            .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+
+            if (interviewAppointment == null)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
+                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+            }
+            if (interviewAppointment.Interview.Application.UserId != userId)
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
+                throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
+            }
+            if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
+                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
+            }
+
+            await _queueMessageSender.SendAppointmentReminderAsync(interviewAppointment, time);
+            //throw new NotImplementedException();
+        }
     }
 }

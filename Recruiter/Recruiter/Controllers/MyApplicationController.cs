@@ -310,7 +310,8 @@ namespace Recruiter.Controllers
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
                 TempData["Success"] = "Confirmed.";
-                return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+                //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+                return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
             catch (CustomException ex)
             {
@@ -329,7 +330,8 @@ namespace Recruiter.Controllers
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
                 TempData["Success"] = "Confirmed.";
-                return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+                //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+                return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
             catch (CustomException ex)
             {
@@ -357,6 +359,48 @@ namespace Recruiter.Controllers
             return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
         }
 
+        [Route("{interviewAppointmentId?}")]
+        public async Task<IActionResult> ScheduleInterviewAppointmentReminder(string interviewAppointmentId, string applicationId = null, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var myId = _userManager.GetUserId(HttpContext.User);
+            try
+            {
+                var vm = await _myApplicationService.GetViewModelForScheduleInterviewAppointmentReminder(interviewAppointmentId, myId);
+                return View(vm);
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+        }
+
+        [HttpPost]
+        [Route("{interviewAppointmentId?}")]
+        public async Task<IActionResult> ScheduleInterviewAppointmentReminder(string interviewAppointmentId, 
+                                                            ScheduleInterviewAppointmentReminderViewModel scheduleInterviewAppointmentReminderViewModel,
+                                                            string applicationId = null,
+                                                            string returnUrl = null)
+        {
+            var myId = _userManager.GetUserId(HttpContext.User);
+
+            try
+            {
+                var test = scheduleInterviewAppointmentReminderViewModel.Time;
+                await _myApplicationService.ProcessScheduleInterviewAppointmentReminder(interviewAppointmentId, scheduleInterviewAppointmentReminderViewModel.Time, myId);
+                TempData["Success"] = "Scheduled.";
+            }
+            catch (CustomException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, returnUrl });
+            }
+
+            return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
+        }
 
         #region Helpers
         private IActionResult RedirectToLocal(string returnUrl)

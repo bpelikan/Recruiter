@@ -8,6 +8,6 @@ namespace Recruiter.Services
 {
     public interface IQueueMessageSender
     {
-        Task SendAppointmentReminderAsync(string email, InterviewAppointment appointment);
+        Task SendAppointmentReminderAsync(InterviewAppointment appointment, int time);
     }
 }

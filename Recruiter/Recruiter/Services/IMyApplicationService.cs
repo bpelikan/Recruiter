@@ -24,6 +24,7 @@ namespace Recruiter.Services
         Task<Interview> GetViewModelForConfirmInterviewAppointments(string stageId, string userId);
         Task ConfirmAppointmentInInterview(string interviewAppointmentId, string userId);
         Task RequestForNewAppointmentsInInterview(string interviewId, string userId);
-
+        Task<ScheduleInterviewAppointmentReminderViewModel> GetViewModelForScheduleInterviewAppointmentReminder(string interviewAppointmentId, string userId);
+        Task ProcessScheduleInterviewAppointmentReminder(string interviewAppointmentId, int time, string userId);
     }
 }

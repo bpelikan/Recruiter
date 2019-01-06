@@ -75,7 +75,7 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your CV was rejected. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
@@ -90,7 +90,7 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your telephone conversation has ended negatively. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
@@ -102,7 +102,7 @@ namespace Recruiter.Services.Implementation
             content += _stringLocalizer["Homework specification was added. <br/><br/>"];
             content += _stringLocalizer["Now you can read your homework details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
@@ -117,7 +117,7 @@ namespace Recruiter.Services.Implementation
                 content += _stringLocalizer["We regret to inform you that your homework was rejected. <br/><br/>"];
             content += _stringLocalizer["Check details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
             return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
