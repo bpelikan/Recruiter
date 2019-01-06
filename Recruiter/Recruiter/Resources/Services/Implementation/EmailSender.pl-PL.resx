@@ -121,7 +121,7 @@
     <value>&lt;a href='{0}'&gt;Kliknij tutaj, aby potwierdzić&lt;/a&gt;</value>
   </data>
   <data name="&lt;br/&gt;Or confirm directly below:&lt;br/&gt;" xml:space="preserve">
-    <value>&lt;br/&gt;Albo potwierdzić bezpośrednio poniżej:&lt;br/&gt;</value>
+    <value>&lt;br/&gt;Lub potwierdzić bezpośrednio poniżej:&lt;br/&gt;</value>
   </data>
   <data name="Application state notification" xml:space="preserve">
     <value>Powiadomienie o zmianie statusu aplikacji</value>
@@ -139,7 +139,7 @@
     <value>Zadanie domowe zostało dodane. &lt;br/&gt;&lt;br/&gt;</value>
   </data>
   <data name="Interview appointments was added. &lt;br/&gt;&lt;br/&gt;" xml:space="preserve">
-    <value>Dodano spotkanie. &lt;br/&gt;&lt;br/&gt;</value>
+    <value>Dodano terminy spotkań. &lt;br/&gt;&lt;br/&gt;</value>
   </data>
   <data name="Now you can confirm one of the appointments by clicking this link: &lt;a href='{0}'&gt;link&lt;/a&gt;" xml:space="preserve">
     <value>Teraz możesz potwierdzić spotkanie klikając w ten &lt;a href='{0}'&gt;adres&lt;/a&gt;.</value>

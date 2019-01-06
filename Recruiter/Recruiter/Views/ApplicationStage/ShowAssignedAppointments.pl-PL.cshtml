@@ -14,7 +14,7 @@
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.First().StartTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.First().EndTime)</th>
+                    @*<th>@Html.DisplayNameFor(model => model.First().EndTime)</th>*@
                     <th>@Html.DisplayNameFor(model => model.First().Duration)</th>
                     <th>Użytkownik - oferta pracy</th>
                     <th>@Html.DisplayNameFor(model => model.First().InterviewAppointmentState)</th>
@@ -48,7 +48,7 @@
                         @:<tr>
                     }
                         <td>@Html.DisplayFor(model => appointment.StartTime)</td>
-                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.EndTime)</td>*@
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
                         <td>
                             <a asp-action="ProcessInterview"

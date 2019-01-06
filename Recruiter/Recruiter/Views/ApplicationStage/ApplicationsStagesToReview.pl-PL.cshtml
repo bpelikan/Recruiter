@@ -206,7 +206,9 @@ else
                             case InterviewState.AppointmentConfirmed:
                                 @if (interview.InterviewAppointments?.FirstOrDefault()?.StartTime > DateTime.Now)
                                 {
-                                    @:Spotkanie potwierdzone (@Html.DisplayFor(model => interview.InterviewAppointments.FirstOrDefault().StartTime))
+                                    <b>
+                                        Spotkanie potwierdzone (@Html.DisplayFor(model => interview.InterviewAppointments.FirstOrDefault().StartTime))
+                                    </b>
                                 }
                                 else
                                 {
