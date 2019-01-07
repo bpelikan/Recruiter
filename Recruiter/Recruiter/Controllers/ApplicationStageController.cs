@@ -70,7 +70,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -97,7 +97,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -123,7 +123,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -145,7 +145,7 @@ namespace Recruiter.Controllers
             {
                 stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
@@ -181,7 +181,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForProcessApplicationApproval(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -209,7 +209,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
@@ -250,7 +250,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForProcessPhoneCall(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -278,7 +278,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
@@ -320,7 +320,7 @@ namespace Recruiter.Controllers
             {
                 stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Homework;
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
@@ -353,34 +353,29 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForAddHomeworkSpecification(stageId, myId);
                 return View(vm);
             }
-            catch (NotFoundException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
-
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
         }
 
         [HttpPost]
         [ExportModelState]
         [Route("{stageId?}")]
-        public async Task<IActionResult> AddHomeworkSpecification(string stageId, 
-                                                                    AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, 
-                                                                    string returnUrl = null)
+        public async Task<IActionResult> AddHomeworkSpecification(string stageId, AddHomeworkSpecificationViewModel addHomeworkSpecificationViewModel, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             if (!ModelState.IsValid)
-            {
                 return RedirectToAction(nameof(ApplicationStageController.AddHomeworkSpecification), new { stageId, returnUrl });
-            }
 
             try
             {
                 await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
@@ -406,6 +401,7 @@ namespace Recruiter.Controllers
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
         }
+
         [ImportModelState]
         [Route("{stageId?}")]
         public async Task<IActionResult> ProcessHomeworkStage(string stageId, string returnUrl = null)
@@ -418,7 +414,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForProcessHomeworkStage(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -446,7 +442,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
@@ -484,7 +480,7 @@ namespace Recruiter.Controllers
             {
                 stage = await _applicationStageService.GetApplicationStageBaseToProcessStage(stageId, myId) as Interview;
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
@@ -518,7 +514,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForSetAppointmentsToInterview(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -559,7 +555,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
@@ -579,7 +575,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
                 TempData["Success"] = "Successfully deleted.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -596,7 +592,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
@@ -648,7 +644,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForProcessInterviewStage(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -673,7 +669,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(ApplicationStageController.ProcessStage), new { stageId, returnUrl });
@@ -714,7 +710,7 @@ namespace Recruiter.Controllers
             {
                 stage = await _applicationStageService.GetApplicationStageBase(stageId, myId);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToHomeIndex(returnUrl);
@@ -760,7 +756,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForApplicationStageBaseDatails(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -779,7 +775,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForHomeworkStageDetails(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -798,7 +794,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationStageService.GetViewModelForInterviewStageDetails(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -818,7 +814,7 @@ namespace Recruiter.Controllers
                 var myAppointments = await _applicationStageService.GetViewModelForShowAssignedAppointments(myId);
                 return View(myAppointments);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -837,7 +833,7 @@ namespace Recruiter.Controllers
                 await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
                 TempData["Success"] = "Appointment successfully removed.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }

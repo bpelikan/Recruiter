@@ -59,7 +59,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -79,7 +79,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -98,7 +98,7 @@ namespace Recruiter.Controllers
                 TempData["Success"] = "Successfully deleted your application.";
                 return RedirectToAction(nameof(MyApplicationController.MyApplications));
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -118,7 +118,7 @@ namespace Recruiter.Controllers
                 var vm = await _myApplicationService.GetApplyApplicationViewModel(jobPositionId, userId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -141,7 +141,7 @@ namespace Recruiter.Controllers
                 TempData["Success"] = "Successfully sended.";
                 return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = application.Id });
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -158,7 +158,7 @@ namespace Recruiter.Controllers
             {
                 stage = await _myApplicationService.GetHomeworkStageToShowInProcessMyHomework(stageId, myId);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
@@ -192,7 +192,7 @@ namespace Recruiter.Controllers
                 var vm = await _myApplicationService.GetViewModelForBeforeReadMyHomework(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -210,7 +210,7 @@ namespace Recruiter.Controllers
                 await _myApplicationService.UpdateMyHomeworkAsReaded(stageId, myId);
                 return RedirectToAction(nameof(MyApplicationController.ReadMyHomework), new { stageId, returnUrl });
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -231,7 +231,7 @@ namespace Recruiter.Controllers
                 var vm = await _myApplicationService.GetViewModelForReadMyHomework(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -253,7 +253,7 @@ namespace Recruiter.Controllers
                     TempData["Success"] = "Homework sended successfully.";
                     return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id, applicationId, returnUrl });
                 }
-                catch (CustomException ex)
+                catch (CustomRecruiterException ex)
                 {
                     TempData["Error"] = ex.Message;
                 }
@@ -273,7 +273,7 @@ namespace Recruiter.Controllers
                 var stage = await _myApplicationService.GetViewModelForShowMyHomework(stageId, myId);
                 return View(stage);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -292,7 +292,7 @@ namespace Recruiter.Controllers
                 var vm = await _myApplicationService.GetViewModelForConfirmInterviewAppointments(stageId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -313,7 +313,7 @@ namespace Recruiter.Controllers
                 //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -333,7 +333,7 @@ namespace Recruiter.Controllers
                 //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -351,7 +351,7 @@ namespace Recruiter.Controllers
                 await _myApplicationService.RequestForNewAppointmentsInInterview(interviewId, myId);
                 TempData["Success"] = "Success.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -370,7 +370,7 @@ namespace Recruiter.Controllers
                 var vm = await _myApplicationService.GetViewModelForScheduleInterviewAppointmentReminder(interviewAppointmentId, myId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -392,7 +392,7 @@ namespace Recruiter.Controllers
                 await _myApplicationService.ProcessScheduleInterviewAppointmentReminder(interviewAppointmentId, scheduleInterviewAppointmentReminderViewModel.Time, myId);
                 TempData["Success"] = "Scheduled.";
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, returnUrl });

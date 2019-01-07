@@ -60,7 +60,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -80,7 +80,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -99,7 +99,7 @@ namespace Recruiter.Controllers
                 TempData["Success"] = "Successfully deleted.";
                 return RedirectToLocal(returnUrl);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -120,7 +120,7 @@ namespace Recruiter.Controllers
                 var vm = await _applicationService.GetViewModelForApplicationsViewHistory(applicationId, userId);
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.CustomExceptions
 {
-    public class PermissionException : CustomException
+    public class PermissionException : CustomRecruiterException
     {
         public PermissionException()
         {

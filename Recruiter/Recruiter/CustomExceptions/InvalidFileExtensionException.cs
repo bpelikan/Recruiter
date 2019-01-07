@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.CustomExceptions
 {
-    public class InvalidFileExtensionException : CustomException
+    public class InvalidFileExtensionException : CustomRecruiterException
     {
         public InvalidFileExtensionException()
         {

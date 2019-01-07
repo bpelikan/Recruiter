@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.CustomExceptions
 {
-    public class BlobOperationException : CustomException
+    public class BlobOperationException : CustomRecruiterException
     {
         public BlobOperationException()
         {

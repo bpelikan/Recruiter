@@ -54,7 +54,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -74,7 +74,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -99,7 +99,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -123,7 +123,7 @@ namespace Recruiter.Controllers
                     TempData["Success"] = "Successfully created.";
                     return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
                 }
-                catch (CustomException ex)
+                catch (CustomRecruiterException ex)
                 {
                     TempData["Error"] = ex.Message;
                 }
@@ -150,7 +150,7 @@ namespace Recruiter.Controllers
 
                 return View(vm);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }
@@ -176,7 +176,7 @@ namespace Recruiter.Controllers
 
                     return RedirectToLocal(returnUrl);
                 }
-                catch (CustomException ex)
+                catch (CustomRecruiterException ex)
                 {
                     TempData["Error"] = ex.Message;
                 }
@@ -196,7 +196,7 @@ namespace Recruiter.Controllers
                 TempData["Success"] = "Successfully deleted.";
                 return RedirectToLocal(returnUrl);
             }
-            catch (CustomException ex)
+            catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
             }

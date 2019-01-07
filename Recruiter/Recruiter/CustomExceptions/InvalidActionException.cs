@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.CustomExceptions
 {
-    public class InvalidActionException : CustomException
+    public class InvalidActionException : CustomRecruiterException
     {
         public InvalidActionException()
         {
