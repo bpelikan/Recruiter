@@ -34,23 +34,17 @@ namespace Recruiter.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetByIdAsync(string id)
+        public async Task<IActionResult> CheckAppointmentStatus(string id)
         {
             var appointment = _context.InterviewAppointments.FirstOrDefault(x => x.Id == id);
 
             if (appointment == null)
-            {
                 return NotFound();
-            }
 
             if (appointment.InterviewAppointmentState == InterviewAppointmentState.Confirmed)
-            {
                 return Ok(true);
-            }
             else
-            {
-                return Ok(false);
-            }
+                return NotFound();
         }
 
     }
