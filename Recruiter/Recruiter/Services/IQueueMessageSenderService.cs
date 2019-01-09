@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Recruiter.Services
 {
-    public interface IQueueMessageSender
+    public interface IQueueMessageSenderService
     {
         Task SendAppointmentReminderAsync(InterviewAppointment appointment, int time);
     }

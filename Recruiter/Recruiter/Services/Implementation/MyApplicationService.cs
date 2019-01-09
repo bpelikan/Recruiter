@@ -21,7 +21,7 @@ namespace Recruiter.Services.Implementation
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
-        private readonly IQueueMessageSender _queueMessageSender;
+        private readonly IQueueMessageSenderService _queueMessageSenderService;
         private readonly IApplicationStageService _applicationStageService;
         private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
         private readonly IStringLocalizer<MyApplicationService> _stringLocalizer;
@@ -31,7 +31,7 @@ namespace Recruiter.Services.Implementation
                         IMapper mapper, 
                         ILogger<MyApplicationService> logger, 
                         ICvStorageService cvStorageService,
-                        IQueueMessageSender queueMessageSender,
+                        IQueueMessageSenderService queueMessageSenderService,
                         IApplicationStageService applicationStageService,
                         IApplicationsViewHistoriesService applicationsViewHistoriesService,
                         IStringLocalizer<MyApplicationService> stringLocalizer,
@@ -40,7 +40,7 @@ namespace Recruiter.Services.Implementation
             _mapper = mapper;
             _logger = logger;
             _cvStorageService = cvStorageService;
-            _queueMessageSender = queueMessageSender;
+            _queueMessageSenderService = queueMessageSenderService;
             _applicationStageService = applicationStageService;
             _applicationsViewHistoriesService = applicationsViewHistoriesService;
             _stringLocalizer = stringLocalizer;
@@ -538,26 +538,23 @@ namespace Recruiter.Services.Implementation
         {
             _logger.LogInformation($"Executing GetViewModelForScheduleInterviewAppointmentReminder with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
 
-            var interviewAppointment = await _context.InterviewAppointments
-                                                        .Include(x => x.Interview)
-                                                            .ThenInclude(x => x.Application)
-                                                        .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+            var interviewAppointment = await _context.InterviewAppointments.Include(x => x.Interview).ThenInclude(x => x.Application).FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
 
             if (interviewAppointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
                 throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
             }
-            if (interviewAppointment.Interview.Application.UserId != userId)
-            {
-                _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
-                throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
-            }
-            if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
-            {
-                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
-                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
-            }
+            //if (interviewAppointment.Interview.Application.UserId != userId)
+            //{
+            //    _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
+            //    throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
+            //}
+            //if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
+            //{
+            //    _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
+            //    throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
+            //}
 
             interviewAppointment.StartTime = interviewAppointment.StartTime.ToLocalTime();
             interviewAppointment.EndTime = interviewAppointment.EndTime.ToLocalTime();
@@ -575,14 +572,7 @@ namespace Recruiter.Services.Implementation
         {
             _logger.LogInformation($"Executing ProcessScheduleInterviewAppointmentReminder with interviewAppointmentId={interviewAppointmentId}. (UserID: {userId})");
 
-            var interviewAppointment = await _context.InterviewAppointments
-                                                        .Include(x => x.Interview)
-                                                            .ThenInclude(x => x.Application)
-                                                                .ThenInclude(x => x.User)
-                                                        .Include(x => x.Interview)
-                                                            .ThenInclude(x => x.Application)
-                                                                .ThenInclude(x => x.JobPosition)
-                                                        .FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
+            var interviewAppointment = await _context.InterviewAppointments.Include(x => x.Interview).ThenInclude(x => x.Application).ThenInclude(x => x.User).Include(x => x.Interview).ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition).FirstOrDefaultAsync(x => x.Id == interviewAppointmentId);
 
             if (interviewAppointment == null)
             {
@@ -605,19 +595,14 @@ namespace Recruiter.Services.Implementation
                 throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} has already scheduled notification.");
             }
             if (time < 1)
-            {
                 throw new InvalidActionException($"Time must be greater than 0.");
-            }
             if (interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)) < DateTime.UtcNow)
-            {
                 throw new InvalidActionException($"Notification time {interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)).ToLocalTime()} must be in future.");
-            }
 
-            await _queueMessageSender.SendAppointmentReminderAsync(interviewAppointment, time);
+            await _queueMessageSenderService.SendAppointmentReminderAsync(interviewAppointment, time);
 
             interviewAppointment.ScheduledNotification = true;
             await _context.SaveChangesAsync();
-            //throw new NotImplementedException();
         }
     }
 }
