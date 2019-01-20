@@ -68,8 +68,8 @@
                 Send homework
             </button>
             @*<a class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-id="@Model.ApplicationId">Back</a>*@
-            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block" href="@ViewData["ReturnUrl"]">Back</a>
-            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
+            <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+            <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
         </div>
 
         @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
