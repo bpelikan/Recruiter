@@ -111,9 +111,16 @@ namespace Recruiter.Controllers
         public async Task<IActionResult> Add(AddJobPositionViewModel addJobPositionViewModel, string returnUrl = null)
         {
             if (ModelState.IsValid)
+            {
                 if (addJobPositionViewModel.StartDate.ToUniversalTime() < DateTime.UtcNow)
                     ModelState.AddModelError("StartDate", "StartDate must be in the future.");
-
+                if(addJobPositionViewModel.ApplicationStagesRequirement.IsApplicationApprovalRequired == false &&
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsHomeworkRequired == false &&
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsInterviewRequired == false &&
+                    addJobPositionViewModel.ApplicationStagesRequirement.IsPhoneCallRequired == false)
+                        ModelState.AddModelError("", "JobPosition must have at least one stage.");
+            }
+                
             if (ModelState.IsValid)
             {
                 var userId = _userManager.GetUserId(HttpContext.User);
