@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Recruiter.AttributeFilters;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -26,6 +27,7 @@ namespace Recruiter.Controllers
         private readonly IJobPositionRepository _jobPositionRepository;
         private readonly IMapper _mapper;
         private readonly IJobPositionService _jobPositionService;
+        private readonly IStringLocalizer<JobPositionController> _stringLocalizer;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -34,13 +36,15 @@ namespace Recruiter.Controllers
             ApplicationDbContext context, 
             IJobPositionRepository jobPositionRepository, 
             IMapper mapper,
-            IJobPositionService jobPositionService)
+            IJobPositionService jobPositionService,
+            IStringLocalizer<JobPositionController> stringLocalizer)
         {
             _userManager = userManager;
             _context = context;
             _jobPositionRepository = jobPositionRepository;
             _mapper = mapper;
             _jobPositionService = jobPositionService;
+            _stringLocalizer = stringLocalizer;
         }
 
         [Route("/[controller]")]
@@ -113,12 +117,12 @@ namespace Recruiter.Controllers
             if (ModelState.IsValid)
             {
                 if (addJobPositionViewModel.StartDate.ToUniversalTime() < DateTime.UtcNow)
-                    ModelState.AddModelError("StartDate", "StartDate must be in the future.");
+                    ModelState.AddModelError("StartDate", _stringLocalizer["StartDate must be in the future."]);
                 if(addJobPositionViewModel.ApplicationStagesRequirement.IsApplicationApprovalRequired == false &&
                     addJobPositionViewModel.ApplicationStagesRequirement.IsHomeworkRequired == false &&
                     addJobPositionViewModel.ApplicationStagesRequirement.IsInterviewRequired == false &&
                     addJobPositionViewModel.ApplicationStagesRequirement.IsPhoneCallRequired == false)
-                        ModelState.AddModelError("", "JobPosition must have at least one stage.");
+                        ModelState.AddModelError("", _stringLocalizer["JobPosition must have at least one stage."]);
             }
                 
             if (ModelState.IsValid)
@@ -127,7 +131,7 @@ namespace Recruiter.Controllers
                 try
                 {
                     var jobPosition = await _jobPositionService.AddJobPosition(addJobPositionViewModel, userId);
-                    TempData["Success"] = "Successfully created.";
+                    TempData["Success"] = _stringLocalizer["Successfully created."].ToString();
                     return RedirectToAction(nameof(JobPositionController.Details), new { jobPositionId = jobPosition.Id, returnUrl });
                 }
                 catch (CustomRecruiterException ex)
@@ -171,7 +175,7 @@ namespace Recruiter.Controllers
         {
             if (ModelState.IsValid)
                 if (editJobPositionViewModel.StartDate.ToUniversalTime() < DateTime.UtcNow)
-                    ModelState.AddModelError("StartDate", "StartDate must be in the future.");
+                    ModelState.AddModelError("StartDate", _stringLocalizer["StartDate must be in the future."]);
 
             if (ModelState.IsValid)
             {
@@ -179,7 +183,7 @@ namespace Recruiter.Controllers
                 try
                 {
                     var jobPosition = await _jobPositionService.UpdateJobPosition(editJobPositionViewModel, userId);
-                    TempData["Success"] = "Successfully updated.";
+                    TempData["Success"] = _stringLocalizer["Successfully updated."].ToString();
 
                     return RedirectToLocal(returnUrl);
                 }
@@ -200,7 +204,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _jobPositionService.RemoveJobPosition(jobPositionId, userId);
-                TempData["Success"] = "Successfully deleted.";
+                TempData["Success"] = _stringLocalizer["Successfully deleted."].ToString();
                 return RedirectToLocal(returnUrl);
             }
             catch (CustomRecruiterException ex)
