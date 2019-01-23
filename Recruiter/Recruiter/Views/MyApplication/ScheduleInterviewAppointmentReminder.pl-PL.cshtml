@@ -1,7 +1,7 @@
 ﻿@model Recruiter.Models.MyApplicationViewModels.ScheduleInterviewAppointmentReminderViewModel
 
 @{
-    ViewData["Title"] = "ScheduleInterviewAppointmentReminder";
+    ViewData["Title"] = "Dodaj przypominenie o spotkaniu";
 }
 
 <h2>Dodaj przypominenie o spotkaniu</h2>
@@ -49,11 +49,14 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Dodaj przypomnienie" asp-route-interviewAppointmentId="@Model.InterviewAppointment.Id" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
+            <input type="submit" class="btn btn-success btn-block" value="Dodaj przypomnienie" asp-route-interviewAppointmentId="@Model.InterviewAppointment.Id" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId" asp-route-returnUrl="@ViewData["ReturnUrl"]" />
             @*<input type="submit" class="btn btn-danger" value="Odrzuć" asp-route-accepted="@false" asp-route-returnUrl="@ViewData["ReturnUrl"]" />*@
         </div>
         @*<a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>*@
         @*<a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="Index">Wróć</a>*@
-        <a class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId">Wróć</a>
+        
+    </div>
+    <div class="col-md-14">
+        <a class="btn btn-sm btn-block btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.InterviewAppointment.Interview.ApplicationId">Wróć</a>
     </div>
 </form>
