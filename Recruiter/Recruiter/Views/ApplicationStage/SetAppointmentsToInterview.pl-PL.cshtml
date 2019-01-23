@@ -138,20 +138,27 @@
     }
 </div>
 
-<a class="btn btn-sm btn-success"
-       asp-action="SendInterviewAppointmentsToConfirm"
-       asp-route-stageId="@Model.StageToProcess.Id"
-       asp-route-accepted="@true"
-       asp-route-returnurl="@ViewData["ReturnUrl"]">
-    Wyślij terminy do potwierdzenia
-</a>
-<a class="btn btn-sm btn-danger"
-       asp-action="SendInterviewAppointmentsToConfirm"
-       asp-route-stageId="@Model.StageToProcess.Id"
-       asp-route-accepted="@false"
-       asp-route-returnurl="@ViewData["ReturnUrl"]">
-    Odrzuć spotkania
-</a>
+<div>
+    <div class="col-md-6">
+        <a class="btn btn-sm btn-success btn-block"
+           asp-action="SendInterviewAppointmentsToConfirm"
+           asp-route-stageId="@Model.StageToProcess.Id"
+           asp-route-accepted="@true"
+           asp-route-returnurl="@ViewData["ReturnUrl"]">
+            Wyślij terminy do potwierdzenia
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-sm btn-danger btn-block"
+           asp-action="SendInterviewAppointmentsToConfirm"
+           asp-route-stageId="@Model.StageToProcess.Id"
+           asp-route-accepted="@false"
+           asp-route-returnurl="@ViewData["ReturnUrl"]">
+            Odrzuć spotkania
+        </a>
+    </div>
+</div>
+
 
 @await Html.PartialAsync("_FinishedStagesPartialView", Model.ApplicationStagesFinished)
 @await Html.PartialAsync("_WaitingStagesPartialView", Model.ApplicationStagesWaiting)

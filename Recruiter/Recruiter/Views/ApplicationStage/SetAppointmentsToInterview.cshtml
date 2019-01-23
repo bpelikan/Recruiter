@@ -141,8 +141,28 @@
     }
 </div>
 
+<div>
+    <div class="col-md-6">
+        <a class="btn btn-sm btn-success btn-block"
+           asp-action="SendInterviewAppointmentsToConfirm"
+           asp-route-stageId="@Model.StageToProcess.Id"
+           asp-route-accepted="@true"
+           asp-route-returnurl="@ViewData["ReturnUrl"]">
+            Send appointment to confirm
+        </a>
+    </div>
+    <div class="col-md-6">
+        <a class="btn btn-sm btn-danger btn-block"
+           asp-action="SendInterviewAppointmentsToConfirm"
+           asp-route-stageId="@Model.StageToProcess.Id"
+           asp-route-accepted="@false"
+           asp-route-returnurl="@ViewData["ReturnUrl"]">
+            Reject
+        </a>
+    </div>
+</div>
 
-<a class="btn btn-sm btn-success"
+@*<a class="btn btn-sm btn-success"
        asp-action="SendInterviewAppointmentsToConfirm"
        asp-route-stageId="@Model.StageToProcess.Id"
        asp-route-accepted="@true"
@@ -155,7 +175,7 @@
        asp-route-accepted="@false"
        asp-route-returnurl="@ViewData["ReturnUrl"]">
     Reject
-</a>
+</a>*@
 
 @*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
