@@ -391,6 +391,7 @@ namespace Recruiter.Controllers
                                     .FirstOrDefault(x => x.Id == stageId);
                 var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
                 await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(stage.Application.User.Email, callbackUrl, stage);
+                await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(/*stage.Application.User.Email, */applicationDetailsCallbackUrl, stage);
             }
             catch (Exception ex)
             {

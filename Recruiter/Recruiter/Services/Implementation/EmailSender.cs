@@ -94,7 +94,7 @@ namespace Recruiter.Services.Implementation
             return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
         }
 
-        public Task SendEmailNotificationAddHomeworkSpecificationAsync(string email, string link, ApplicationStageBase stage)
+        public Task SendEmailNotificationAddHomeworkSpecificationAsync(/*string email, */string link, ApplicationStageBase stage)
         {
             string subject = _stringLocalizer["{0} - Application state notification", stage.Application.JobPosition.Name];
             string title = _stringLocalizer["Application state notification"];
@@ -103,7 +103,7 @@ namespace Recruiter.Services.Implementation
             content += _stringLocalizer["Now you can read your homework details by clicking this link: <a href='{0}'>link</a>", HtmlEncoder.Default.Encode(link)];
 
             //return Task.CompletedTask;
-            return SendEmailAsync(email, subject, GetEmailTemplate(title, content));
+            return SendEmailAsync(stage.Application.User.Email, subject, GetEmailTemplate(title, content));
         }
 
         public Task SendEmailNotificationProcessHomeworkStageAsync(string email, string link, ApplicationStageBase stage)

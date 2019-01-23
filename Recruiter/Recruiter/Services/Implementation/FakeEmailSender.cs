@@ -19,7 +19,7 @@ namespace Recruiter.Services.Implementation
             return Task.CompletedTask;
         }
 
-        public Task SendEmailNotificationAddHomeworkSpecificationAsync(string email, string link, ApplicationStageBase stage)
+        public Task SendEmailNotificationAddHomeworkSpecificationAsync(/*string email, */string link, ApplicationStageBase stage)
         {
             return Task.CompletedTask;
         }
