@@ -11,7 +11,7 @@ using Recruiter.Models;
 namespace Recruiter.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     public class InterviewAppointmentController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -31,18 +31,19 @@ namespace Recruiter.Controllers
         //    return JsonResult("{\"Test\":\"True\"}");
         //}
 
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> CheckAppointmentStatus(string id)
+        //[ProducesResponseType(typeof(bool), 200)]
+        //[ProducesResponseType(404)]
+
+
+        [HttpGet("{appointmentId}")]
+        public IActionResult CheckAppointmentStatus(string appointmentId)
         {
-            var appointment = _context.InterviewAppointments.FirstOrDefault(x => x.Id == id);
+            var appointment = _context.InterviewAppointments.FirstOrDefault(x => x.Id == appointmentId);
 
             if (appointment == null)
                 return NotFound();
-
             if (appointment.InterviewAppointmentState == InterviewAppointmentState.Confirmed)
-                return Ok(true);
+                return Ok();
             else
                 return NotFound();
         }

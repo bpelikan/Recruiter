@@ -49,41 +49,41 @@ namespace Recruiter.Controllers
         //    return View();
         //}
 
-        public IActionResult Test(string id = null)
-        {
-            throw new Exception($"Test function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-        }
+        //public IActionResult Test(string id = null)
+        //{
+        //    throw new Exception($"Test function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //}
 
-        public async Task<IActionResult> EmailTest()
-        {
-            var myId = _userManager.GetUserId(HttpContext.User);
-            var user = await _userManager.FindByIdAsync(myId);
+        //public async Task<IActionResult> EmailTest()
+        //{
+        //    var myId = _userManager.GetUserId(HttpContext.User);
+        //    var user = await _userManager.FindByIdAsync(myId);
 
-            try
-            {
-                var callbackUrl = Url.MyApplicationDetailsCallbackLink("TESTID", Request.Scheme);
-                await _emailSender.SendTestEmailNotificationAsync(user.Email, callbackUrl);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning($"Email notification has not been sent. StageID:TESTID (UserID: {myId})");
-                _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
-            }
+        //    try
+        //    {
+        //        var callbackUrl = Url.MyApplicationDetailsCallbackLink("TESTID", Request.Scheme);
+        //        await _emailSender.SendTestEmailNotificationAsync(user.Email, callbackUrl);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogWarning($"Email notification has not been sent. StageID:TESTID (UserID: {myId})");
+        //        _logger.LogError(ex.Message);
+        //        TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+        //    }
 
-            return RedirectToAction(nameof(HomeController.Index));
-        }
+        //    return RedirectToAction(nameof(HomeController.Index));
+        //}
 
-        public IActionResult LoggerTest(string id = null)
-        {
-            _logger.LogCritical     ($"LoggerTest-LogCritical id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            _logger.LogDebug        ($"LoggerTest-LogDebug id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            _logger.LogError        ($"LoggerTest-LogError id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            _logger.LogInformation  ($"LoggerTest-LogInformation id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            _logger.LogTrace        ($"LoggerTest-LogTrace id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            _logger.LogWarning      ($"LoggerTest-LogWarning id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-            throw new Exception($"LoggerTest function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
-        }
+        //public IActionResult LoggerTest(string id = null)
+        //{
+        //    _logger.LogCritical     ($"LoggerTest-LogCritical id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    _logger.LogDebug        ($"LoggerTest-LogDebug id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    _logger.LogError        ($"LoggerTest-LogError id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    _logger.LogInformation  ($"LoggerTest-LogInformation id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    _logger.LogTrace        ($"LoggerTest-LogTrace id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    _logger.LogWarning      ($"LoggerTest-LogWarning id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //    throw new Exception($"LoggerTest function with exception id: {id}. (UserID: {_userManager.GetUserId(HttpContext.User)})");
+        //}
 
         public IActionResult Error()
         {
