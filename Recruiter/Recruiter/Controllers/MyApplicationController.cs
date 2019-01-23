@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Recruiter.AttributeFilters;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -27,6 +28,7 @@ namespace Recruiter.Controllers
         private readonly IMyApplicationService _myApplicationService;
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
+        private readonly IStringLocalizer<MyApplicationController> _stringLocalizer;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
@@ -34,12 +36,14 @@ namespace Recruiter.Controllers
             IMyApplicationService myApplicationService,
             ICvStorageService cvStorageService, 
             IMapper mapper,
+            IStringLocalizer<MyApplicationController> stringLocalizer,
             UserManager<ApplicationUser> userManager, 
             ApplicationDbContext context)
         {
             _myApplicationService = myApplicationService;
             _cvStorageService = cvStorageService;
             _mapper = mapper;
+            _stringLocalizer = stringLocalizer;
             _userManager = userManager;
             _context = context;
         }
@@ -95,7 +99,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _myApplicationService.DeleteMyApplication(applicationId, userId);
-                TempData["Success"] = "Successfully deleted your application.";
+                TempData["Success"] = _stringLocalizer["Successfully deleted your application."].ToString();
                 return RedirectToAction(nameof(MyApplicationController.MyApplications));
             }
             catch (CustomRecruiterException ex)
@@ -138,7 +142,7 @@ namespace Recruiter.Controllers
             try
             {
                 var application = await _myApplicationService.ApplyMyApplication(cv, applyApplicationViewModel, userId);
-                TempData["Success"] = "Successfully sended.";
+                TempData["Success"] = _stringLocalizer["Successfully sended."].ToString();
                 return RedirectToAction(nameof(MyApplicationController.MyApplicationDetails), new { applicationId = application.Id });
             }
             catch (CustomRecruiterException ex)
@@ -167,7 +171,7 @@ namespace Recruiter.Controllers
             switch (stage?.HomeworkState)
             {
                 case HomeworkState.WaitingForSpecification:
-                    TempData["Error"] = $"Waiting for specification...";
+                    TempData["Error"] = _stringLocalizer["Waiting for specification..."].ToString();
                     return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 case HomeworkState.WaitingForRead:
                     return RedirectToAction(nameof(MyApplicationController.BeforeReadMyHomework), new { stageId = stage.Id, applicationId, returnUrl });
@@ -176,7 +180,7 @@ namespace Recruiter.Controllers
                 case HomeworkState.Completed:
                     return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = stage.Id, applicationId, returnUrl });
                 default:
-                    TempData["Error"] = $"Couldn't process Homework stage: Unknown HomeworkState with ID:{stageId}.";
+                    TempData["Error"] = _stringLocalizer["Couldn't process Homework stage: Unknown HomeworkState with ID:{0}.", stageId].ToString();
                     return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
             }
         }
@@ -250,7 +254,7 @@ namespace Recruiter.Controllers
                 try
                 {
                     await _myApplicationService.SendMyHomework(homework, myId);
-                    TempData["Success"] = "Homework sended successfully.";
+                    TempData["Success"] = _stringLocalizer["Homework sended successfully."].ToString();
                     return RedirectToAction(nameof(MyApplicationController.ShowMyHomework), new { stageId = homework.Id, applicationId, returnUrl });
                 }
                 catch (CustomRecruiterException ex)
@@ -309,7 +313,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
-                TempData["Success"] = "Confirmed.";
+                TempData["Success"] = _stringLocalizer["Confirmed."].ToString();
                 //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
@@ -329,7 +333,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
-                TempData["Success"] = "Confirmed.";
+                TempData["Success"] = _stringLocalizer["Confirmed."].ToString();
                 //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
@@ -349,7 +353,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _myApplicationService.RequestForNewAppointmentsInInterview(interviewId, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -380,17 +384,14 @@ namespace Recruiter.Controllers
 
         [HttpPost]
         [Route("{interviewAppointmentId?}")]
-        public async Task<IActionResult> ScheduleInterviewAppointmentReminder(string interviewAppointmentId, 
-                                                            ScheduleInterviewAppointmentReminderViewModel scheduleInterviewAppointmentReminderViewModel,
-                                                            string applicationId = null,
-                                                            string returnUrl = null)
+        public async Task<IActionResult> ScheduleInterviewAppointmentReminder(string interviewAppointmentId, ScheduleInterviewAppointmentReminderViewModel scheduleInterviewAppointmentReminderViewModel, string applicationId = null, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             try
             {
                 await _myApplicationService.ProcessScheduleInterviewAppointmentReminder(interviewAppointmentId, scheduleInterviewAppointmentReminderViewModel.Time, myId);
-                TempData["Success"] = "Scheduled.";
+                TempData["Success"] = _stringLocalizer["Scheduled."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
