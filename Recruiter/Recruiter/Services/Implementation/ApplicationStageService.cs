@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -20,16 +21,19 @@ namespace Recruiter.Services.Implementation
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly ICvStorageService _cvStorageService;
+        private readonly IStringLocalizer<ApplicationStageService> _stringLocalizer;
 
         public ApplicationStageService(ApplicationDbContext context, 
                                         IMapper mapper, 
                                         ILogger<ApplicationStageService> logger, 
-                                        ICvStorageService cvStorageService)
+                                        ICvStorageService cvStorageService,
+                                        IStringLocalizer<ApplicationStageService> stringLocalizer)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
             _cvStorageService = cvStorageService;
+            _stringLocalizer = stringLocalizer;
         }
         
 
@@ -43,11 +47,13 @@ namespace Recruiter.Services.Implementation
                                         .AddMinutes(interview.Duration);
 
             var collisionAppointments = await _context.InterviewAppointments
-                    .Include(x => x.Interview)
-                        .ThenInclude(x => x.Application).ThenInclude(x => x.User)
-                    .Include(x => x.Interview)
-                        .ThenInclude(x => x.Application).ThenInclude(x => x.JobPosition)
-                    .Where(x => x.Interview.ResponsibleUserId == userId &&
+                        .Include(x => x.Interview)
+                            .ThenInclude(x => x.Application)
+                                .ThenInclude(x => x.User)
+                        .Include(x => x.Interview)
+                            .ThenInclude(x => x.Application)
+                                .ThenInclude(x => x.JobPosition)
+                        .Where(x => x.Interview.ResponsibleUserId == userId &&
                                 ((x.InterviewAppointmentState != InterviewAppointmentState.Rejected && x.InterviewAppointmentState != InterviewAppointmentState.Finished) ||
                                 (x.InterviewAppointmentState == InterviewAppointmentState.Rejected && x.InterviewId == interview.InterviewId)) &&
                                 //(x.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd ||
@@ -55,8 +61,7 @@ namespace Recruiter.Services.Implementation
                                 (interview.StartTime <= x.StartTime && x.StartTime < interview.EndTime ||
                                     interview.StartTime < x.EndTime && x.EndTime <= interview.EndTime ||
                                     x.StartTime <= interview.StartTime && interview.EndTime <= x.EndTime))
-                    .OrderBy(x => x.StartTime)
-                    .ToListAsync();
+                        .OrderBy(x => x.StartTime).ToListAsync();
 
             return collisionAppointments;
         }
@@ -71,7 +76,7 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
 
             return stage;
@@ -81,16 +86,22 @@ namespace Recruiter.Services.Implementation
         {
             _logger.LogInformation($"Executing GetApplicationStageBaseToProcessStage with stageId={stageId}. (UserID: {userId})");
 
-            var stage = await GetApplicationStageBase(stageId, userId);
+            //var stage = await GetApplicationStageBase(stageId, userId);
+            var stage = await _context.ApplicationStages.FirstOrDefaultAsync(x => x.Id == stageId);
+            if (stage == null)
+            {
+                _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
+            }
             if (stage.ResponsibleUserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to process ApplicationStage with ID:{stage.Id}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to process ApplicationStage with ID:{stage.Id}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to process ApplicationStage with ID:{0}.", stage.Id]);
             }
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} isn't in InProgress state. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in InProgress state.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} isn't in InProgress state.", stageId]);
             }
 
             return stage;
@@ -112,18 +123,18 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
             if (stage.ResponsibleUserId != userId)
             {
                 _logger.LogError($"User with ID: {userId} is not responsible for the ApplicationStage with ID:{stage.Id}. (UserID: {userId})");
-                throw new PermissionException($"You are not responsible for the ApplicationStage with ID:{stage.Id}.");
+                throw new PermissionException(_stringLocalizer["You are not responsible for the ApplicationStage with ID:{0}.", stage.Id]);
             }
-            if (stage.State != ApplicationStageState.InProgress)
-            {
-                _logger.LogError($"ApplicationStage with ID:{stageId} isn't in InProgress state. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in InProgress state.");
-            }
+            //if (stage.State != ApplicationStageState.InProgress)
+            //{
+            //    _logger.LogError($"ApplicationStage with ID:{stageId} isn't in InProgress state. (UserID: {userId})");
+            //    throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in InProgress state.");
+            //}
 
             return stage;
         }
@@ -144,7 +155,7 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
 
             return stage;
@@ -167,7 +178,7 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
 
             return stage;
@@ -266,7 +277,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.Waiting)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} isn't in Waiting state. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stageId} isn't in Waiting state.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} isn't in Waiting state.", stageId]);
             }
 
             var vm = new AssingUserToStageViewModel()
@@ -378,6 +389,9 @@ namespace Recruiter.Services.Implementation
                 StageToProcess = _mapper.Map<ApplicationStageBase, HomeworkViewModel>(stage),
                 ApplicationStagesWaiting = applicationStages.Where(x => x.State == ApplicationStageState.Waiting).OrderBy(x => x.Level).ToArray()
             };
+            vm.StageToProcess.StartTime = vm.StageToProcess.StartTime?.ToLocalTime();
+            vm.StageToProcess.SendingTime = vm.StageToProcess.SendingTime?.ToLocalTime();
+            vm.StageToProcess.EndTime = vm.StageToProcess.EndTime?.ToLocalTime();
 
             return vm;
         }
@@ -419,8 +433,7 @@ namespace Recruiter.Services.Implementation
             {
                 Id = Guid.NewGuid().ToString(),
                 InterviewId = vm.StageToProcess.Id,
-                StartTime = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day,
-                                            DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
+                StartTime = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 00).ToLocalTime()
             };
 
             return vm;
@@ -515,15 +528,15 @@ namespace Recruiter.Services.Implementation
             var application = _context.Applications.FirstOrDefault(x => x.Id == applicationId);
             if (application == null)
             {
-                _logger.LogError($"Application with ID:{applicationId} not found.. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+                _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
 
             var applicationStagesRequirements = await _context.ApplicationStagesRequirements.FirstOrDefaultAsync(x => x.JobPositionId == application.JobPositionId);
             if (applicationStagesRequirements == null)
             {
-                _logger.LogError($"Application Stages Requirements with ID:{application.JobPositionId} not found.. (UserID: {userId})");
-                throw new NotFoundException($"Application Stages Requirements with ID:{application.JobPositionId} not found.");
+                _logger.LogError($"Application Stages Requirements with ID:{application.JobPositionId} not found. (UserID: {userId})");
+                throw new NotFoundException(_stringLocalizer["Application Stages Requirements with ID:{0} not found.", application.JobPositionId]);
             }
 
             List<ApplicationStageBase> applicationStages = new List<ApplicationStageBase>();
@@ -617,7 +630,7 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.)");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
 
             if (application.ApplicationStages.Count() != 0)
@@ -654,7 +667,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.Waiting && stage.ResponsibleUserId != null)
             {
                 _logger.LogError($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state. (UserID: {userId})");
-                throw new InvalidActionException($"Can't change ResponsibleUser in ApplicationStage with ID:{stage.Id} this is possible only in Waiting state.");
+                throw new InvalidActionException(_stringLocalizer["Can't change ResponsibleUser in ApplicationStage with ID:{0} this is possible only in Waiting state.", stage.Id]);
             }
 
             stage.ResponsibleUserId = addResponsibleUserToStageViewModel.UserId;
@@ -671,7 +684,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} have not InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} have not InProgress State.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} have not InProgress State.", stage.Id]);
             }
 
             stage.Note = applicationApprovalViewModel.StageToProcess.Note;
@@ -692,7 +705,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} have not InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} have not InProgress State.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} have not InProgress State.", stage.Id]);
             }
 
             stage.Note = phoneCallViewModel.StageToProcess.Note;
@@ -710,15 +723,15 @@ namespace Recruiter.Services.Implementation
             _logger.LogInformation($"Executing UpdateHomeworkSpecification. (UserID: {userId})");
 
             var stage = await GetApplicationStageBaseToProcessStage(addHomeworkSpecificationViewModel.StageToProcess.Id, userId) as Homework;
-            if (stage.State != ApplicationStageState.InProgress)
-            {
-                _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
-            }
+            //if (stage.State != ApplicationStageState.InProgress)
+            //{
+            //    _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
+            //    throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+            //}
             if (stage.HomeworkState != HomeworkState.WaitingForSpecification)
             {
                 _logger.LogError($"Homework ApplicationStage with ID:{stage.Id} have not WaitingForSpecification HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework ApplicationStage with ID:{stage.Id} have not WaitingForSpecification HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} already has a homework.", stage.Id]);
             }
 
             stage.Description = addHomeworkSpecificationViewModel.StageToProcess.Description;
@@ -735,7 +748,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} have not InProgress State.", stage.Id]);
             }
 
             stage.Note = processHomeworkStageViewModel.StageToProcess.Note;
@@ -756,7 +769,7 @@ namespace Recruiter.Services.Implementation
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} have not InProgress State.", stage.Id]);
             }
 
             var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
@@ -785,18 +798,18 @@ namespace Recruiter.Services.Implementation
             if (appointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{appointmentId} not found. (UserID: {userId})");
-                throw new NotFoundException($"InterviewAppointment with ID:{appointmentId} not found.");
+                throw new NotFoundException(_stringLocalizer["InterviewAppointment with ID:{0} not found.", appointmentId]);
             }
             if (appointment.Interview.ResponsibleUserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to delete InterviewAppointment with ID:{appointmentId}. (UserID: {userId})");
-                throw new PermissionException($"User with ID:{userId} is not allowed to delete InterviewAppointment with ID:{appointmentId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to delete InterviewAppointment with ID:{0}.", appointmentId]);
             }
 
             if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
             {
                 _logger.LogError($"InterviewAppointment with ID:{appointmentId} isn't in WaitingToAdd state. (UserID: {userId})");
-                throw new InvalidActionException($"InterviewAppointment with ID:{appointmentId} isn't in WaitingToAdd state.");
+                throw new InvalidActionException(_stringLocalizer["InterviewAppointment with ID:{0} isn't in WaitingToAdd state.", appointmentId]);
             }
 
             _context.InterviewAppointments.Remove(appointment);
@@ -812,12 +825,12 @@ namespace Recruiter.Services.Implementation
             if (appointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{appointmentId} not found. (UserID: {userId})");
-                throw new NotFoundException($"InterviewAppointment with ID:{appointmentId} not found.");
+                throw new NotFoundException(_stringLocalizer["InterviewAppointment with ID:{0} not found.", appointmentId]);
             }
             if (appointment.InterviewAppointmentState != InterviewAppointmentState.WaitingToAdd)
             {
                 _logger.LogError($"Can't remove InterviewAppointment with ID:{appointmentId} this is possible only in WaitingToAdd state. (UserID: {userId})");
-                throw new InvalidActionException($"Can't remove InterviewAppointment with ID:{appointmentId} this is possible only in WaitingToAdd state.");
+                throw new InvalidActionException(_stringLocalizer["Can't remove InterviewAppointment with ID:{0} this is possible only in WaitingToAdd state.", appointmentId]);
             }
 
             _context.InterviewAppointments.Remove(appointment);
@@ -834,18 +847,17 @@ namespace Recruiter.Services.Implementation
             if (stage.ResponsibleUserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not responsible user of ApplicationStage with ID: {stage.Id}. (UserID: {userId})");
-                throw new PermissionException($"User with ID:{userId} is not responsible user of ApplicationStage with ID: {stage.Id}.");
+                throw new PermissionException(_stringLocalizer["You are not responsible user of ApplicationStage with ID: {0}.", stage.Id]);
             }
             if (stage.State != ApplicationStageState.InProgress)
             {
                 _logger.LogError($"ApplicationStage with ID:{stage.Id} isn't in InProgress State. (UserID: {userId})");
-                throw new InvalidActionException($"ApplicationStage with ID:{stage.Id} isn't in InProgress State.");
+                throw new InvalidActionException(_stringLocalizer["ApplicationStage with ID:{0} isn't in InProgress state.", stage.Id]);
             }
-            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments &&
-                    stage.InterviewState != InterviewState.RequestForNewAppointments)
+            if (stage.InterviewState != InterviewState.WaitingForSettingAppointments && stage.InterviewState != InterviewState.RequestForNewAppointments)
             {
                 _logger.LogError($"Message. (UserID: {userId})");
-                throw new InvalidActionException($"Interview ApplicationStage with ID:{stage.Id} isn't in WaitingForSettingAppointments or RequestForNewAppointments InterviewState.");
+                throw new InvalidActionException(_stringLocalizer["Interview ApplicationStage with ID:{0} isn't in WaitingForSettingAppointments or RequestForNewAppointments InterviewState.", stage.Id]);
             }
 
             var appointments = _context.InterviewAppointments
@@ -888,14 +900,14 @@ namespace Recruiter.Services.Implementation
         {
             _logger.LogInformation($"Executing GetStagesFromApplicationId with applicationId={applicationId}. (UserID: {userId})");
             var applicationStages = _context.ApplicationStages
-                                                .Include(x => x.AcceptedBy)
-                                                .Include(x => x.ResponsibleUser)
-                                                .Where(x => x.ApplicationId == applicationId)
-                                                .AsNoTracking();
+                        .Include(x => x.AcceptedBy)
+                        .Include(x => x.ResponsibleUser)
+                        .Where(x => x.ApplicationId == applicationId)
+                        .AsNoTracking();
             if (applicationStages == null || applicationStages.Count() == 0)
             {
                 _logger.LogError($"ApplicationStages in application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStages in application with ID:{applicationId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStages in application with ID:{0} not found.", applicationId]);
             }
 
             return applicationStages;
