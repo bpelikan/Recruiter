@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
 using Recruiter.Models;
@@ -27,19 +28,22 @@ namespace Recruiter.Controllers
         private readonly ICvStorageService _cvStorageService;
         private readonly IMapper _mapper;
         private readonly IApplicationService _applicationService;
+        private readonly IStringLocalizer<ApplicationController> _stringLocalizer;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
         public ApplicationController(
                     ICvStorageService cvStorageService, 
                     IMapper mapper, 
-                    IApplicationService applicationService, 
+                    IApplicationService applicationService,
+                    IStringLocalizer<ApplicationController> stringLocalizer,
                     UserManager<ApplicationUser> userManager, 
                     ApplicationDbContext context)
         {
             _cvStorageService = cvStorageService;
             _mapper = mapper;
             _applicationService = applicationService;
+            _stringLocalizer = stringLocalizer;
             _userManager = userManager;
             _context = context;
         }
@@ -96,7 +100,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationService.DeleteApplication(applicationId, userId);
-                TempData["Success"] = "Successfully deleted.";
+                TempData["Success"] = _stringLocalizer["Successfully deleted."].ToString();
                 return RedirectToLocal(returnUrl);
             }
             catch (CustomRecruiterException ex)
