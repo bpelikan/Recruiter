@@ -45,6 +45,6 @@
     <button type="submit" onclick="return confirm('Do you really want to start homework?');" class="btn btn-sm btn-block">
         Show description
     </button>
-    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block" href="@ViewData["ReturnUrl"]">Back</a>
-    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
 </form>
