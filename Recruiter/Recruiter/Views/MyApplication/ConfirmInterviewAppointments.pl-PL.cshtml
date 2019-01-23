@@ -73,13 +73,13 @@
             asp-route-applicationId="@Model.ApplicationId"
             asp-route-returnurl="@ViewData["ReturnUrl"]"
             method="post">
-        <button class="btn btn-sm btn-primary glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Czy na pewno chcesz poprosić o nowe spotkanie?');" class="btn btn-sm btn-block">
+        <button class="btn btn-sm btn-primary btn-block glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Czy na pewno chcesz poprosić o nowe spotkanie?');" class="btn btn-sm btn-block">
             Poproś o nowe spotkanie
         </button>
     </form>
 
-    <hr />
+    <br />
 
-    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
-    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block btn-default" href="@ViewData["ReturnUrl"]">Wróć</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Wróć</a>
 </div>

@@ -73,15 +73,15 @@
             asp-route-applicationId="@Model.ApplicationId"
             asp-route-returnurl="@ViewData["ReturnUrl"]"
             method="post">
-        <button class="btn btn-sm btn-primary glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Do you really want to request for new appointment?');" class="btn btn-sm btn-block">
+        <button class="btn btn-sm btn-primary btn-block glyphicon glyphicon-refresh" type="submit" onclick="return confirm('Do you really want to request for new appointment?');" class="btn btn-sm btn-block">
             Request for new appointment
         </button>
     </form>
 
     <hr />
 
-    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-default" href="@ViewData["ReturnUrl"]">Back</a>
-    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
+    <a condition="@ViewData["ReturnUrl"] != null" class="btn btn-sm btn-block btn-default" href="@ViewData["ReturnUrl"]">Back</a>
+    <a condition="@ViewData["ReturnUrl"] == null" class="btn btn-sm btn-block btn-default" asp-action="MyApplicationDetails" asp-route-applicationId="@Model.ApplicationId">Back</a>
 </div>
 
 @*<form asp-controller="ApplicationStage" asp-action="AddAppointmentsToInterview" method="post" class="form-horizontal" role="form">
