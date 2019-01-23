@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -20,6 +21,7 @@ namespace Recruiter.Services.Implementation
         private readonly IApplicationsViewHistoriesService _applicationsViewHistoriesService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IStringLocalizer<ApplicationService> _stringLocalizer;
         private readonly ApplicationDbContext _context;
 
         public ApplicationService(
@@ -27,12 +29,14 @@ namespace Recruiter.Services.Implementation
                     IApplicationsViewHistoriesService applicationsViewHistoriesService,
                     IMapper mapper,
                     ILogger<ApplicationService> logger,
+                    IStringLocalizer<ApplicationService> stringLocalizer,
                     ApplicationDbContext context)
         {
             _cvStorageService = cvStorageService;
             _applicationsViewHistoriesService = applicationsViewHistoriesService;
             _mapper = mapper;
             _logger = logger;
+            _stringLocalizer = stringLocalizer;
             _context = context;
         }
 
@@ -103,7 +107,7 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
@@ -143,7 +147,7 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
 
             await _cvStorageService.DeleteCvAsync(application.CvFileName);
@@ -160,8 +164,7 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.");
-
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
 
             var vm = await _context.ApplicationsViewHistories
