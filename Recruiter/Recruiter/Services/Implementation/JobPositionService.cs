@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.CustomExceptions;
 using Recruiter.Data;
@@ -19,17 +20,20 @@ namespace Recruiter.Services.Implementation
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly IJobPositionRepository _jobPositionRepository;
+        private readonly IStringLocalizer<JobPositionService> _stringLocalizer;
         private readonly ApplicationDbContext _context;
 
         public JobPositionService(
                     IMapper mapper,
                     ILogger<JobPositionService> logger,
                     IJobPositionRepository jobPositionRepository,
+                    IStringLocalizer<JobPositionService> stringLocalizer,
                     ApplicationDbContext context)
         {
             _mapper = mapper;
             _logger = logger;
             _jobPositionRepository = jobPositionRepository;
+            _stringLocalizer = stringLocalizer;
             _context = context;
         }
 
@@ -83,7 +87,7 @@ namespace Recruiter.Services.Implementation
             if (jobPosition == null)
             {
                 _logger.LogError($"Job position with ID:{jobPositionId} doesn't exists. (UserID: {userId})");
-                throw new NotFoundException($"Job position with ID:{jobPositionId} doesn't exists.");
+                throw new NotFoundException(_stringLocalizer["Job position with ID:{0} doesn't exists.", jobPositionId]);
             }
 
             var vm = _mapper.Map<JobPosition, JobPositionViewModel>(jobPosition);
@@ -148,7 +152,7 @@ namespace Recruiter.Services.Implementation
 
             var jobPosition = await _jobPositionRepository.GetAsync(jobPositionId);
             if (jobPosition == null)
-                throw new Exception($"Job position with id {jobPositionId} not found. (UserID: {userId})");
+                throw new NotFoundException(_stringLocalizer["Job position with id {0} not found.", jobPositionId]);
 
             var vm = _mapper.Map<JobPosition, EditJobPositionViewModel>(jobPosition);
             vm.StartDate = vm.StartDate.ToLocalTime();
@@ -165,12 +169,12 @@ namespace Recruiter.Services.Implementation
             if (jobPosition == null)
             {
                 _logger.LogError($"Job position with ID:{editJobPositionViewModel.Id} not found. (UserID: {userId})");
-                throw new NotFoundException($"Job position with ID:{editJobPositionViewModel.Id} not found.");
+                throw new NotFoundException(_stringLocalizer["Job position with id {0} not found.", editJobPositionViewModel.Id]);
             }
             if(jobPosition.StartDate < DateTime.UtcNow)
             {
                 _logger.LogError($"Couldn't edit job position with ID:{editJobPositionViewModel.Id}, because StartDate is in the past. (UserID: {userId})");
-                throw new InvalidActionException($"You couldn't edit job position with ID:{editJobPositionViewModel.Id}, because StartDate is in the past.");
+                throw new InvalidActionException(_stringLocalizer["You couldn't edit job position with ID:{0}, because StartDate is in the past.", editJobPositionViewModel.Id]);
             }
 
             jobPosition.Name = editJobPositionViewModel.Name;
@@ -192,12 +196,12 @@ namespace Recruiter.Services.Implementation
             if (jobPosition == null)
             {
                 _logger.LogError($"Job position with ID:{jobPositionId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Job position with ID:{jobPositionId} not found.");
+                throw new NotFoundException(_stringLocalizer["Job position with id {0} not found.", jobPositionId]);
             }
             if (jobPosition.Applications.Count != 0)
             {
                 _logger.LogError($"Job position with ID:{jobPositionId} has Applications. (UserID: {userId})");
-                throw new InvalidActionException($"Couldn't delete, job position with ID:{jobPositionId} has Applications.");
+                throw new InvalidActionException(_stringLocalizer["Couldn't delete, job position with ID:{0} has Applications.", jobPositionId]);
             }
 
             await _jobPositionRepository.RemoveAsync(jobPosition);
