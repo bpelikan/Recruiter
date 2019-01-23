@@ -117,7 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Application with ID:{0} not found." xml:space="preserve">
+    <value>Nie znaleziono aplikacji o identyfikatorze {0}.</value>
+  </data>
+  <data name="ApplicationStage with ID:{0} not found." xml:space="preserve">
+    <value>Nie znaleziono etapu rekrutacji o identyfikatorze {0}.</value>
+  </data>
+  <data name="Couldn't confirm InterviewAppointment with ID:{0} in Interview with ID:{1} that is not in WaitingForConfirmAppointment InterviewState." xml:space="preserve">
+    <value>Nie możesz potwierdzić spotkania o identyfikatorze {0}, którego etap rekrutacji o identyfikatorze {1} nie wzkazuje na stan oznaczający oczekiwanie na potwierdzenie spotkania.</value>
+  </data>
+  <data name="CV file not found." xml:space="preserve">
+    <value>Nie znaleziono pliku CV do wysłania.</value>
+  </data>
+  <data name="CV must have .pdf extension." xml:space="preserve">
+    <value>Plik CV musi być w formacie PDF.</value>
+  </data>
   <data name="Description is hidden, clicking ,,Show description&quot; button will start time counting and show you the content of the homework." xml:space="preserve">
     <value>Treść zadania domowego jest ukryta, aby ją odczytać kliknij poniżej w ,,Pokaż treść zadania". &lt;br/&gt;Pokazanie treści oznacza rozpoczęcie wykonywania zadania domowego.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in Completed HomeworkState." xml:space="preserve">
+    <value>Etap rekrutacji o identyfikatorze {0} dotyczący zadania domowego nie jest w stanie oznaczającym jego kompletne wykonanie.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in WaitingForRead HomeworkState." xml:space="preserve">
+    <value>Etap rekrutacji o identyfikatorze {0} dotyczący zadania domowego nie jest w stanie oczekującym na przeczytanie zadania.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in WaitingForSendHomework HomeworkState." xml:space="preserve">
+    <value>Etap rekrutacji o identyfikatorze {0} dotyczący zadania domowego nie jest w stanie oczekującym na wysłanie zadania.</value>
+  </data>
+  <data name="Interview with ID:{0} is not in WaitingForConfirmAppointment InterviewState." xml:space="preserve">
+    <value>Etap rekrutacji o identyfikatorze {0} dotyczący spotkania nie jest w stanie oznaczającym oczekiwanie na potwierdzenie spotkania.</value>
+  </data>
+  <data name="Interview with ID:{0} not found." xml:space="preserve">
+    <value>Nie znaleziono etapu rekrutacji odpowiedzialnego za spotkanie o identyfikatorze {0}.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} has already scheduled notification." xml:space="preserve">
+    <value>Spotkanie o identyfikatorze {0} ma już dodane przypomnienie.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} is not in Confirmed InterviewAppointmentState." xml:space="preserve">
+    <value>Spotkanie o identyfikatorze {0} nie jest potwierdzone.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} not found." xml:space="preserve">
+    <value>Nie znaleziono spotkania o identyfikatorze {0}.</value>
+  </data>
+  <data name="JobPosition with ID:{0} doesn't exist." xml:space="preserve">
+    <value>Oferta pracy o identyfikatorze {0} nie istnieje.</value>
+  </data>
+  <data name="Notification time {0} must be in future." xml:space="preserve">
+    <value>Czas wysłania powiadomienia {0} musi być w przyszłości.</value>
+  </data>
+  <data name="Something went wrong during uploading CV." xml:space="preserve">
+    <value>Podczas wysyłania pliku CV wystapił błąd.</value>
+  </data>
+  <data name="Time must be greater than 0." xml:space="preserve">
+    <value>Czas musi być większy niż 0.</value>
+  </data>
+  <data name="You are not allowed to confirm appointment with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś uprawniony do potwierdzenia spotkania o identyfikatorze {0}.</value>
+  </data>
+  <data name="You are not allowed to get ApplicationStage with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś uprawniony do wyświetlenia etapu rekrutacji o identyfikatorze {0}.</value>
+  </data>
+  <data name="You are not allowed to request for new appointments in Interview with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś uprawniony do wysłania prośby o nowe spotkania dla etapu o identyfikatorze {0}.</value>
+  </data>
+  <data name="You aren't owner of application with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś właścicielem aplikacji o identyfikatorze {0}.</value>
+  </data>
+  <data name="You ares not allowed to get InterviewAppointment with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś uprawniony do wyświetlenia spotkania o identyfikatorze {0}.</value>
+  </data>
+  <data name="You ares not allowed to process InterviewAppointment with ID:{0}." xml:space="preserve">
+    <value>Nie jesteś uprawniony do wykonywania działań na spotkaniu o identyfikatorze {0}.</value>
+  </data>
+  <data name="You can't confirm appointment that StartTime isn't in the future." xml:space="preserve">
+    <value>Nie możesz potwierdzić spotkania, które zaczyna się w przeszłości.</value>
+  </data>
+  <data name="You have already sent application to this offer." xml:space="preserve">
+    <value>Już wysłałeś aplikację do tej oferty pracy.</value>
   </data>
 </root>

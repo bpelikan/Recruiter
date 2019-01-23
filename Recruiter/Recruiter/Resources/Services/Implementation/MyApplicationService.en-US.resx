@@ -117,7 +117,82 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Application with ID:{0} not found." xml:space="preserve">
+    <value>Application with ID:{0} not found.</value>
+  </data>
+  <data name="ApplicationStage with ID:{0} not found." xml:space="preserve">
+    <value>ApplicationStage with ID:{0} not found.</value>
+  </data>
+  <data name="Couldn't confirm InterviewAppointment with ID:{0} in Interview with ID:{1} that is not in WaitingForConfirmAppointment InterviewState." xml:space="preserve">
+    <value>Couldn't confirm InterviewAppointment with ID:{0} in Interview with ID:{1} that is not in WaitingForConfirmAppointment InterviewState.</value>
+  </data>
+  <data name="CV file not found." xml:space="preserve">
+    <value>CV file not found.</value>
+  </data>
+  <data name="CV must have .pdf extension." xml:space="preserve">
+    <value>CV must have .pdf extension.</value>
+  </data>
   <data name="Description is hidden, clicking ,,Show description&quot; button will start time counting and show you the content of the homework." xml:space="preserve">
     <value>Description is hidden, clicking ,,Show description" button will start time counting and show you the content of the homework.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in Completed HomeworkState." xml:space="preserve">
+    <value>Homework with ID:{0} is not in Completed HomeworkState.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in WaitingForRead HomeworkState." xml:space="preserve">
+    <value>Homework with ID:{0} is not in WaitingForRead HomeworkState.</value>
+  </data>
+  <data name="Homework with ID:{0} is not in WaitingForSendHomework HomeworkState." xml:space="preserve">
+    <value>Homework with ID:{0} is not in WaitingForSendHomework HomeworkState.</value>
+  </data>
+  <data name="Interview with ID:{0} is not in WaitingForConfirmAppointment InterviewState." xml:space="preserve">
+    <value>Interview with ID:{0} is not in WaitingForConfirmAppointment InterviewState.</value>
+  </data>
+  <data name="Interview with ID:{0} not found." xml:space="preserve">
+    <value>Interview with ID:{0} not found.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} has already scheduled notification." xml:space="preserve">
+    <value>InterviewAppointment with ID:{0} has already scheduled notification.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} is not in Confirmed InterviewAppointmentState." xml:space="preserve">
+    <value>InterviewAppointment with ID:{0} is not in Confirmed InterviewAppointmentState.</value>
+  </data>
+  <data name="InterviewAppointment with ID:{0} not found." xml:space="preserve">
+    <value>InterviewAppointment with ID:{0} not found.</value>
+  </data>
+  <data name="JobPosition with ID:{0} doesn't exist." xml:space="preserve">
+    <value>JobPosition with ID:{0} doesn't exist.</value>
+  </data>
+  <data name="Notification time {0} must be in future." xml:space="preserve">
+    <value>Notification time {0} must be in future.</value>
+  </data>
+  <data name="Something went wrong during uploading CV." xml:space="preserve">
+    <value>Something went wrong during uploading CV.</value>
+  </data>
+  <data name="Time must be greater than 0." xml:space="preserve">
+    <value>Time must be greater than 0.</value>
+  </data>
+  <data name="You are not allowed to confirm appointment with ID:{0}." xml:space="preserve">
+    <value>You are not allowed to confirm appointment with ID:{0}.</value>
+  </data>
+  <data name="You are not allowed to get ApplicationStage with ID:{0}." xml:space="preserve">
+    <value>You are not allowed to get ApplicationStage with ID:{0}.</value>
+  </data>
+  <data name="You are not allowed to request for new appointments in Interview with ID:{0}." xml:space="preserve">
+    <value>You are not allowed to request for new appointments in Interview with ID:{0}.</value>
+  </data>
+  <data name="You aren't owner of application with ID:{0}." xml:space="preserve">
+    <value>You aren't owner of application with ID:{0}.</value>
+  </data>
+  <data name="You ares not allowed to get InterviewAppointment with ID:{0}." xml:space="preserve">
+    <value>You ares not allowed to get InterviewAppointment with ID:{0}.</value>
+  </data>
+  <data name="You ares not allowed to process InterviewAppointment with ID:{0}." xml:space="preserve">
+    <value>You ares not allowed to process InterviewAppointment with ID:{0}.</value>
+  </data>
+  <data name="You can't confirm appointment that StartTime isn't in the future." xml:space="preserve">
+    <value>You can't confirm appointment that StartTime isn't in the future.</value>
+  </data>
+  <data name="You have already sent application to this offer." xml:space="preserve">
+    <value>You have already sent application to this offer.</value>
   </data>
 </root>

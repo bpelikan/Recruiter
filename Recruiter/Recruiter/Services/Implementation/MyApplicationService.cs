@@ -76,12 +76,12 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} not found.");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
             if (userId != application.UserId)
             {
                 _logger.LogError($"User with ID:{userId} aren't owner of application with ID:{applicationId}. (UserID: {userId})");
-                throw new PermissionException($"You aren't owner of application with ID:{applicationId}.");
+                throw new PermissionException(_stringLocalizer["You aren't owner of application with ID:{0}.", applicationId]);
             }
 
             await _applicationsViewHistoriesService.AddApplicationsViewHistory(applicationId, userId);
@@ -131,12 +131,12 @@ namespace Recruiter.Services.Implementation
             if (application == null)
             {
                 _logger.LogError($"Application with ID:{applicationId} doesn't exist. (UserID: {userId})");
-                throw new NotFoundException($"Application with ID:{applicationId} doesn't exist.");
+                throw new NotFoundException(_stringLocalizer["Application with ID:{0} not found.", applicationId]);
             }
             if (application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} aren't owner of application with ID:{application.Id}. (UserID: {userId})");
-                throw new PermissionException($"You aren't owner of application with ID:{application.Id}.");
+                throw new PermissionException(_stringLocalizer["You aren't owner of application with ID:{0}.", applicationId]);
             }
 
             await _cvStorageService.DeleteCvAsync(application.CvFileName);
@@ -153,7 +153,7 @@ namespace Recruiter.Services.Implementation
             if (offer == null)
             {
                 _logger.LogError($"JobPosition with ID:{jobPositionId} doesn't exist. (UserID: {userId})");
-                throw new NotFoundException($"JobPosition with ID:{jobPositionId} doesn't exist.");
+                throw new NotFoundException(_stringLocalizer["JobPosition with ID:{0} doesn't exist.", jobPositionId]);
             }
 
             var vm = new ApplyApplicationViewModel()
@@ -172,7 +172,19 @@ namespace Recruiter.Services.Implementation
             if (cv == null)
             {
                 _logger.LogError($"CV file not found. (UserID: {userId})");
-                throw new NotFoundException($"CV file not found.");
+                throw new NotFoundException(_stringLocalizer["CV file not found."]);
+            }
+
+            //using (var stream = cv.OpenReadStream())
+            //{
+            //    var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
+            //    applyApplicationViewModel.CvFileName = CvFileName;
+            //}
+
+            if (Path.GetExtension(cv.FileName) != ".pdf")
+            {
+                _logger.LogWarning($"CV must have .pdf extension. FileName:{cv.FileName} (UserID: {userId})");
+                throw new InvalidFileExtensionException(_stringLocalizer["CV must have .pdf extension."]);
             }
 
             using (var stream = cv.OpenReadStream())
@@ -181,21 +193,16 @@ namespace Recruiter.Services.Implementation
                 applyApplicationViewModel.CvFileName = CvFileName;
             }
 
-            if (Path.GetExtension(cv.FileName) != ".pdf")
-            {
-                _logger.LogWarning($"CV must have .pdf extension. FileName:{cv.FileName} (UserID: {userId})");
-                throw new InvalidFileExtensionException($"CV must have .pdf extension.");
-            }
             if (applyApplicationViewModel.CvFileName == null)
             {
                 _logger.LogError($"CvFileName in applyApplicationViewModel equals NULL. (UserID: {userId})");
-                throw new NotFoundException($"Something went wrong during uploading CV.");
+                throw new NotFoundException(_stringLocalizer["Something went wrong during uploading CV."]);
             }
             if (await _context.Applications
                                 .Where(x => x.UserId == userId && x.JobPositionId == applyApplicationViewModel.JobPositionId).CountAsync() != 0)
             {
                 _logger.LogWarning($"User with ID:{userId} already send application to offer with ID:{applyApplicationViewModel.JobPositionId}. (UserID: {userId})");
-                throw new InvalidActionException($"You have already sent application to this offer.");
+                throw new InvalidActionException(_stringLocalizer["You have already sent application to this offer."]);
             }
 
             var application = new Application()
@@ -231,7 +238,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["Homework with ID:{0} is not in WaitingForRead HomeworkState.", stageId]);
             }
 
             var vm = new Homework()
@@ -254,7 +261,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForRead)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForRead HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["Homework with ID:{0} is not in WaitingForRead HomeworkState.", stageId]);
             }
 
             stage.StartTime = DateTime.UtcNow;
@@ -272,7 +279,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{stageId} is not in WaitingForSendHomework HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["Homework with ID:{0} is not in WaitingForSendHomework HomeworkState.", stageId]);
             }
 
             var vm = _mapper.Map<Homework, ReadMyHomeworkViewModel>(stage);
@@ -288,7 +295,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.WaitingForSendHomework)
             {
                 _logger.LogError($"Homework with ID:{homework.Id} is not in WaitingForSendHomework HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{homework.Id} is not in WaitingForSendHomework HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["Homework with ID:{0} is not in WaitingForSendHomework HomeworkState.", homework.Id]);
             }
 
             stage.SendingTime = DateTime.UtcNow;
@@ -305,7 +312,7 @@ namespace Recruiter.Services.Implementation
             if (stage.HomeworkState != HomeworkState.Completed)
             {
                 _logger.LogError($"Homework with ID:{stageId} is not in Completed HomeworkState. (UserID: {userId})");
-                throw new InvalidActionException($"Homework with ID:{stageId} is not in Completed HomeworkState.");
+                throw new InvalidActionException(_stringLocalizer["Homework with ID:{0} is not in Completed HomeworkState.", stageId]);
             }
 
             return stage;
@@ -325,12 +332,12 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
             if (stage.Application.User.Id != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to get ApplicationStage with ID:{stageId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to get ApplicationStage with ID:{0}.", stageId]);
             }
 
             stage.StartTime = stage.StartTime?.ToLocalTime();
@@ -353,12 +360,12 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
             if (stage.Application.User.Id != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to get ApplicationStage with ID:{stageId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to get ApplicationStage with ID:{0}.", stageId]);
             }
 
             return stage;
@@ -375,17 +382,17 @@ namespace Recruiter.Services.Implementation
             if (stage == null)
             {
                 _logger.LogError($"ApplicationStage with ID:{stageId} not found. (UserID: {userId})");
-                throw new NotFoundException($"ApplicationStage with ID:{stageId} not found.");
+                throw new NotFoundException(_stringLocalizer["ApplicationStage with ID:{0} not found.", stageId]);
             }
             if (stage.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to get ApplicationStage with ID:{stageId}. (UserID: {userId})");
-                throw new PermissionException($"You ares not allowed to get ApplicationStage with ID:{stageId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to get ApplicationStage with ID:{0}.", stageId]);
             }
             if (stage.InterviewState != InterviewState.WaitingForConfirmAppointment)
             {
                 _logger.LogError($"Interview with ID:{stageId} is not in WaitingForConfirmAppointment InterviewState. (UserID: {userId})");
-                throw new PermissionException($"Interview with ID:{stageId} is not in WaitingForConfirmAppointment InterviewState.");
+                throw new PermissionException(_stringLocalizer["Interview with ID:{0} is not in WaitingForConfirmAppointment InterviewState.", stageId]);
             }
 
             var appointments = _context.InterviewAppointments
@@ -451,24 +458,23 @@ namespace Recruiter.Services.Implementation
             if (appointmentToConfirm == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
-                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+                throw new NotFoundException(_stringLocalizer["InterviewAppointment with ID:{0} not found.", interviewAppointmentId]);
             }
             if (appointmentToConfirm.Interview.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to confirm appointment with ID:{interviewAppointmentId}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to confirm appointment with ID:{interviewAppointmentId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to confirm appointment with ID:{0}.", interviewAppointmentId]);
             }
             if (appointmentToConfirm.StartTime < DateTime.UtcNow)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} have StartTime in the past. (UserID: {userId})");
-                throw new InvalidActionException($"You can't confirm appointment that StartTime isn't in the future.");
+                throw new InvalidActionException(_stringLocalizer["You can't confirm appointment that StartTime isn't in the future."]);
             }
             if (appointmentToConfirm.Interview.InterviewState != InterviewState.WaitingForConfirmAppointment)
             {
                 _logger.LogError($"Couldn't confirm InterviewAppointment with ID:{interviewAppointmentId} in Interview with ID:{appointmentToConfirm.InterviewId} " +
                                  $"that is not in WaitingForConfirmAppointment InterviewState. (UserID: {userId})");
-                throw new PermissionException($"Couldn't confirm InterviewAppointment with ID:{interviewAppointmentId} in Interview with ID:{appointmentToConfirm.InterviewId} " +
-                                                $"that is not in WaitingForConfirmAppointment InterviewState.");
+                throw new PermissionException(_stringLocalizer["Couldn't confirm InterviewAppointment with ID:{0} in Interview with ID:{1} that is not in WaitingForConfirmAppointment InterviewState.", interviewAppointmentId, appointmentToConfirm.InterviewId]);
             }
 
             appointmentToConfirm.InterviewAppointmentState = InterviewAppointmentState.Confirmed;
@@ -496,12 +502,12 @@ namespace Recruiter.Services.Implementation
             if (interview == null)
             {
                 _logger.LogError($"Interview with ID:{interviewId} not found. (UserID: {userId})");
-                throw new NotFoundException($"Interview with ID:{interviewId} not found.");
+                throw new NotFoundException(_stringLocalizer["Interview with ID:{0} not found.", interviewId]);
             }
             if (interview.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to request for new appointments in this interview with ID:{interviewId}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to request for new appointments in Interview with ID:{interviewId}.");
+                throw new PermissionException(_stringLocalizer["You are not allowed to request for new appointments in Interview with ID:{0}.", interviewId]);
             }
 
             foreach (var appointment in interview.InterviewAppointments)
@@ -543,18 +549,18 @@ namespace Recruiter.Services.Implementation
             if (interviewAppointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
-                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+                throw new NotFoundException(_stringLocalizer["InterviewAppointment with ID:{0} not found.", interviewAppointmentId]);
             }
-            //if (interviewAppointment.Interview.Application.UserId != userId)
-            //{
-            //    _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
-            //    throw new PermissionException($"You ares not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
-            //}
-            //if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
-            //{
-            //    _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
-            //    throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
-            //}
+            if (interviewAppointment.Interview.Application.UserId != userId)
+            {
+                _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
+                throw new PermissionException(_stringLocalizer["You ares not allowed to get InterviewAppointment with ID:{0}.", interviewAppointmentId]);
+            }
+            if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
+            {
+                _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
+                throw new PermissionException(_stringLocalizer["InterviewAppointment with ID:{0} is not in Confirmed InterviewAppointmentState.", interviewAppointmentId]);
+            }
 
             interviewAppointment.StartTime = interviewAppointment.StartTime.ToLocalTime();
             interviewAppointment.EndTime = interviewAppointment.EndTime.ToLocalTime();
@@ -577,27 +583,27 @@ namespace Recruiter.Services.Implementation
             if (interviewAppointment == null)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} not found. (UserID: {userId})");
-                throw new NotFoundException($"InterviewAppointment with ID:{interviewAppointmentId} not found.");
+                throw new NotFoundException(_stringLocalizer["InterviewAppointment with ID:{0} not found.", interviewAppointmentId]);
             }
             if (interviewAppointment.Interview.Application.UserId != userId)
             {
                 _logger.LogError($"User with ID:{userId} is not allowed to get InterviewAppointment with ID:{interviewAppointmentId}. (UserID: {userId})");
-                throw new PermissionException($"You are not allowed to get InterviewAppointment with ID:{interviewAppointmentId}.");
+                throw new PermissionException(_stringLocalizer["You ares not allowed to process InterviewAppointment with ID:{0}.", interviewAppointmentId]);
             }
             if (interviewAppointment.InterviewAppointmentState != InterviewAppointmentState.Confirmed)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState. (UserID: {userId})");
-                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} is not in Confirmed InterviewAppointmentState.");
+                throw new PermissionException(_stringLocalizer["InterviewAppointment with ID:{0} is not in Confirmed InterviewAppointmentState.", interviewAppointmentId]);
             }
             if (interviewAppointment.ScheduledNotification == true)
             {
                 _logger.LogError($"InterviewAppointment with ID:{interviewAppointmentId} has already scheduled notification. (UserID: {userId})");
-                throw new PermissionException($"InterviewAppointment with ID:{interviewAppointmentId} has already scheduled notification.");
+                throw new PermissionException(_stringLocalizer["InterviewAppointment with ID:{0} has already scheduled notification.", interviewAppointmentId]);
             }
             if (time < 1)
-                throw new InvalidActionException($"Time must be greater than 0.");
+                throw new InvalidActionException(_stringLocalizer["Time must be greater than 0."]);
             if (interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)) < DateTime.UtcNow)
-                throw new InvalidActionException($"Notification time {interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)).ToLocalTime()} must be in future.");
+                throw new InvalidActionException(_stringLocalizer["Notification time {0} must be in future.", interviewAppointment.StartTime.Subtract(TimeSpan.FromHours(time)).ToLocalTime()]);
 
             await _queueMessageSenderService.SendAppointmentReminderAsync(interviewAppointment, time);
 
