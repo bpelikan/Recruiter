@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Recruiter.AttributeFilters;
 using Recruiter.CustomExceptions;
@@ -34,12 +35,14 @@ namespace Recruiter.Controllers
         private readonly ICvStorageService _cvStorageService;
         private readonly IApplicationStageService _applicationStageService;
         private readonly IEmailSender _emailSender;
+        private readonly IStringLocalizer<ApplicationStageController> _stringLocalizer;
 
         public ApplicationStageController(IMapper mapper,
                     ILogger<ApplicationStageController> logger,
                     ICvStorageService cvStorageService, 
                     IApplicationStageService applicationStageService,
                     IEmailSender emailSender,
+                    IStringLocalizer<ApplicationStageController> stringLocalizer,
                     ApplicationDbContext context, 
                     UserManager<ApplicationUser> userManager)
         {
@@ -48,6 +51,7 @@ namespace Recruiter.Controllers
             _cvStorageService = cvStorageService;
             _applicationStageService = applicationStageService;
             _emailSender = emailSender;
+            _stringLocalizer = stringLocalizer;
             _context = context;
             _userManager = userManager;
         }
@@ -121,7 +125,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdateResponsibleUserInApplicationStage(addResponsibleUserToStageViewModel, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -162,7 +166,7 @@ namespace Recruiter.Controllers
                 case "Interview":
                     return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
                 default:
-                    TempData["Error"] = $"Couldn't process stage: Unknown Application Stage type with ID:{stageId}.";
+                    TempData["Error"] = _stringLocalizer["Couldn't process stage: Unknown Application Stage type with ID:{0}.", stageId].ToString();
                     return RedirectToLocalOrToApplicationsStagesToReview(returnUrl);
             }
         }
@@ -207,7 +211,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdateApplicationApprovalStage(applicationApprovalViewModel, accepted, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -230,7 +234,7 @@ namespace Recruiter.Controllers
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "ApplicationApproval");
@@ -276,7 +280,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdatePhoneCallStage(phoneCallViewModel, accepted, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -299,7 +303,7 @@ namespace Recruiter.Controllers
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "PhoneCall");
@@ -336,7 +340,7 @@ namespace Recruiter.Controllers
                 case HomeworkState.Completed:
                     return RedirectToAction(nameof(ApplicationStageController.ProcessHomeworkStage), new { stageId = stage.Id, returnUrl });
                 default:
-                    TempData["Error"] = $"Couldn't process Homework stage: Unknown HomeworkState with ID:{stageId}.";
+                    TempData["Error"] = _stringLocalizer["Couldn't process Homework stage: Unknown HomeworkState with ID:{0}.", stageId].ToString();
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Homework" });
             }
         }
@@ -373,7 +377,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdateHomeworkSpecification(addHomeworkSpecificationViewModel, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -389,15 +393,14 @@ namespace Recruiter.Controllers
                                     .Include(x => x.Application)
                                         .ThenInclude(x => x.JobPosition)
                                     .FirstOrDefault(x => x.Id == stageId);
-                var callbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
-                await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(stage.Application.User.Email, callbackUrl, stage);
+                var applicationDetailsCallbackUrl = Url.MyApplicationDetailsCallbackLink(stage.Application.Id, Request.Scheme);
                 await _emailSender.SendEmailNotificationAddHomeworkSpecificationAsync(/*stage.Application.User.Email, */applicationDetailsCallbackUrl, stage);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
@@ -441,7 +444,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdateHomeworkStage(processHomeworkStageViewModel, accepted, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -464,7 +467,7 @@ namespace Recruiter.Controllers
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Homework");
@@ -498,7 +501,7 @@ namespace Recruiter.Controllers
                 case InterviewState.AppointmentConfirmed:
                     return RedirectToAction(nameof(ApplicationStageController.ProcessInterviewStage), new { stageId = stage.Id, returnUrl });
                 default:
-                    TempData["Error"] = $"Couldn't process Interview stage: Unknown InterviewState with ID:{stageId}.";
+                    TempData["Error"] = _stringLocalizer["Couldn't process Interview stage: Unknown InterviewState with ID:{0}.", stageId].ToString();
                     return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "Interview" });
             }
         }
@@ -526,43 +529,34 @@ namespace Recruiter.Controllers
         [HttpPost]
         [ExportModelState]
         [Route("{stageId?}")]
-        public async Task<IActionResult> SetAppointmentsToInterview(string stageId, 
-                                                                    SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel,
-                                                                    string returnUrl = null)
+        public async Task<IActionResult> SetAppointmentsToInterview(string stageId, SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string returnUrl = null)
         {
             var myId = _userManager.GetUserId(HttpContext.User);
 
             if (ModelState.IsValid)
             {
                 if (setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime() < DateTime.UtcNow)
-                    ModelState.AddModelError("", "StartTime must be in the future.");
+                    ModelState.AddModelError("", _stringLocalizer["StartTime must be in the future."]);
                 var collidingAppointments = await _applicationStageService.GetCollidingInterviewAppointment(setAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
                 foreach (var app in collidingAppointments)
-                {
-                    ModelState.AddModelError("", $"Collision with appointment: " +
-                            $"{app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")} - {app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")}. " +
-                            $"({app.Interview.Application.User.FirstName} {app.Interview.Application.User.LastName} ({app.Interview.Application.User.Email}) - " +
-                            $"{app.Interview.Application.JobPosition.Name}) - " +
-                            $"{app.InterviewAppointmentState}");
-                }
+                    ModelState.AddModelError("", _stringLocalizer["Collision with appointment: {0} - {1}. ({2} {3} ({4}) - {5})", app.StartTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss"), app.EndTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss"), app.Interview.Application.User.FirstName, app.Interview.Application.User.LastName, app.Interview.Application.User.Email, app.Interview.Application.JobPosition.Name]);
             }
             if (!ModelState.IsValid)
-            {
                 return RedirectToAction(nameof(ApplicationStageController.SetAppointmentsToInterview), new { stageId, returnUrl });
-            }
 
             try
             {
-                await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
-                TempData["Success"] = "Success.";
+                //await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
+                await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
+                //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl }); 
             }
 
-            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });  //ProcessStage 
+            return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });
         }
 
         [Route("{appointmentId?}")]
@@ -574,7 +568,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.RemoveAppointmentsFromInterview(appointmentId, myId);
-                TempData["Success"] = "Successfully deleted.";
+                TempData["Success"] = _stringLocalizer["Successfully deleted."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -591,7 +585,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.SendInterviewAppointmentsToConfirm(stageId, accepted, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -627,7 +621,7 @@ namespace Recruiter.Controllers
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
@@ -668,7 +662,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.UpdateInterviewStage(interviewViewModel, accepted, myId);
-                TempData["Success"] = "Success.";
+                TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
@@ -691,7 +685,7 @@ namespace Recruiter.Controllers
             {
                 _logger.LogWarning($"Email notification has not been sent. StageID:{stageId} (UserID: {myId})");
                 _logger.LogError(ex.Message);
-                TempData["WarningEmailNotification"] = "Email notification has not been sent.";
+                TempData["WarningEmailNotification"] = _stringLocalizer["Email notification has not been sent."].ToString();
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "Interview");
@@ -734,13 +728,13 @@ namespace Recruiter.Controllers
                 default:
                     if (stage != null)
                     {
-                        TempData["Warning"] = $"Couldn't find well known application stage type with ID:{stageId}, below showed primary ApplicationStageBase.";
+                        TempData["Warning"] = _stringLocalizer["Couldn't find well known application stage type with ID:{0}, below showed primary ApplicationStageBase.", stageId].ToString();
                         return RedirectToAction(nameof(ApplicationStageController.ApplicationStageBaseDatails),
                                                     new { stageId = stage.Id, returnUrl });
                     }
                     else
                     {
-                        TempData["Error"] = $"Couldn't find application stage details: Unknown stage with ID:{stageId}.";
+                        TempData["Error"] = _stringLocalizer["Couldn't find application stage details: Unknown stage with ID:{0}.", stageId].ToString();
                         return RedirectToLocalOrToHomeIndex(returnUrl);
                     }
             }
@@ -832,7 +826,7 @@ namespace Recruiter.Controllers
             try
             {
                 await _applicationStageService.RemoveAssignedAppointment(appointmentId, myId);
-                TempData["Success"] = "Appointment successfully removed.";
+                TempData["Success"] = _stringLocalizer["Appointment successfully removed."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
