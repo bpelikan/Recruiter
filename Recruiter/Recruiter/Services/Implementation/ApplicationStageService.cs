@@ -574,24 +574,36 @@ namespace Recruiter.Services.Implementation
             return true;
         }
 
-        public async Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId)
+        public async Task AddNewInterviewAppointments(InterviewAppointment newInterviewAppointment, string userId)
         {
             _logger.LogInformation($"Executing AddNewInterviewAppointments. (UserID: {userId})");
 
-            var newInterviewAppointment = new InterviewAppointment()
-            {
-                Id = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
-                InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
-                InterviewId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
-                StartTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
-                Duration = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
-                EndTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
-                                        .AddMinutes(setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
-            };
+            newInterviewAppointment.InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd;
+            newInterviewAppointment.StartTime = newInterviewAppointment.StartTime.ToUniversalTime();
+            newInterviewAppointment.EndTime = newInterviewAppointment.StartTime.ToUniversalTime().AddMinutes(newInterviewAppointment.Duration);
 
             await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
             await _context.SaveChangesAsync();
         }
+
+        //public async Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId)
+        //{
+        //    _logger.LogInformation($"Executing AddNewInterviewAppointments. (UserID: {userId})");
+
+        //    var newInterviewAppointment = new InterviewAppointment()
+        //    {
+        //        Id = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Id,
+        //        InterviewAppointmentState = InterviewAppointmentState.WaitingToAdd,
+        //        InterviewId = setAppointmentsToInterviewViewModel.NewInterviewAppointment.InterviewId,
+        //        StartTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime(),
+        //        Duration = setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration,
+        //        EndTime = setAppointmentsToInterviewViewModel.NewInterviewAppointment.StartTime.ToUniversalTime()
+        //                                .AddMinutes(setAppointmentsToInterviewViewModel.NewInterviewAppointment.Duration),
+        //    };
+
+        //    await _context.InterviewAppointments.AddAsync(newInterviewAppointment);
+        //    await _context.SaveChangesAsync();
+        //}
 
 
         //UPDATE

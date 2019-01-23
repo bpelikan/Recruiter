@@ -39,7 +39,7 @@ namespace Recruiter.Services
         //ADD
         Task<bool> AddRequiredStagesToApplication(string applicationId, string userId);
 
-        Task AddNewInterviewAppointments(SetAppointmentsToInterviewViewModel setAppointmentsToInterviewViewModel, string userId);
+        Task AddNewInterviewAppointments(InterviewAppointment newInterviewAppointment, string userId);
 
 
         //UPDATE
