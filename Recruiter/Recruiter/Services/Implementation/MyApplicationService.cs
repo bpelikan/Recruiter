@@ -175,11 +175,11 @@ namespace Recruiter.Services.Implementation
                 throw new NotFoundException(_stringLocalizer["CV file not found."]);
             }
 
-            //using (var stream = cv.OpenReadStream())
-            //{
-            //    var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
-            //    applyApplicationViewModel.CvFileName = CvFileName;
-            //}
+            using (var stream = cv.OpenReadStream())
+            {
+                var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
+                applyApplicationViewModel.CvFileName = CvFileName;
+            }
 
             if (Path.GetExtension(cv.FileName) != ".pdf")
             {
@@ -187,11 +187,11 @@ namespace Recruiter.Services.Implementation
                 throw new InvalidFileExtensionException(_stringLocalizer["CV must have .pdf extension."]);
             }
 
-            using (var stream = cv.OpenReadStream())
-            {
-                var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
-                applyApplicationViewModel.CvFileName = CvFileName;
-            }
+            //using (var stream = cv.OpenReadStream())
+            //{
+            //    var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
+            //    applyApplicationViewModel.CvFileName = CvFileName;
+            //}
 
             if (applyApplicationViewModel.CvFileName == null)
             {
