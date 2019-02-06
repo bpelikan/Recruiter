@@ -43,6 +43,9 @@
                             case "Interview":
                                 @:Rozmowa kwalifikacyjna
                                 break;
+                            default:
+                                @:Zakończone
+                                break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
                     </a>
@@ -67,6 +70,9 @@
                             case "Interview":
                                 @:Rozmowa kwalifikacyjna
                                 break;
+                            default:
+                                @:Zakończone
+                                break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
                     </a>
@@ -86,6 +92,9 @@
                                 break;
                             case "Interview":
                                 @:Rozmowa kwalifikacyjna
+                                break;
+                            default:
+                                @:Zakończone
                                 break;
                         }
                     </a>
@@ -139,6 +148,9 @@ else
                             break;
                         case "Interview":
                             @:Rozmowa kwalifikacyjna
+                            break;
+                        default:
+                            @:Zakończone
                             break;
                     }
                     <b Condition="!application.CurrentStageIsAssigned">

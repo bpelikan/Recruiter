@@ -43,6 +43,9 @@
                             case "Interview":
                                 @:Interview
                                 break;
+                            default:
+                                @:Finished
+                                break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
                     </a>
@@ -67,6 +70,9 @@
                             case "Interview":
                                 @:Interview
                                 break;
+                            default:
+                                @:Finished
+                                break;
                         }
                         (@Html.DisplayFor(x => stage.Quantity))
                     </a>
@@ -87,6 +93,9 @@
                                 break;
                             case "Interview":
                                 @:Interview
+                                break;
+                            default:
+                                @:Finished
                                 break;
                         }
                     </a>
@@ -139,6 +148,9 @@ else
                             break;
                         case "Interview":
                             @:Interview
+                            break;
+                        default:
+                            @:Finished
                             break;
                     }
                     <b Condition="!application.CurrentStageIsAssigned">
