@@ -35,13 +35,16 @@
                 {
                     <tr>
                         @*<td>@Html.DisplayFor(model => appointment.Id)</td>*@
-                        <td>@Html.DisplayFor(model => appointment.StartTime)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.StartTime)</td>*@
+                        <td>@appointment.StartTime.ToLocalTime()</td>
                         <td>@Html.DisplayFor(model => appointment.Duration)</td>
-                        <td>@Html.DisplayFor(model => appointment.EndTime)</td>
+                        @*<td>@Html.DisplayFor(model => appointment.EndTime)</td>*@
+                        <td>@appointment.EndTime.ToLocalTime()</td>
                         @*<td>@Html.DisplayFor(model => appointment.AcceptedByRecruit)</td>*@
                         <td>
                             <span condition="appointment.AcceptedByRecruit" class="glyphicon glyphicon-ok"></span>
-                            @Html.DisplayFor(model => appointment.AcceptedByRecruitTime)
+                            @*@Html.DisplayFor(model => appointment.AcceptedByRecruitTime)*@
+                            @appointment.AcceptedByRecruitTime?.ToLocalTime()
                         </td>
                         @*<td>
                                 - @Html.DisplayFor(model => appointment.InterviewId)

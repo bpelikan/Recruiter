@@ -211,13 +211,9 @@ else
                             case InterviewState.AppointmentConfirmed:
                                 @if (interview.InterviewAppointments?.FirstOrDefault()?.StartTime > DateTime.Now)
                                 {
-                                    <a style="color: green"
-                                       asp-controller="ApplicationStage"
-                                       asp-action="ProcessStage"
-                                       asp-route-stageId="@stage.CurrentStage.Id"
-                                       asp-route-returnurl="@Context.Request.Path">
-                                        Interview confirmed (@Html.DisplayFor(model => interview.InterviewAppointments.FirstOrDefault().StartTime))
-                                    </a>
+                                    <b>
+                                        Interview confirmed (@interview.InterviewAppointments.FirstOrDefault().StartTime.ToLocalTime())
+                                    </b>
                                 }
                                 else
                                 {
