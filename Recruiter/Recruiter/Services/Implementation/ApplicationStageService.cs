@@ -481,6 +481,7 @@ namespace Recruiter.Services.Implementation
                 {
                     x.StartTime = x.StartTime.ToLocalTime();
                     x.EndTime = x.EndTime.ToLocalTime();
+                    x.AcceptedByRecruitTime = x.AcceptedByRecruitTime?.ToLocalTime();
                 }
             }
 
