@@ -25,16 +25,6 @@ namespace Recruiter.Controllers
             _context = context;
         }
 
-        //[HttpGet]
-        //public JsonResult Index()
-        //{
-        //    return JsonResult("{\"Test\":\"True\"}");
-        //}
-
-        //[ProducesResponseType(typeof(bool), 200)]
-        //[ProducesResponseType(404)]
-
-
         [HttpGet("{appointmentId}")]
         public IActionResult CheckAppointmentStatus(string appointmentId)
         {

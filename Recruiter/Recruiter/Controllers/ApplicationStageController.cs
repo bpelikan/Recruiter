@@ -307,10 +307,6 @@ namespace Recruiter.Controllers
             }
 
             return RedirectToLocalOrToApplicationsStagesToReview(returnUrl, "PhoneCall");
-            //if (returnUrl != null)
-            //    return RedirectToLocal(returnUrl);
-            //else
-            //    return RedirectToAction(nameof(ApplicationStageController.ApplicationsStagesToReview), new { stageName = "PhoneCall" });
         }
         #endregion
 
@@ -546,14 +542,12 @@ namespace Recruiter.Controllers
 
             try
             {
-                //await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel, myId);
                 await _applicationStageService.AddNewInterviewAppointments(setAppointmentsToInterviewViewModel.NewInterviewAppointment, myId);
                 TempData["Success"] = _stringLocalizer["Success."].ToString();
             }
             catch (CustomRecruiterException ex)
             {
                 TempData["Error"] = ex.Message;
-                //return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl }); 
             }
 
             return RedirectToAction(nameof(ApplicationStageController.ProcessInterview), new { stageId, returnUrl });

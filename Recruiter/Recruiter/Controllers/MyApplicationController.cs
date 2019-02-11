@@ -314,7 +314,6 @@ namespace Recruiter.Controllers
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
                 TempData["Success"] = _stringLocalizer["Confirmed."].ToString();
-                //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
             catch (CustomRecruiterException ex)
@@ -334,7 +333,6 @@ namespace Recruiter.Controllers
             {
                 await _myApplicationService.ConfirmAppointmentInInterview(interviewAppointmentId, myId);
                 TempData["Success"] = _stringLocalizer["Confirmed."].ToString();
-                //return RedirectToLocalOrToMyApplicationDetails(returnUrl, applicationId);
                 return RedirectToAction(nameof(MyApplicationController.ScheduleInterviewAppointmentReminder), new { interviewAppointmentId, applicationId, returnUrl });
             }
             catch (CustomRecruiterException ex)
