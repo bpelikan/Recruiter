@@ -236,8 +236,19 @@ namespace Recruiter.Services.Implementation
                     if (stage.GetType().Name == "Interview")
                     {
                         var interview = stage as Interview;
-                        if(interview.InterviewState == InterviewState.AppointmentConfirmed)
+                        if (interview.InterviewState == InterviewState.AppointmentConfirmed)
+                        {
                             interview.InterviewAppointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id).ToList();
+                        }
+                        if (interview.InterviewAppointments != null)
+                        {
+                            foreach (var x in interview.InterviewAppointments)
+                            {
+                                x.StartTime = x.StartTime.ToLocalTime();
+                                x.EndTime = x.EndTime.ToLocalTime();
+                            }
+                        }
+                        
                         vm.AsignedStages.Add(new AsignedStagesViewModel()
                         {
                             Application = new ApplicationViewModel()
@@ -464,6 +475,14 @@ namespace Recruiter.Services.Implementation
 
             var appointments = _context.InterviewAppointments.Where(x => x.InterviewId == stage.Id);
             vm.StageToProcess.InterviewAppointments = appointments.ToList();
+            if (vm.StageToProcess.InterviewAppointments != null)
+            {
+                foreach (var x in vm.StageToProcess.InterviewAppointments)
+                {
+                    x.StartTime = x.StartTime.ToLocalTime();
+                    x.EndTime = x.EndTime.ToLocalTime();
+                }
+            }
 
             return vm;
         }
