@@ -187,12 +187,6 @@ namespace Recruiter.Services.Implementation
                 throw new InvalidFileExtensionException(_stringLocalizer["CV must have .pdf extension."]);
             }
 
-            //using (var stream = cv.OpenReadStream())
-            //{
-            //    var CvFileName = await _cvStorageService.SaveCvAsync(stream, cv.FileName, userId);
-            //    applyApplicationViewModel.CvFileName = CvFileName;
-            //}
-
             if (applyApplicationViewModel.CvFileName == null)
             {
                 _logger.LogError($"CvFileName in applyApplicationViewModel equals NULL. (UserID: {userId})");
