@@ -18,11 +18,5 @@ namespace Recruiter.Models.MyApplicationViewModels.Shared
 
         [Display(Name = "Email")]
         public string Email { get; set; }
-
-        //[Display(Name = "Phone Number")]
-        //public string PhoneNumber { get; set; }
-
-        //[Display(Name = "Created At")]
-        //public DateTime CreatedAt { get; set; }
     }
 }

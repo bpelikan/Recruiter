@@ -53,33 +53,6 @@ namespace Recruiter.Data
                     IdentityResult roleResult = roleManager.CreateAsync(role).Result;
                 }
             }
-
-            //if (!roleManager.RoleExistsAsync("Administrator").Result)
-            //{
-            //    IdentityRole role = new IdentityRole()
-            //    {
-            //        Name = "Administrator"
-            //    };
-            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-            //}
-
-            //if (!roleManager.RoleExistsAsync("Recruiter").Result)
-            //{
-            //    IdentityRole role = new IdentityRole()
-            //    {
-            //        Name = "Recruiter"
-            //    };
-            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-            //}
-
-            //if (!roleManager.RoleExistsAsync("Recruit").Result)
-            //{
-            //    IdentityRole role = new IdentityRole()
-            //    {
-            //        Name = "Recruit"
-            //    };
-            //    IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-            //}
         }
     }
 }

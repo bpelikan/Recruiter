@@ -15,7 +15,6 @@ namespace Recruiter.Models
 
         [Display(Name = "Cv File Name")]
         public string CvFileName { get; set; }
-        //public virtual Cv Cv { get; set; }
 
         public string UserId { get; set; }
         [Display(Name = "User")]
