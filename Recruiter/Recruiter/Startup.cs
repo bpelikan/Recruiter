@@ -68,7 +68,8 @@ namespace Recruiter
                 });
 
             // Add application services.
-            services.AddSingleton<ICvStorageService, CvStorageServiceWithArchive>();
+            //services.AddSingleton<ICvStorageService, CvStorageServiceWithArchive>();
+            services.AddSingleton<ICvStorageService, CvStorageService>();
             //services.AddTransient<IEmailSender, FakeEmailSender>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddSingleton<IQueueMessageSenderService, QueueMessageSenderService>();
