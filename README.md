@@ -8,7 +8,7 @@ This project uses:
 * **Application Insights**
 * **SendGrid**
 * [azure-functions-recruiter](https://github.com/bpelikan/azure-functions-recruiter "azure-functions-recruiter")
-## Setting up
+## Setting up on Azure
 What is needed to deploy this project on Azure:
 
 * **Web App** with:
