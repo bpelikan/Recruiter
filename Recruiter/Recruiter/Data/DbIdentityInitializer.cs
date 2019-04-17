@@ -19,7 +19,7 @@ namespace Recruiter.Data
 
         public static void SeedUsers(UserManager<ApplicationUser> userManager, string adminEmail, string adminPassword)
         {
-            if (userManager.FindByEmailAsync("admin@admin.com").Result == null)
+            if (adminEmail != null && adminPassword != null && userManager.FindByEmailAsync(adminEmail).Result == null)
             {
                 var user = new ApplicationUser()
                 {
